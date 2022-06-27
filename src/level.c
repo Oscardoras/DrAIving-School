@@ -8,7 +8,9 @@
 
 Level* new_level(float width, float length) {
     Level* level = malloc(sizeof(Level));
-    if (level) {
+    if (level != NULL) {
+        level->entities = NULL;
+        level->player = NULL;
         level->width = width;
         level->length = length;
     }

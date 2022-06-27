@@ -14,14 +14,15 @@ typedef struct {
 
 
 typedef enum {
-    Car1,
-    Car2
+    CAR1,
+    CAR2
 } EntityType;
 
 typedef enum{
-    Move_forward,
-    Move_right,
-    Move_left
+    ENTITYSTATE_LEFT,
+    ENTITYSTATE_RIGHT,
+    ENTITYSTATE_FASTER,
+    ENTITYSTATE_SLOWER
 } EntityStates;
 
 typedef struct {

@@ -8,28 +8,21 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+
 int main() {
-    Viewport* viewport = create_viewport(WIDTH, HEIGHT, NULL);
-    //Vérifie aussi les problèmes d'init
+    Level* level = new_level(15., 100.);
+    if (level == NULL) return EXIT_FAILURE;
     
-    /*
-    Matrix* m = NULL;
-    FILE* file = fopen("config.txt", "r");
-    if (file) {
-        m = load_matrix(file);
-        fclose(file);
+    Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
+    if (viewport == NULL) {
+        free_level(level);
+        return EXIT_FAILURE;
     }
     
-    for (unsigned int i = 0; i < m->lines; i++) {
-        for (unsigned int j = 0; j < m->columns; j++) {
-            printf("%f ", *get_matrix_element(m, i, j));
-        }
-        printf("\n");
-    }
-    */
-   
     event_loop(viewport);
+    
     close_viewport(viewport);
+    free_level(level);
 
     return EXIT_SUCCESS;
 }
