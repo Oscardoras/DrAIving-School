@@ -18,6 +18,12 @@ typedef enum {
     Car2
 } EntityType;
 
+typedef enum{
+    Move_forward,
+    Move_right,
+    Move_left
+} EntityStates;
+
 typedef struct {
     EntityType type;
     Location location;
