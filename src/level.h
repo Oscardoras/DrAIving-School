@@ -2,7 +2,7 @@
 #define __LEVEL_H__
 
 #include "entity.h"
-
+#include <stdbool.h>
 
 typedef struct {
     struct EntityListCell {

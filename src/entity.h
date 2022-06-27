@@ -2,7 +2,7 @@
 #define __ENTITY_H__
 
 #include "matrix.h"
-
+#include <stdbool.h>
 
 typedef struct {
     float x;

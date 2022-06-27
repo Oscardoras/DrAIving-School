@@ -4,13 +4,13 @@ debug: src/main.c bin/level.o bin/matrix.o bin/game.o bin/viewport.o
 release:
 	gcc -O3 src/main.c game
 
-bin/level.o: level.c
-	gcc -g -Wall -Wextra -c level.c -o level.o
-bin/matrix.o: matrix.c
-	gcc -g -Wall -Wextra -c matrix.c -o matrix.o
-bin/game.o: game.c
-	gcc -g -Wall -Wextra -c game.c -o game.o
-bin/viewport.o: viewport.c
-	gcc -g -Wall -Wextra -c viewport.c -o viewport.o
+bin/level.o: src/level.c
+	gcc -g -Wall -Wextra -c src/level.c -o level.o
+bin/matrix.o: src/matrix.c
+	gcc -g -Wall -Wextra -c src/matrix.c -o matrix.o
+bin/game.o: src/game.c
+	gcc -g -Wall -Wextra -c src/game.c -o game.o
+bin/viewport.o: src/viewport.c
+	gcc -g -Wall -Wextra -c src/viewport.c -o viewport.o
 clean:
 	rm -r bin/*.o game 
