@@ -7,11 +7,11 @@
 typedef struct {
     struct EntityListCell {
         Entity* entity;
-        struct EntityListCell* cell;
-    } entities;
+        struct EntityListCell* next;
+    } *entities;
     Player* player;
     float width;
-    float lenght;
+    float length;
 } Level;
 
 
@@ -19,10 +19,10 @@ typedef struct {
  * @brief Creates a new level from the seed.
  * 
  * @param width the width of the level.
- * @param lenght the lenght of the level.
+ * @param length the length of the level.
  * @return the created level.
  */
-Level* new_level(float width, float lenght);
+Level* new_level(float width, float length);
 
 /**
  * @brief Frees a level.
