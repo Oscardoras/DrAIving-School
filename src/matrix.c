@@ -55,8 +55,8 @@ Matrix* load_matrix(FILE* file) {
 void save_matrix(Matrix* matrix, FILE* file) {
     fprintf(file, "%d %d\n", matrix->lines, matrix->columns);
     
-    for (int i = 0; i < matrix->lines; i++) {
-        for (int j = 0; j < matrix->columns; j++) {
+    for (unsigned int i = 0; i < matrix->lines; i++) {
+        for (unsigned int j = 0; j < matrix->columns; j++) {
             if (j == matrix->columns-1)
                 fprintf(file, "%f\n", *get_matrix_element(matrix, i, j));
             else
