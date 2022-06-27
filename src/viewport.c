@@ -69,7 +69,7 @@ void close_viewport(Viewport* viewport) {
     SDL_Quit();
 }
 
-void draw_viewport(Viewport* viewport, int side, int pos) { //Voies autoroute horizontales
+void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
     SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
     SDL_RenderClear(viewport->renderer);
     
@@ -103,14 +103,14 @@ void event_loop(Viewport* viewport) {
     
     int lines = 2*NB_LINES + 4;
     int side = viewport->height / lines;
-    int pos = 0
+    int pos = 0;
     
     while (!quit) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) quit = true;
         }
         
-        draw_viewport(viewport, side, pos);
+        draw_viewport(viewport, lines, side, pos);
         
         pos = (pos+1) % side;
         
