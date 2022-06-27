@@ -7,15 +7,15 @@ Level* new_level(float width, float lenght)
     if(newLevel)
     {
         newLevel->width = width;
-        newLevel->length = length;
+        newLevel->lenght = lenght;
     }
     return newLevel;
 }
 
 void free_level(Level* level)
 {
-    EntityListCell * next;
-    for(EntityListCell * iterator = level->entities; iterator; iterator = next)
+    struct EntityListCell * next;
+    for(struct EntityListCell * iterator = &level->entities; iterator; iterator = next)
     {
         free_entity(iterator->entity);
         next = iterator->cell;
@@ -26,12 +26,12 @@ void free_level(Level* level)
 
 bool add_level_entity(Level* level, Entity* entity)
 {
-    EntityListCell * newEntity = (EntityListCell *)malloc(sizeof(EntityListCell));
+    struct EntityListCell * newEntity = (struct EntityListCell *)malloc(sizeof(struct EntityListCell));
     if(newEntity)
     {
         newEntity->entity = entity;
-        newEntity->cell = level->entities;
-        level->entities = newEntity;
+        newEntity->cell = &level->entities;
+        level->entities = *newEntity;
         return true;
     }
     return false;
