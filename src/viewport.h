@@ -3,6 +3,10 @@
 
 #include "level.h"
 
+#define ANIMATION_SIZE_MAX 1
+#define BLOCK_TYPES 1
+#define ENTITY_TYPES 1
+
 
 typedef struct {
     SDL_Texture* tileset;
@@ -63,7 +67,7 @@ void event_loop(Viewport* viewport);
  * @param animation the animation.
  * @param rect the rectangle.
  */
-void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect, Direction direction);
+void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
 
 /**
  * @brief Draws a viewport.

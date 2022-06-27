@@ -3,7 +3,7 @@
 
 
 int main() {
-    
+    printf("Salut :)\n");
 
     return EXIT_SUCCESS;
 }
