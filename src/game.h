@@ -12,36 +12,13 @@
 void update_game(Level* level);
 
 /**
- * @brief Makes the player go left.
+ * @brief Makes the player execute an action.
  * 
  * @param level the level.
+ * @param action the action execute.
  * @return if the operation has succeed.
  */
-bool player_left(Level* level);
-
-/**
- * @brief Makes the player go right.
- * 
- * @param level the level.
- * @return if the operation has succeed.
- */
-bool player_right(Level* level);
-
-/**
- * @brief Makes the player go faster.
- * 
- * @param level the level.
- * @return if the operation has succeed.
- */
-bool player_faster(Level* level);
-
-/**
- * @brief Makes the player go slower.
- * 
- * @param level the level.
- * @return if the operation has succeed.
- */
-bool player_slower(Level* level);
+bool player_action(Level* level, Action action);
 
 
 #endif
