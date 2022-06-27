@@ -62,6 +62,4 @@ Player* new_player(Location location, Matrix* matrix);
  * @param player the player.
  */
 void free_player(Player* player);
-
-
 #endif
