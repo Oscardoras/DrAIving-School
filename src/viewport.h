@@ -8,7 +8,7 @@
 #define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
 #define ENTITY_TYPES 1
-
+#define TEXTURE_COUNT 2
 
 typedef struct {
     SDL_Texture* tileset;
@@ -16,11 +16,13 @@ typedef struct {
     unsigned int frames;
 } Animation;
 
+
 char* TEXTURE_NAMES[] = {
 "sprites/outdoors.png", 
 "sprites/vehicles.png"
 };
-#define TEXTURE_COUNT 2
+
+
 SDL_Texture* textures[TEXTURE_COUNT];
 typedef struct
 {
