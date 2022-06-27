@@ -5,6 +5,8 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+#define NB_LINES 3
+
 Viewport* create_viewport(int width, int height, Level* level) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Error SDL - %s", SDL_GetError());
@@ -64,4 +66,25 @@ void close_viewport(Viewport* viewport) {
     free(viewport);
     
     SDL_Quit();
+}
+
+void draw_viewport(Viewport* viewport) { //Voies autoroute horizontales
+    SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
+    SDL_RenderClear(viewport->renderer);
+    
+    int lines = 2*NB_LINES + 4
+    int height_lines = viewport->height / lines;
+    
+    SDL_Rect rect_up, rect_down;
+    rect_up.x = rect_down.x = 0;
+    rect_up.w = rect_down.w = viewport->width;
+    rect_up.h = rect_down.h = height_lines;
+    /*
+    for(i=1; i<lines/2; i++) {
+        SDL_Rect.y = i*height_lines;
+        
+        if (i == 1) {
+            
+        }
+    }*/
 }
