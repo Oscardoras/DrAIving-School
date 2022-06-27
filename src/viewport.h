@@ -16,6 +16,20 @@ typedef struct {
     unsigned int frames;
 } Animation;
 
+char* TEXTURE_NAMES[] = {
+"sprites/outdoors.png", 
+"sprites/vehicles.png"
+};
+#define TEXTURE_COUNT 2
+typedef struct
+{
+	unsigned int count;
+	SDL_Rect rects[10];
+	unsigned int sizex;
+	unsigned int sizey;
+	unsigned int textureid;
+} sprite;
+
 /**
  * @brief A viewport.
  * 
