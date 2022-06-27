@@ -21,6 +21,7 @@ char* TEXTURE_NAMES[] = {
 "sprites/vehicles.png"
 };
 #define TEXTURE_COUNT 2
+SDL_Texture* textures[TEXTURE_COUNT];
 typedef struct
 {
 	unsigned int count;
