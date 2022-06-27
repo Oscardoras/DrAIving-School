@@ -16,7 +16,7 @@ Matrix* load_matrix(FILE* file) {
                 for (unsigned int i = 0; i < matrix->columns; i++) {
                     char buffer[1024];
                     
-                    if (fgets(buffer, 1024, file)) {
+                    if (fgets(buffer, 1024, file) && buffer[0] != '\n') {
                         unsigned int j = 0;
                         char value[256];
                         char* v = value;
