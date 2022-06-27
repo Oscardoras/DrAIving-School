@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "level.h"
 #include "viewport.h"
@@ -53,7 +54,25 @@ Viewport* create_viewport(int width, int height, Level* level) {
         viewport->renderer = renderer;
         viewport->level = level;
         viewport->animation_loop = 0;
-        //tilesets et animations à initialiser !
+        
+        viewport->tilesets.road = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
+        viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
+        
+        if (!viewport->tilesets.road | !viewport->tilesets.vehicles) {
+            SDL_Log("Error Texture init - %s", SDL_GetError());
+            
+            if (!viewport->tilesets.road) SDL_DestroyTexture(viewport->tilesets.road);
+            else SDL_DestroyTexture(viewport->tilesets.vehicles);
+            
+            SDL_DestroyRenderer(viewport->renderer);
+            SDL_DestroyWindow(viewport->window);
+            SDL_Quit();
+            
+            free(viewport);
+            exit(EXIT_FAILURE);
+        }
+        
+        /*
         for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
 	    {
 		    printf("%s", TEXTURE_NAMES[it]);
@@ -64,6 +83,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
 			    exit(EXIT_FAILURE);
 		    }
 	    }
+        */
 
     }
     
@@ -183,7 +203,7 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
     
     int x, y1, y2;
     
-    for(int x=-pos; x<viewport->width; x += side) {
+    for(x=-pos; x<viewport->width; x += side) {
         for(int i=1; i<lines/2; i++) {
             y1 = i*side;
             y2 = (lines-1-i)*side;

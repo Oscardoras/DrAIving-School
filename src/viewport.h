@@ -16,14 +16,15 @@ typedef struct {
     unsigned int frames;
 } Animation;
 
-
+/*
 char* TEXTURE_NAMES[] = {
 "sprites/outdoors.png", 
 "sprites/vehicles.png"
 };
+*/
 
 
-SDL_Texture* textures[TEXTURE_COUNT];
+// SDL_Texture* textures[TEXTURE_COUNT];
 typedef struct
 {
 	unsigned int count;
@@ -44,8 +45,8 @@ typedef struct {
     SDL_Renderer* renderer;
     Level* level;
     struct {
-        SDL_Texture* blocks;
-        SDL_Texture* entities;
+        SDL_Texture* road;
+        SDL_Texture* vehicles;
     } tilesets;
     struct {
         Animation blocks[BLOCK_TYPES];
