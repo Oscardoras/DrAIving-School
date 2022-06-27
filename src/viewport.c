@@ -60,7 +60,6 @@ Viewport* create_viewport(int width, int height, Level* level) {
 }
 
 void close_viewport(Viewport* viewport) {
-    free_level(viewport->level);
     SDL_DestroyRenderer(viewport->renderer);
     SDL_DestroyWindow(viewport->window);
     //Tilesets et animations à libérer !

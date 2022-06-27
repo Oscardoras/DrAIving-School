@@ -7,16 +7,16 @@ Matrix* load_matrix(FILE* file) {
     Matrix* matrix = malloc(sizeof(Matrix));
 
     if (matrix != NULL) {
-        int n = fscanf(file, "%d %d", &matrix->lines, &matrix->columns);
+        int n = fscanf(file, "%d %d\n", &matrix->lines, &matrix->columns);
     
         if (n == 2) {
             matrix->data = malloc(sizeof(float) * matrix->lines*matrix->columns);
             
             if (matrix->data != NULL) {
-                for (unsigned int i = 0; i < matrix->columns; i++) {
+                for (unsigned int i = 0; i < matrix->lines; i++) {
                     char buffer[1024];
-                    
-                    if (fgets(buffer, 1024, file) && buffer[0] != '\n') {
+
+                    if (fgets(buffer, 1024, file)) {
                         unsigned int j = 0;
                         char value[256];
                         char* v = value;
