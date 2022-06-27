@@ -1,5 +1,5 @@
-#ifndef __LEARNING_H__
-#define __LEARNING_H__
+#ifndef __VIEWPORT_H__
+#define __VIEWPORT_H__
 
 #include "level.h"
 

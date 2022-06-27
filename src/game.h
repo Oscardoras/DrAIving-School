@@ -1,12 +1,15 @@
-#ifndef __GAME__H_
-#define __GAME__H_
+#ifndef __GAME_H__
+#define __GAME_H__
+
 #include "level.h"
 
+
 /**
- * @brief Update the game status
+ * @brief Updates the game status.
  * 
- * @param level the level
+ * @param level the level.
  */
-void updateGame(Level * level);
+void update_game(Level* level);
+
 
 #endif
