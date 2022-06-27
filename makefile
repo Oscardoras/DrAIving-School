@@ -13,4 +13,4 @@ bin/game.o: game.c
 bin/viewport.o: viewport.c
 	gcc -g -Wall -Wextra -c viewport.c -o viewport.o
 clean:
-	rm -r bin/*.o game
+	rm -r bin/*.o game 
