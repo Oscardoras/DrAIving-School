@@ -54,6 +54,17 @@ Viewport* create_viewport(int width, int height, Level* level) {
         viewport->level = level;
         viewport->animation_loop = 0;
         //tilesets et animations à initialiser !
+        for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
+	    {
+		    printf("%s", TEXTURE_NAMES[it]);
+		    textures[it] = IMG_LoadTexture(renderer,TEXTURE_NAMES[it]);
+		    if(!textures[it])
+		    {
+			    SDL_Log("Erreur creation texture");
+			    exit(EXIT_FAILURE);
+		    }
+	    }
+
     }
     
     return viewport;
