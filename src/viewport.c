@@ -7,7 +7,7 @@
 #define WIDTH 800
 #define HEIGHT 600
 
-#define NB_LINES 3
+#define NB_LINES 150
 
 Viewport* create_viewport(int width, int height, Level* level) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -99,115 +99,58 @@ void close_viewport(Viewport* viewport) {
     SDL_Quit();
 }
 
-void draw_rect(Viewport* viewport, int x, int y1, int y2, int side, int lines, int type) {
-    SDL_Rect rect1, rect2, rect3;
-    
-    if (type == 1) {
-        rect1.x = x;
-        rect1.y = y1;
-        rect1.w = rect1.h = side;
-        rect2.x = x + 0.1*side;
-        rect2.y = y1 + 0.1*side;
-        rect2.w = rect2.h = 0.8*side;
-        SDL_SetRenderDrawColor(viewport->renderer, 100, 75, 0, 255);
-        SDL_RenderFillRect(viewport->renderer, &rect1);
-        rect1.y = y2;
-        SDL_RenderFillRect(viewport->renderer, &rect1);
-        SDL_SetRenderDrawColor(viewport->renderer, 67, 50, 0, 255);
-        SDL_RenderFillRect(viewport->renderer, &rect2);
-        rect2.y = y2 + 0.1*side;
-        SDL_RenderFillRect(viewport->renderer, &rect2);
-    }
-    else {
-        if (type == 2) {
-            rect1.x = x;
-            rect1.y = y1;
-            rect1.h = rect1.w = side;
-            rect2.x = x;
-            rect2.y = y1 + 0.1*side;
-            rect2.w = side,
-            rect2.h = 0.8*side;
-            rect3.x = x + 0.2*side;
-            rect3.y = y1 + 0.9*side;
-            rect3.w = 0.6*side;
-            rect3.h = 0.1*side;
-            SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
-            SDL_RenderFillRect(viewport->renderer, &rect1);
-            rect1.y = y2;
-            SDL_RenderFillRect(viewport->renderer, &rect1);
-            SDL_SetRenderDrawColor(viewport->renderer, 75, 75, 75, 255);
-            SDL_RenderFillRect(viewport->renderer, &rect2);
-            SDL_RenderFillRect(viewport->renderer, &rect3);
-            rect2.y = y2 + 0.1*side;
-            rect3.y = y2;
-            SDL_RenderFillRect(viewport->renderer, &rect2);
-            SDL_RenderFillRect(viewport->renderer, &rect3);
-        }
-        else {
-            if (type == (lines/2 - 1)) {
-                rect1.x = x;
-                rect1.y = y1;
-                rect1.h = rect1.w = side;
-                rect2.x = x;
-                rect2.y = y1 + 0.1*side;
-                rect2.w = side,
-                rect2.h = 0.8*side;
-                rect3.x = x + 0.2*side;
-                rect3.y = y1;
-                rect3.w = 0.6*side;
-                rect3.h = 0.1*side;
-                SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
-                SDL_RenderFillRect(viewport->renderer, &rect1);
-                rect1.y = y2;
-                SDL_RenderFillRect(viewport->renderer, &rect1);
-                SDL_SetRenderDrawColor(viewport->renderer, 75, 75, 75, 255);
-                SDL_RenderFillRect(viewport->renderer, &rect2);
-                SDL_RenderFillRect(viewport->renderer, &rect3);
-                rect2.y = y2 + 0.1*side;
-                rect3.y = y2 + 0.9*side;
-                SDL_RenderFillRect(viewport->renderer, &rect2);
-                SDL_RenderFillRect(viewport->renderer, &rect3);
-            }
-            else {
-                rect1.x = x;
-                rect1.y = y1;
-                rect1.h = rect1.w = side;
-                rect2.x = x;
-                rect2.y = y1 + 0.1*side;
-                rect2.w = side,
-                rect2.h = 0.8*side;
-                rect3.x = x + 0.2*side;
-                rect3.y = y1;
-                rect3.w = 0.6*side;
-                rect3.h = side;
-                SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
-                SDL_RenderFillRect(viewport->renderer, &rect1);
-                rect1.y = y2;
-                SDL_RenderFillRect(viewport->renderer, &rect1);
-                SDL_SetRenderDrawColor(viewport->renderer, 75, 75, 75, 255);
-                SDL_RenderFillRect(viewport->renderer, &rect2);
-                SDL_RenderFillRect(viewport->renderer, &rect3);
-                rect2.y = y2 + 0.1*side;
-                rect3.y = y2;
-                SDL_RenderFillRect(viewport->renderer, &rect2);
-                SDL_RenderFillRect(viewport->renderer, &rect3);
-            }
-        }
-    }
-}
-
 
 void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
     SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
     SDL_RenderClear(viewport->renderer);
     
-    int x, y1, y2;
+    SDL_Rect road[8];
+    for (int i=0; i<8; i++) {
+        road[i].x = 0;
+        road[i].y = i*32;
+        road[i].w = road[i].h = 32;
+    }
+    SDL_Rect dest;
     
-    for(x=-pos; x<viewport->width; x += side) {
-        for(int i=1; i<lines/2; i++) {
-            y1 = i*side;
-            y2 = (lines-1-i)*side;
-            draw_rect(viewport, x, y1, y2, side, lines, i);
+    for(int x=-pos; x<viewport->width; x += side) {
+        dest.x = x;
+        dest.w = dest.h = side;
+        
+        dest.y = 0*side;
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[0], &dest);
+        
+        dest.y = 1*side;
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[1], &dest);
+        
+        dest.y = (lines-2)*side;
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[6], &dest);
+        
+        dest.y = (lines-1)*side;
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[7], &dest);
+        
+        if (lines == 6) { //Une seule voie par sens
+            dest.y = 2*side;
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[5], &dest);
+            dest.y = 3*side; //Les deux sens sont sur les lignes 3 et 4 (sur 6 au total)
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.road, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+        }
+        else {
+            dest.y = 2*side;
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[2], &dest);
+            dest.y = (lines-3)*side;
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.road, &road[2], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            
+            dest.y = (lines/2-1)*side;
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[4], &dest);
+            dest.y = (lines/2)*side;
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.road, &road[4], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            
+            for(int i=3; i<lines/2-1; i++) {
+                dest.y = i*side;
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[3], &dest);
+                dest.y = (lines-1-i)*side;
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[3], &dest);
+            }
         }
     }
     
