@@ -9,14 +9,15 @@
 - Majuscules pour les constantes symboliques et contenu d'énumérations : CONSTANT
 - Ne pas hésiter à ahérer le code.
 
-## Etats
+## Learning
+
+### Etats
 - 5 carrés devant.
     ddd
     xxx
     xox
     ---
-
-## Actions
+### Actions
 - Rien
 - Gauche
 - Droite
