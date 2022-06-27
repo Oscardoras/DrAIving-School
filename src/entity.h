@@ -1,8 +1,10 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-#include "matrix.h"
 #include <stdbool.h>
+
+#include "matrix.h"
+
 
 typedef struct {
     float x;
@@ -62,4 +64,6 @@ Player* new_player(Location location, Matrix* matrix);
  * @param player the player.
  */
 void free_player(Player* player);
+
+
 #endif

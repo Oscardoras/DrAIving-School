@@ -4,6 +4,7 @@
 #include "entity.h"
 #include <stdbool.h>
 
+
 typedef struct {
     struct EntityListCell {
         Entity* entity;
