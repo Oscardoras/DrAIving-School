@@ -1,41 +1,35 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-#include "entity.h"
 #include "level.h"
 
-Level* new_level(float width, float lenght)
-{
-    Level* newLevel =  (Level*)malloc(sizeof(Level));
-    if(newLevel)
-    {
-        newLevel->width = width;
-        newLevel->lenght = lenght;
+
+Level* new_level(float width, float length) {
+    Level* level = malloc(sizeof(Level));
+    if (level) {
+        level->width = width;
+        level->length = length;
     }
-    return newLevel;
+    return level;
 }
 
-void free_level(Level* level)
-{
-    struct EntityListCell * next;
-    for(struct EntityListCell * iterator = &level->entities; iterator; iterator = next)
-    {
-        free_entity(iterator->entity);
-        next = iterator->cell;
-        free(iterator);
+void free_level(Level* level) {
+    for (struct EntityListCell* it = level->entities; it != NULL;) {
+        struct EntityListCell* tmp = it;
+        it = it->next;
+        free_entity(tmp->entity);
+        free(tmp);
     }
     free(level);
 }
 
-bool add_level_entity(Level* level, Entity* entity)
-{
-    struct EntityListCell * newEntity = (struct EntityListCell *)malloc(sizeof(struct EntityListCell));
-    if(newEntity)
-    {
-        newEntity->entity = entity;
-        newEntity->cell = &level->entities;
-        level->entities = *newEntity;
+bool add_level_entity(Level* level, Entity* entity) {
+    struct EntityListCell* cell = malloc(sizeof(struct EntityListCell));
+    if (cell) {
+        cell->entity = entity;
+        cell->next = level->entities;
+        level->entities = cell;
         return true;
-    }
-    return false;
+    } else return false;
 }

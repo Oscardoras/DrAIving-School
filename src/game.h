@@ -4,10 +4,11 @@
 #include "level.h"
 
 /**
- * @brief Update the game status
+ * @brief Updates the game status.
  * 
- * @param level the level
+ * @param level the level.
  */
-void updateGame(Level * level);
+void update_game(Level* level);
+
 
 #endif
