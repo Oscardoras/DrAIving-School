@@ -1,16 +1,19 @@
 #include "game.h"
-void updateGame(Level * level)
-{
+
+
+void update_game(Level* level) {
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
-        switch(it->entity->state)
-        {
-            case (EntityStates)Move_forward:
+        switch (it->entity->state) {
+            case ENTITYSTATE_LEFT:
 
             break;
-            case (EntityStates)Move_right:
+            case ENTITYSTATE_RIGHT:
 
             break;
-            case (EntityStates)Move_left:
+            case ENTITYSTATE_FASTER:
+
+            break;
+            case ENTITYSTATE_SLOWER:
 
             break;
         } 
