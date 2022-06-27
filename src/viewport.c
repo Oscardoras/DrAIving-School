@@ -1,101 +1,87 @@
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "level.h"
 #include "viewport.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-
 #define NB_LINES 150
+
 
 Viewport* create_viewport(int width, int height, Level* level) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Error SDL - %s", SDL_GetError());
-        exit(EXIT_FAILURE);
-    }
-    
-    SDL_Window* window = SDL_CreateWindow("Jeu",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        WIDTH,
-        HEIGHT,
-        SDL_WINDOW_RESIZABLE
-    );
-    if (!window) {
-        SDL_Log("Error window - %s", SDL_GetError());
-        SDL_Quit();
-        exit(EXIT_FAILURE);
-    }
-    
-    SDL_Renderer* renderer = SDL_CreateRenderer(window,
-        -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-    );
-    if (!renderer) {
-        SDL_Log("Error renderer - %s", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        exit(EXIT_FAILURE);
+        return NULL;
     }
     
     Viewport* viewport = malloc(sizeof(Viewport));
-    if (!viewport) {
-        printf("Error malloc viewport.\n");
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
+    if (viewport == NULL) {
         SDL_Quit();
-        exit(EXIT_FAILURE);
+        return NULL;
     }
-    else {
-        viewport->width = width;
-        viewport->height = height;
-        viewport->window = window;
-        viewport->renderer = renderer;
-        viewport->level = level;
-        viewport->animation_loop = 0;
+
+    viewport->width = width;
+    viewport->height = height;
+    viewport->level = level;
+    viewport->window = NULL;
+    viewport->renderer = NULL;
+    viewport->tilesets.roads = NULL;
+    viewport->tilesets.vehicles = NULL;
+    viewport->animation_loop = 0;
+    
+    viewport->window = SDL_CreateWindow("MarkovAnt",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        width, height,
+        SDL_WINDOW_RESIZABLE
+    );
+    if (viewport->window == NULL) {
+        SDL_Log("Error SDL - %s", SDL_GetError());
+        close_viewport(viewport);
+        return NULL;
+    }
+
+    
+    viewport->renderer = SDL_CreateRenderer(
+        viewport->window,
+        -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+    );
+    if (viewport->renderer == NULL) {
+        SDL_Log("Error SDL - %s", SDL_GetError());
+        close_viewport(viewport);
+        return NULL;
+    }
         
-        viewport->tilesets.road = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
-        viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
-        
-        if (!viewport->tilesets.road | !viewport->tilesets.vehicles) {
-            SDL_Log("Error Texture init - %s", SDL_GetError());
-            
-            if (!viewport->tilesets.road) SDL_DestroyTexture(viewport->tilesets.road);
-            else SDL_DestroyTexture(viewport->tilesets.vehicles);
-            
-            SDL_DestroyRenderer(viewport->renderer);
-            SDL_DestroyWindow(viewport->window);
-            SDL_Quit();
-            
-            free(viewport);
+    viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
+    viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
+    if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL) {
+        SDL_Log("Error IMG");
+        close_viewport(viewport);
+        return NULL;
+    }
+    
+    /*
+    for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
+    {
+        printf("%s", TEXTURE_NAMES[it]);
+        textures[it] = IMG_LoadTexture(renderer,TEXTURE_NAMES[it]);
+        if(!textures[it])
+        {
+            SDL_Log("Erreur creation texture");
             exit(EXIT_FAILURE);
         }
-        
-        /*
-        for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
-	    {
-		    printf("%s", TEXTURE_NAMES[it]);
-		    textures[it] = IMG_LoadTexture(renderer,TEXTURE_NAMES[it]);
-		    if(!textures[it])
-		    {
-			    SDL_Log("Erreur creation texture");
-			    exit(EXIT_FAILURE);
-		    }
-	    }
-        */
-
     }
+    */
     
     return viewport;
 }
 
 void close_viewport(Viewport* viewport) {
-    SDL_DestroyRenderer(viewport->renderer);
-    SDL_DestroyWindow(viewport->window);
-    //Tilesets et animations à libérer !
-    free(viewport);
-    
+    if (viewport != NULL) {
+        if (viewport->tilesets.vehicles != NULL) SDL_DestroyTexture(viewport->tilesets.vehicles);
+        if (viewport->tilesets.roads != NULL) SDL_DestroyTexture(viewport->tilesets.roads);
+
+        if (viewport->renderer != NULL) SDL_DestroyRenderer(viewport->renderer);
+        if (viewport->window != NULL) SDL_DestroyWindow(viewport->window);
+        free(viewport);
+    }
     SDL_Quit();
 }
 
@@ -117,39 +103,39 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
         dest.w = dest.h = side;
         
         dest.y = 0*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[0], &dest);
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[0], &dest);
         
         dest.y = 1*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[1], &dest);
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[1], &dest);
         
         dest.y = (lines-2)*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[6], &dest);
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
         
         dest.y = (lines-1)*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[7], &dest);
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[7], &dest);
         
         if (lines == 6) { //Une seule voie par sens
             dest.y = 2*side;
-            SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[5], &dest);
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[5], &dest);
             dest.y = 3*side; //Les deux sens sont sur les lignes 3 et 4 (sur 6 au total)
-            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.road, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
         }
         else {
             dest.y = 2*side;
-            SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[2], &dest);
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[2], &dest);
             dest.y = (lines-3)*side;
-            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.road, &road[2], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[2], &dest, 0, NULL, SDL_FLIP_VERTICAL);
             
             dest.y = (lines/2-1)*side;
-            SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[4], &dest);
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[4], &dest);
             dest.y = (lines/2)*side;
-            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.road, &road[4], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[4], &dest, 0, NULL, SDL_FLIP_VERTICAL);
             
             for(int i=3; i<lines/2-1; i++) {
                 dest.y = i*side;
-                SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[3], &dest);
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
                 dest.y = (lines-1-i)*side;
-                SDL_RenderCopy(viewport->renderer, viewport->tilesets.road, &road[3], &dest);
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
             }
         }
     }

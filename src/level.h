@@ -1,8 +1,9 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
-#include "entity.h"
 #include <stdbool.h>
+
+#include "entity.h"
 
 
 typedef struct {
@@ -17,7 +18,7 @@ typedef struct {
 
 
 /**
- * @brief Creates a new level from the seed.
+ * @brief Creates a new level.
  * 
  * @param width the width of the level.
  * @param length the length of the level.
@@ -40,5 +41,6 @@ void free_level(Level* level);
  * @return if the entity has been added correctly.
  */
 bool add_level_entity(Level* level, Entity* entity);
+
 
 #endif

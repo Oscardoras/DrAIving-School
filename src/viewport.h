@@ -7,8 +7,8 @@
 
 #define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
-#define ENTITY_TYPES 1
 #define TEXTURE_COUNT 2
+
 
 typedef struct {
     SDL_Texture* tileset;
@@ -25,8 +25,7 @@ char* TEXTURE_NAMES[] = {
 
 
 // SDL_Texture* textures[TEXTURE_COUNT];
-typedef struct
-{
+typedef struct {
 	unsigned int count;
 	SDL_Rect rects[10];
 	unsigned int sizex;
@@ -41,16 +40,16 @@ typedef struct
 typedef struct {
     int width;
     int height;
+    Level* level;
     SDL_Window* window;
     SDL_Renderer* renderer;
-    Level* level;
     struct {
-        SDL_Texture* road;
+        SDL_Texture* roads;
         SDL_Texture* vehicles;
     } tilesets;
     struct {
         Animation blocks[BLOCK_TYPES];
-        Animation *entities[ENTITY_TYPES];
+        Animation entities[ENTITY_TYPES];
     } animations;
     unsigned int animation_loop;
 } Viewport;
@@ -95,5 +94,6 @@ void draw_viewport(Viewport* viewport, int lines, int pos, int side);
  * @param viewport the viewport to loop.
  */
 void event_loop(Viewport* viewport);
+
 
 #endif

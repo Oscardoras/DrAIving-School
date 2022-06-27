@@ -21,6 +21,7 @@ typedef enum{
 } Action;
 
 
+#define ENTITY_TYPES 2
 typedef enum {
     CAR1,
     CAR2
@@ -36,12 +37,13 @@ typedef struct {
 /**
  * @brief Creates a new entity.
  * 
+ * @param type the type of the entity.
  * @param location the location in the level.
  * @param markov the Markov matrix of the entity.
  * @param state the Markov state of the entity.
  * @return the new entity.
  */
-Entity* new_entity(Location location, Matrix* markov, unsigned int state, unsigned int type);
+Entity* new_entity(EntityType type, Location location, Matrix* markov, unsigned int state);
 
 /**
  * @brief Frees an entity.
