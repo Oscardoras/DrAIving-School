@@ -72,7 +72,7 @@ void draw_viewport(Viewport* viewport) { //Voies autoroute horizontales
     SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
     SDL_RenderClear(viewport->renderer);
     
-    int lines = 2*NB_LINES + 4
+    int lines = 2*NB_LINES + 4;
     int height_lines = viewport->height / lines;
     
     SDL_Rect rect_up, rect_down;
@@ -80,22 +80,31 @@ void draw_viewport(Viewport* viewport) { //Voies autoroute horizontales
     rect_up.w = rect_down.w = viewport->width;
     rect_up.h = rect_down.h = height_lines;
     
-    for(i=1; i<lines/2; i++) {
+    for(int i=1; i<lines/2; i++) {
         rect_up.y = i*height_lines;
         rect_down.y = (lines-i)*height_lines;
         
         (i == 1) ?
-            SDL_SetRenderDrawColor(renderer, 100, 75, 0, 255) :
-            SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
+            SDL_SetRenderDrawColor(viewport->renderer, 100, 75, 0, 255) :
+            SDL_SetRenderDrawColor(viewport->renderer, 100, 100, 100, 255);
             
-        SDL_RenderFillRect(renderer, &rect_up);
-        SDL_RenderFillRect(renderer, &rect_down);
+        SDL_RenderFillRect(viewport->renderer, &rect_up);
+        SDL_RenderFillRect(viewport->renderer, &rect_down);
     }
     
-    SDL_RenderPresent(renderer);
-    SDL_Delay(10);
+    SDL_RenderPresent(viewport->renderer);
 }
 
 void event_loop(Viewport* viewport) {
+    bool quit = false;
+    SDL_Event event;
     
+    while (!quit) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) quit = true;
+        }
+        
+        draw_viewport(viewport);
+        SDL_Delay(10);
+    }
 }

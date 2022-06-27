@@ -1,3 +1,4 @@
+#include "matrix.h"
 #include "entity.h"
 
 Entity* new_entity(Location location, Matrix* markov, unsigned int state, unsigned int type) {

@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "viewport.h"
+
 #define WIDTH 800
 #define HEIGHT 600
 
