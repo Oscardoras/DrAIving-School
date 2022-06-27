@@ -64,6 +64,8 @@ void close_viewport(Viewport* viewport);
  */
 void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
 
+void draw_rect(Viewport* viewport, int x, int y1, int y2, int side, int lines, int type);
+
 /**
  * @brief Draws a viewport.
  * 

@@ -60,7 +60,6 @@ Viewport* create_viewport(int width, int height, Level* level) {
 }
 
 void close_viewport(Viewport* viewport) {
-    free_level(viewport->level);
     SDL_DestroyRenderer(viewport->renderer);
     SDL_DestroyWindow(viewport->window);
     //Tilesets et animations à libérer !
@@ -69,26 +68,115 @@ void close_viewport(Viewport* viewport) {
     SDL_Quit();
 }
 
+void draw_rect(Viewport* viewport, int x, int y1, int y2, int side, int lines, int type) {
+    SDL_Rect rect1, rect2, rect3;
+    
+    if (type == 1) {
+        rect1.x = x;
+        rect1.y = y1;
+        rect1.w = rect1.h = side;
+        rect2.x = x + 0.1*side;
+        rect2.y = y1 + 0.1*side;
+        rect2.w = rect2.h = 0.8*side;
+        SDL_SetRenderDrawColor(viewport->renderer, 100, 75, 0, 255);
+        SDL_RenderFillRect(viewport->renderer, &rect1);
+        rect1.y = y2;
+        SDL_RenderFillRect(viewport->renderer, &rect1);
+        SDL_SetRenderDrawColor(viewport->renderer, 67, 50, 0, 255);
+        SDL_RenderFillRect(viewport->renderer, &rect2);
+        rect2.y = y2 + 0.1*side;
+        SDL_RenderFillRect(viewport->renderer, &rect2);
+    }
+    else {
+        if (type == 2) {
+            rect1.x = x;
+            rect1.y = y1;
+            rect1.h = rect1.w = side;
+            rect2.x = x;
+            rect2.y = y1 + 0.1*side;
+            rect2.w = side,
+            rect2.h = 0.8*side;
+            rect3.x = x + 0.2*side;
+            rect3.y = y1 + 0.9*side;
+            rect3.w = 0.6*side;
+            rect3.h = 0.1*side;
+            SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
+            SDL_RenderFillRect(viewport->renderer, &rect1);
+            rect1.y = y2;
+            SDL_RenderFillRect(viewport->renderer, &rect1);
+            SDL_SetRenderDrawColor(viewport->renderer, 75, 75, 75, 255);
+            SDL_RenderFillRect(viewport->renderer, &rect2);
+            SDL_RenderFillRect(viewport->renderer, &rect3);
+            rect2.y = y2 + 0.1*side;
+            rect3.y = y2;
+            SDL_RenderFillRect(viewport->renderer, &rect2);
+            SDL_RenderFillRect(viewport->renderer, &rect3);
+        }
+        else {
+            if (type == (lines/2 - 1)) {
+                rect1.x = x;
+                rect1.y = y1;
+                rect1.h = rect1.w = side;
+                rect2.x = x;
+                rect2.y = y1 + 0.1*side;
+                rect2.w = side,
+                rect2.h = 0.8*side;
+                rect3.x = x + 0.2*side;
+                rect3.y = y1;
+                rect3.w = 0.6*side;
+                rect3.h = 0.1*side;
+                SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
+                SDL_RenderFillRect(viewport->renderer, &rect1);
+                rect1.y = y2;
+                SDL_RenderFillRect(viewport->renderer, &rect1);
+                SDL_SetRenderDrawColor(viewport->renderer, 75, 75, 75, 255);
+                SDL_RenderFillRect(viewport->renderer, &rect2);
+                SDL_RenderFillRect(viewport->renderer, &rect3);
+                rect2.y = y2 + 0.1*side;
+                rect3.y = y2 + 0.9*side;
+                SDL_RenderFillRect(viewport->renderer, &rect2);
+                SDL_RenderFillRect(viewport->renderer, &rect3);
+            }
+            else {
+                rect1.x = x;
+                rect1.y = y1;
+                rect1.h = rect1.w = side;
+                rect2.x = x;
+                rect2.y = y1 + 0.1*side;
+                rect2.w = side,
+                rect2.h = 0.8*side;
+                rect3.x = x + 0.2*side;
+                rect3.y = y1;
+                rect3.w = 0.6*side;
+                rect3.h = side;
+                SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
+                SDL_RenderFillRect(viewport->renderer, &rect1);
+                rect1.y = y2;
+                SDL_RenderFillRect(viewport->renderer, &rect1);
+                SDL_SetRenderDrawColor(viewport->renderer, 75, 75, 75, 255);
+                SDL_RenderFillRect(viewport->renderer, &rect2);
+                SDL_RenderFillRect(viewport->renderer, &rect3);
+                rect2.y = y2 + 0.1*side;
+                rect3.y = y2;
+                SDL_RenderFillRect(viewport->renderer, &rect2);
+                SDL_RenderFillRect(viewport->renderer, &rect3);
+            }
+        }
+    }
+}
+
+
 void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
     SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
     SDL_RenderClear(viewport->renderer);
     
-    SDL_Rect rect_up, rect_down;
-    rect_up.w = rect_down.w = rect_up.h = rect_down.h = side;
-    
+    int x, y1, y2;
     
     for(int x=-pos; x<viewport->width; x += side) {
-        rect_up.x = rect_down.x = x;
         for(int i=1; i<lines/2; i++) {
-            rect_up.y = i*side;
-            rect_down.y = (lines-1-i)*side;
-        
-            (i == 1) ?
-                SDL_SetRenderDrawColor(viewport->renderer, 100, 75, 0, 255) :
-                SDL_SetRenderDrawColor(viewport->renderer, 100, 100, 100, 255);
-            
-            SDL_RenderFillRect(viewport->renderer, &rect_up);
-            SDL_RenderFillRect(viewport->renderer, &rect_down);
+            y1 = i*side;
+            y2 = (lines-1-i)*side;
+            draw_rect(viewport, x, y1, y2, side, lines, i);
         }
     }
     
@@ -114,6 +202,6 @@ void event_loop(Viewport* viewport) {
         
         pos = (pos+1) % side;
         
-        SDL_Delay(10);
+        SDL_Delay(5);
     }
 }

@@ -27,8 +27,7 @@ int main() {
         printf("\n");
     }
     */
-    
-    
+   
     event_loop(viewport);
     close_viewport(viewport);
 
