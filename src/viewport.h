@@ -1,7 +1,13 @@
 #ifndef __VIEWPORT_H__
 #define __VIEWPORT_H__
 
+#include <SDL2/SDL.h>
+
 #include "level.h"
+
+#define ANIMATION_SIZE_MAX 1
+#define BLOCK_TYPES 1
+#define ENTITY_TYPES 1
 
 
 typedef struct {
@@ -50,27 +56,26 @@ Viewport* create_viewport(int width, int height, Level* level);
 void close_viewport(Viewport* viewport);
 
 /**
- * @brief The display loop.
- * 
- * @param viewport the viewport to loop.
- */
-void event_loop(Viewport* viewport);
-
-/**
  * @brief Copies a texture from an animation to a rectangle.
  * 
  * @param viewport the viewport.
  * @param animation the animation.
  * @param rect the rectangle.
  */
-void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect, Direction direction);
+void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
 
 /**
  * @brief Draws a viewport.
  * 
  * @param viewport the viewport to draw.
  */
-void draw_viewport(Viewport* viewport);
+void draw_viewport(Viewport* viewport, int pos, int side);
 
+/**
+ * @brief The display loop.
+ * 
+ * @param viewport the viewport to loop.
+ */
+void event_loop(Viewport* viewport, int side, int pos);
 
 #endif

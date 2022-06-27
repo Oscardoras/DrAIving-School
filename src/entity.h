@@ -39,7 +39,7 @@ typedef struct {
  * @param state the Markov state of the entity.
  * @return the new entity.
  */
-Entity* new_entity(Location location, Matrix* markov, unsigned int state);
+Entity* new_entity(Location location, Matrix* markov, unsigned int state, unsigned int type);
 
 /**
  * @brief Frees an entity.
