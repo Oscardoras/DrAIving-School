@@ -54,13 +54,6 @@ Viewport* create_viewport(int width, int height, Level* level);
 void close_viewport(Viewport* viewport);
 
 /**
- * @brief The display loop.
- * 
- * @param viewport the viewport to loop.
- */
-void event_loop(Viewport* viewport);
-
-/**
  * @brief Copies a texture from an animation to a rectangle.
  * 
  * @param viewport the viewport.
@@ -76,5 +69,11 @@ void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
  */
 void draw_viewport(Viewport* viewport);
 
+/**
+ * @brief The display loop.
+ * 
+ * @param viewport the viewport to loop.
+ */
+void event_loop(Viewport* viewport);
 
 #endif

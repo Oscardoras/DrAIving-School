@@ -79,12 +79,23 @@ void draw_viewport(Viewport* viewport) { //Voies autoroute horizontales
     rect_up.x = rect_down.x = 0;
     rect_up.w = rect_down.w = viewport->width;
     rect_up.h = rect_down.h = height_lines;
-    /*
+    
     for(i=1; i<lines/2; i++) {
-        SDL_Rect.y = i*height_lines;
+        rect_up.y = i*height_lines;
+        rect_down.y = (lines-i)*height_lines;
         
-        if (i == 1) {
+        (i == 1) ?
+            SDL_SetRenderDrawColor(renderer, 100, 75, 0, 255) :
+            SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
             
-        }
-    }*/
+        SDL_RenderFillRect(renderer, &rect_up);
+        SDL_RenderFillRect(renderer, &rect_down);
+    }
+    
+    SDL_RenderPresent(renderer);
+    SDL_Delay(10);
+}
+
+void event_loop(Viewport* viewport) {
+    
 }
