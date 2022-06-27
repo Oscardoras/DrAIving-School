@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "matrix.h"
-
+#include <stdbool.h>
 
 typedef struct {
     float x;
@@ -64,6 +64,4 @@ Player* new_player(Location location, Matrix* matrix);
  * @param player the player.
  */
 void free_player(Player* player);
-
-
 #endif

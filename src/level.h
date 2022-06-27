@@ -2,7 +2,7 @@
 #define __LEVEL_H__
 
 #include "entity.h"
-
+#include <stdbool.h>
 
 typedef struct {
     struct EntityListCell {
@@ -39,13 +39,5 @@ void free_level(Level* level);
  * @return if the entity has been added correctly.
  */
 bool add_level_entity(Level* level, Entity* entity);
-
-/**
- * @brief Removes deleted entities from a level.
- * 
- * @param level the level.
- */
-void clean_level_entities(Level* level);
-
 
 #endif
