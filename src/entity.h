@@ -10,20 +10,21 @@ typedef struct {
     float x;
     float y;
     bool direction;
+    float velocity;
 } Location;
+
+typedef enum{
+    ACTION_LEFT,
+    ACTION_RIGHT,
+    ACTION_FASTER,
+    ACTION_SLOWER
+} Action;
 
 
 typedef enum {
     CAR1,
     CAR2
 } EntityType;
-
-typedef enum{
-    ENTITYSTATE_LEFT,
-    ENTITYSTATE_RIGHT,
-    ENTITYSTATE_FASTER,
-    ENTITYSTATE_SLOWER
-} EntityStates;
 
 typedef struct {
     EntityType type;

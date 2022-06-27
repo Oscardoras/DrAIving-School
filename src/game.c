@@ -19,3 +19,22 @@ void update_game(Level* level) {
         } 
     }
 }
+
+bool player_action(Level* level, Action action) {
+    switch (action) {
+        case ENTITYSTATE_LEFT:
+            level->player->location.y -= level->player->location.velocity;
+        break;
+        case ENTITYSTATE_RIGHT:
+            level->player->location.y += level->player->location.velocity;
+        break;
+        case ENTITYSTATE_FASTER:
+            level->player->location.velocity.x += 0.1;
+        break;
+        case ENTITYSTATE_SLOWER:
+            level->player->location.velocity.x -= 0.1;
+        break;
+    }
+    
+    return true;
+}
