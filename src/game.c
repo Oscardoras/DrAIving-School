@@ -2,15 +2,15 @@
 void updateGame(Level * level)
 {
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
-        switch(state)
+        switch(it->entity->state)
         {
-            case EntityStates.Move_forward
+            case (EntityStates)Move_forward:
 
             break;
-            case EntityStates.Move_right:
+            case (EntityStates)Move_right:
 
             break;
-            case EntityStates.Move_left:
+            case (EntityStates)Move_left:
 
             break;
         } 

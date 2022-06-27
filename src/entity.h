@@ -20,8 +20,8 @@ typedef enum {
 
 typedef enum{
     Move_forward,
-    Move_Right,
-    Move_Left
+    Move_right,
+    Move_left
 } EntityStates;
 
 typedef struct {
