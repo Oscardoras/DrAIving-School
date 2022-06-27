@@ -1,5 +1,6 @@
 #ifndef __GAME__H_
 #define __GAME__H_
+
 #include "level.h"
 
 /**
