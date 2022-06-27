@@ -13,6 +13,6 @@ void updateGame(Level * level)
             case EntityStates.Move_left:
 
             break;
-        }
+        } 
     }
 }
