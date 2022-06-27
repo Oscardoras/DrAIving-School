@@ -8,7 +8,7 @@
 #define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
 #define ENTITY_TYPES 1
-
+#define TEXTURE_COUNT 2
 
 typedef struct {
     SDL_Texture* tileset;
@@ -16,11 +16,13 @@ typedef struct {
     unsigned int frames;
 } Animation;
 
+
 char* TEXTURE_NAMES[] = {
 "sprites/outdoors.png", 
 "sprites/vehicles.png"
 };
-#define TEXTURE_COUNT 2
+
+
 SDL_Texture* textures[TEXTURE_COUNT];
 typedef struct
 {
@@ -78,6 +80,8 @@ void close_viewport(Viewport* viewport);
  * @param rect the rectangle.
  */
 void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
+
+void draw_rect(Viewport* viewport, int x, int y1, int y2, int side, int lines, int type);
 
 /**
  * @brief Draws a viewport.
