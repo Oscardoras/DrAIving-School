@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 
+#include "level.h"
 #include "viewport.h"
 
 #define WIDTH 800
@@ -82,7 +83,7 @@ void draw_viewport(Viewport* viewport) { //Voies autoroute horizontales
     
     for(int i=1; i<lines/2; i++) {
         rect_up.y = i*height_lines;
-        rect_down.y = (lines-i)*height_lines;
+        rect_down.y = (lines-1-i)*height_lines;
         
         (i == 1) ?
             SDL_SetRenderDrawColor(viewport->renderer, 100, 75, 0, 255) :

@@ -1,6 +1,7 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
+#include <stdio.h>
 
 /**
  * @brief Represents a matrix.

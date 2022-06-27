@@ -1,5 +1,8 @@
-#include "level.h"
 #include <stdbool.h>
+#include <stdlib.h>
+
+#include "entity.h"
+#include "level.h"
 
 Level* new_level(float width, float lenght)
 {

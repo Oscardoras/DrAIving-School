@@ -1,6 +1,6 @@
 #ifndef __GAME__H_
 #define __GAME__H_
-#include "level."
+#include "level.h"
 
 /**
  * @brief Update the game status
