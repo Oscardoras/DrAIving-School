@@ -12,6 +12,7 @@ int main() {
     Viewport* viewport = create_viewport(WIDTH, HEIGHT, NULL);
     //Vérifie aussi les problèmes d'init
     
+    /*
     Matrix* m = NULL;
     FILE* file = fopen("config.txt", "r");
     if (file) {
@@ -25,6 +26,7 @@ int main() {
         }
         printf("\n");
     }
+    */
     
     
     event_loop(viewport);

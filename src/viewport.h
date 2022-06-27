@@ -83,13 +83,13 @@ void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
  * 
  * @param viewport the viewport to draw.
  */
-void draw_viewport(Viewport* viewport, int pos, int side);
+void draw_viewport(Viewport* viewport, int lines, int pos, int side);
 
 /**
  * @brief The display loop.
  * 
  * @param viewport the viewport to loop.
  */
-void event_loop(Viewport* viewport, int side, int pos);
+void event_loop(Viewport* viewport);
 
 #endif
