@@ -115,7 +115,7 @@ void draw_cars(Viewport* viewport, int road_lines, int side);
  * 
  * @param viewport the viewport to draw.
  */
-void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side);
+void draw_viewportTitle(Viewport* viewport);
 
 
 
