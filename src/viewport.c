@@ -289,7 +289,17 @@ void event_loop(Viewport* viewport) {
                 case SDL_KEYDOWN: 
                     switch (viewport->state) {
                         case TITLE:
-                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = true;
+                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = GAME;
+                            if(event.key.keysym.sym == SDLK_l) 
+                                {
+                                    viewport->state = GAMEIA;
+                                    FILE *file = fopen("learning", "r");
+                                    if(file)
+                                    {
+                                        viewport->level->player->markov = load_matrix(file);
+                                        fclose(file);
+                                    }
+                                }
                             break;
                         default:
                             switch (event.key.keysym.sym) {
