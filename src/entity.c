@@ -20,7 +20,7 @@ Entity* new_entity(EntityType type, Location location, Matrix* markov, unsigned 
 void free_entity(Entity* entity) {
     if (entity != NULL)
         free(entity);
-}
+}  
 
 Player* new_player(Location location, Matrix* matrix) {
     Player* player = malloc(sizeof(Player));
