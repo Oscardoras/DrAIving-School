@@ -26,7 +26,7 @@ HitBox get_entity_hitbox(Entity* entity) {
     b.min_x = entity->location.x - CAR_LENGTH/2;
     b.max_x = entity->location.x + CAR_LENGTH/2;
     b.min_y = entity->location.y - CAR_WIDTH/2;
-    b.min_y = entity->location.y + CAR_WIDTH/2;
+    b.max_y = entity->location.y + CAR_WIDTH/2;
     return b;
 }
 

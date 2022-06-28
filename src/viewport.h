@@ -15,7 +15,6 @@
 #define NB_LINES 3
 #define FPS 60
 
-
 typedef struct {
     SDL_Texture* tileset;
     SDL_Rect rectangles[ANIMATION_SIZE_MAX];

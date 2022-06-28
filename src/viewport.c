@@ -263,15 +263,17 @@ void draw_viewportTitle(Viewport* viewport)
 
 void event_loop(Viewport* viewport) {
     bool quit = false;
+    bool collision = false;
     
     SDL_Event event;
     
+    int duree_frame = 1000/FPS;
     int lines = 2*NB_LINES + 4;
     int side = viewport->height/lines + 1;
     int pos = 0;
     float scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS; //Vitesse du joueur : 5 blocs/seconde
     
-    while (!quit) {
+    while (!quit & !collision) {
         while (SDL_PollEvent(&event)) {
             switch(event.type)
             {
@@ -289,7 +291,7 @@ void event_loop(Viewport* viewport) {
                 case SDL_KEYDOWN: 
                     switch (viewport->state) {
                         case TITLE:
-                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = true;
+                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = GAME;
                             break;
                         
                         default:
@@ -316,7 +318,7 @@ void event_loop(Viewport* viewport) {
         
         switch(viewport->state) {
             case GAME:
-                update_game(viewport->level);
+                collision = update_game(viewport->level);
                 draw_road(viewport, lines, side, pos);
                 draw_cars(viewport, lines-4, side);
                 pos = (int) (pos + scrolling_speed) % side;
@@ -327,6 +329,6 @@ void event_loop(Viewport* viewport) {
         }
         
         SDL_RenderPresent(viewport->renderer);
-        SDL_Delay(1000/FPS);
+        SDL_Delay(duree_frame);
     }
 }
