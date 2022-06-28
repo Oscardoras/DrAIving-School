@@ -48,7 +48,7 @@ bool update_game(Level* level);
  * 
  * @param level the level.
  * @param entity the entity.
- * @return the choosen action.
+ * @return the chosen action.
  */
 Action choose_action(Level* level, Entity* entity);
 

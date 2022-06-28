@@ -6,9 +6,14 @@
 
 #include "level.h"
 
+#define WIDTH 800
+#define HEIGHT 600
+#define LINES_PER_DIR 3
 #define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
 #define TEXTURE_COUNT 2
+#define NB_LINES 3
+#define FPS 60
 
 
 typedef struct {
@@ -85,7 +90,7 @@ void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
  * @brief Draws the road.
  * 
  * @param viewport the viewport to draw.
- * @param lines the number of lines to draw (2 * nb_of_lines_per_direction + 4 (the borders of the road)).
+ * @param lines the number of lines to draw (2 * lines_per_direction + 4 (the borders of the road)).
  * @param side the length of the side of a roadblock.
  * @param pos the position of the road (used to animate the player movement on the road).
  */
@@ -96,7 +101,7 @@ void draw_road(Viewport* viewport, int lines, int side, int pos);
  * 
  * @param viewport the viewport to draw.
  * @param entity the car to draw.
- * @param lines_per_dir the number of lines on the road.
+ * @param lines_per_dir the number of lines on the road (both directions).
  * @param side the length of a roadblock.
  */
 void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side);
@@ -105,7 +110,7 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side);
  * @brief Draws all the cars on the level.
  * 
  * @param viewport the viewport to draw.
- * @param lines_per_dir the number of lines on the road.
+ * @param lines_per_dir the number of lines on the road (both directions).
  * @param side the length of a roadblock.
  */
 void draw_cars(Viewport* viewport, int road_lines, int side);

@@ -6,12 +6,9 @@
 #include "viewport.h"
 #include "level.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-
 
 int main() {
-    Level* level = new_level(15., 100.);
+    Level* level = new_level(15., 100., LINES_PER_DIR);
     if (level == NULL) return EXIT_FAILURE;
     
     Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
@@ -20,13 +17,10 @@ int main() {
         return EXIT_FAILURE;
     }
     
-    Location player_pos;
-    player_pos.y = level->width * 3./5.;
-    player_pos.x = 0;
-    player_pos.direction = true;
-    player_pos.velocity = 0;
-    
-    level->player = new_entity(PLAYER_CAR, player_pos, NULL, 0);
+    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 0., 4, 6), NULL, 0);
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 0., 3, 6), NULL, 0));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 0., 5, 6), NULL, 0));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 0., 5, 6), NULL, 0));
     
     event_loop(viewport);
     
