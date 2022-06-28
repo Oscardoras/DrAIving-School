@@ -1,5 +1,6 @@
 #include <SDL2/SDL_image.h>
 
+#include "level.h"
 #include "viewport.h"
 
 #define SCROLLING_SPEED 2
@@ -50,25 +51,13 @@ Viewport* create_viewport(int width, int height, Level* level) {
     }
  
     viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
-    viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
+    viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/cars.png");
     if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL) {
         SDL_Log("Error IMG");
         close_viewport(viewport);
         return NULL;
     }
     viewport->state = (ViewportState)(GAME);
-    /*
-    for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
-    {
-        printf("%s", TEXTURE_NAMES[it]);
-        textures[it] = IMG_LoadTexture(renderer,TEXTURE_NAMES[it]);
-        if(!textures[it])
-        {
-            SDL_Log("Erreur creation texture");
-            exit(EXIT_FAILURE);
-        }
-    }
-    */
     
     return viewport;
 }
@@ -86,7 +75,7 @@ void close_viewport(Viewport* viewport) {
 }
 
 
-void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
+void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
     SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
     SDL_RenderClear(viewport->renderer);
     
@@ -109,10 +98,10 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
         SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[1], &dest);
         
         dest.y = (lines-2)*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
+        SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[1], &dest, 0, NULL, SDL_FLIP_VERTICAL);
         
         dest.y = (lines-1)*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[7], &dest);
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
         
         if (lines == 6) { //Une seule voie par sens
             dest.y = 2*side;
@@ -139,9 +128,46 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
             }
         }
     }
+}
+
+void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
+    SDL_Rect source; //Quel sprite prendre sur le cars.png
+    SDL_Rect dest; //Où mettre la voiture
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
     
+    source.x = 0;
+    source.y = 0;
+    source.w = 32;
+    source.h = 16;
     
-    SDL_RenderPresent(viewport->renderer);
+    dest.x = 0;
+    dest.w = side;
+    dest.h = side/2;
+    float entity_pos = (entity->location.y / viewport->level->width);
+    dest.y = (2. + entity_pos * road_lines) * side;
+    
+    switch(entity->type) {
+        case PLAYER_CAR:
+            dest.x = 0.1 * viewport->width;
+            break;
+        case CAR:
+            source.y = 16;
+            dest.x = 0;
+            if (entity->location.direction) flip = SDL_FLIP_HORIZONTAL;
+            break;
+    }
+    
+    SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
+}
+
+void draw_cars(Viewport* viewport, int road_lines, int side) {
+    draw_car(viewport, viewport->level->player, road_lines, side);
+    
+    struct EntityListCell* cour = viewport->level->entities;
+    while(cour) {
+        draw_car(viewport, cour->entity, road_lines, side);
+        cour = cour->next;
+    }
 }
 
 void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side)
@@ -172,21 +198,25 @@ void event_loop(Viewport* viewport) {
                         side = viewport->height/lines + 1; 
                     }
                     break;
-                case SDL_KEYDONW:
-                    switch(event.key.keysym.sym)
+                case SDL_KEYDOWN:
+                    switch(event.key.keysym.sym) {
+                        
+                    }
             }
         }
         
         switch(viewport->state) {
             case ((ViewportState)(GAME)):
-                draw_viewport(viewport, lines, side, pos);
+                draw_road(viewport, lines, side, pos);
+                draw_cars(viewport, lines-4, side);
                 pos = (pos+1) % side;
             break;
             case ((ViewportState)(TITLE)):
                 draw_viewportTitle(viewport, lines, side, pos);
             break;
         }
-
-        SDL_Delay(1);
+        
+        SDL_RenderPresent(viewport->renderer);
+        SDL_Delay(5);
     }
 }
