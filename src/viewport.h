@@ -50,6 +50,7 @@ typedef struct {
     struct {
         SDL_Texture* roads;
         SDL_Texture* vehicles;
+        SDL_Texture* preview;
     } tilesets;
     struct {
         Animation blocks[BLOCK_TYPES];

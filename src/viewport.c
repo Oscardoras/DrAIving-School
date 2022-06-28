@@ -51,12 +51,13 @@ Viewport* create_viewport(int width, int height, Level* level) {
         
     viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
     viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
-    if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL) {
+    viewport->tilesets.preview = IMG_LoadTexture(viewport->renderer, "sprites/preview_2.png");
+    if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL || viewport->tilesets.preview == NULL) {
         SDL_Log("Error IMG");
         close_viewport(viewport);
         return NULL;
     }
-    viewport->state = (ViewportState)(GAME);
+    viewport->state = (ViewportState)(TITLE);
     /*
     for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
     {
@@ -77,7 +78,7 @@ void close_viewport(Viewport* viewport) {
     if (viewport != NULL) {
         if (viewport->tilesets.vehicles != NULL) SDL_DestroyTexture(viewport->tilesets.vehicles);
         if (viewport->tilesets.roads != NULL) SDL_DestroyTexture(viewport->tilesets.roads);
-
+        if (viewport->tilesets.preview != NULL) SDL_DestroyTexture(viewport->tilesets.preview);
         if (viewport->renderer != NULL) SDL_DestroyRenderer(viewport->renderer);
         if (viewport->window != NULL) SDL_DestroyWindow(viewport->window);
         free(viewport);
@@ -146,7 +147,24 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
 
 void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side)
 {
+    float scaleX = 1;
+    float scaleY = 1;
+    scaleX = (float)viewport->width/628.0;
+    scaleY = (float)viewport->height/500.0;
+    SDL_Rect sprites[1];
 
+    sprites[0].x=0;
+    sprites[0].y=0;
+    sprites[0].w=628;
+    sprites[0].h=500;
+    SDL_Rect dest;
+    dest.x = 0*scaleX;
+    dest.y = 0*scaleY;
+    dest.w = 628*scaleX;
+    dest.h = 500*scaleY;
+    SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.preview, &sprites[0], &dest, 0, NULL, SDL_FLIP_NONE); // red bulding
+
+    SDL_RenderPresent(viewport->renderer);
 }
 
 void event_loop(Viewport* viewport) {
@@ -160,7 +178,17 @@ void event_loop(Viewport* viewport) {
     
     while (!quit) {
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) quit = true;
+            switch(event.type)
+            {
+                case SDL_QUIT: quit = true;
+                break;
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                        viewport->width = event.window.data1;
+                        viewport->height = event.window.data2;}
+                break;
+            }
+
         }
         switch(viewport->state)
         {
