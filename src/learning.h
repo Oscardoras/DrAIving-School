@@ -4,18 +4,36 @@
 #include "game.h"
 
 
+struct RunListCell {
+    Perception state;
+    Action action;
+    float reward;
+    
+    struct RunListCell* previous;
+    struct RunListCell* next;
+};
+
 /**
  * @brief Represents a run.
  * 
  */
 typedef struct {
-    struct {
-        State state;
-        Action action;
-        float reward;
-    } *tab;
-    unsigned int size;
+    struct RunListCell* first;
+    struct RunListCell* last;
 } Run;
+
+
+/**
+ * @brief Does a play with the learning system.
+ * 
+ * @param level the level.
+ * @param run a pointer to a run.
+ * @param action a pointer to the action chooser function.
+ */
+void learning_play(Level* level, Run* run, Action action(Perception perception));
+
+
+Action e_greedy(Perception perception);
 
 
 #endif

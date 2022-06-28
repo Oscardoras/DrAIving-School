@@ -28,7 +28,7 @@ typedef enum {
  * @brief Updates the game status.
  * 
  * @param level the level.
- * @return if there are accidents.
+ * @return if the game has finished.
  */
 bool update_game(Level* level);
 

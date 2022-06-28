@@ -17,7 +17,7 @@ bool update_game(Level* level) {
         return true;
     
     level->score++;
-    return false;
+    return level->player->location.x >= level->length;
 }
 
 Perception get_entity_perception(Level* level, Entity* entity) {
