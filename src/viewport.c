@@ -172,6 +172,8 @@ void event_loop(Viewport* viewport) {
                         side = viewport->height/lines + 1; 
                     }
                     break;
+                case SDL_KEYDONW:
+                    switch(event.key.keysym.sym)
             }
         }
         
