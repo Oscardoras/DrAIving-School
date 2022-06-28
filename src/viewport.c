@@ -294,18 +294,18 @@ void event_loop(Viewport* viewport) {
                         
                         default:
                             switch (event.key.keysym.sym) {
-                                case SDLK_UP:
+                                case SDLK_RIGHT:
                                     make_action(viewport->level, viewport->level->player, ACTION_FASTER);
                                     scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
                                     break;
-                                case SDLK_DOWN:
+                                case SDLK_LEFT:
                                     make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
                                     scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
                                     break;
-                                case SDLK_LEFT:
+                                case SDLK_UP:
                                     make_action(viewport->level, viewport->level->player, ACTION_LEFT);
                                     break;
-                                case SDLK_RIGHT:
+                                case SDLK_DOWN:
                                     make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
                                     break;
                             }
