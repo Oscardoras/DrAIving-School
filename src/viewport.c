@@ -26,7 +26,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->tilesets.vehicles = NULL;
     viewport->animation_loop = 0;
     
-    viewport->window = SDL_CreateWindow("MarkovAnt",
+    viewport->window = SDL_CreateWindow("projet jeu",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_RESIZABLE
@@ -64,7 +64,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-    viewport->font = TTF_OpenFont("./ttf/sansation.ttf", 65);
+    viewport->font = TTF_OpenFont("./ttf/dogicabold.ttf", 65);
     if (viewport->font == NULL)
     {
         SDL_Log("Error SDL - %s", "cant load font");
@@ -203,7 +203,6 @@ void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side)
         SDL_DestroyTexture(text_texture);           
         SDL_FreeSurface(text_surface);
     }
-    SDL_RenderPresent(viewport->renderer);
 }
 
 void event_loop(Viewport* viewport) {
@@ -251,8 +250,6 @@ void event_loop(Viewport* viewport) {
                 draw_viewportTitle(viewport, lines, side, pos);
             break;
         }
-
-        
         SDL_Delay(5);
     }
 }
