@@ -2,6 +2,7 @@
 #define __VIEWPORT_H__
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "level.h"
 
@@ -50,6 +51,7 @@ typedef struct {
     } animations;
     unsigned int animation_loop;
     ViewportState state;
+    TTF_Font* font;
 } Viewport;
 
 
