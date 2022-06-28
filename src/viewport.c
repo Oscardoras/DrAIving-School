@@ -2,6 +2,7 @@
 
 #include "viewport.h"
 
+#define SCROLLING_SPEED 2
 #define NB_LINES 3
 
 
@@ -26,7 +27,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->tilesets.vehicles = NULL;
     viewport->animation_loop = 0;
     
-    viewport->window = SDL_CreateWindow("MarkovAnt",
+    viewport->window = SDL_CreateWindow("Jeu",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_RESIZABLE
@@ -37,7 +38,6 @@ Viewport* create_viewport(int width, int height, Level* level) {
         return NULL;
     }
 
-    
     viewport->renderer = SDL_CreateRenderer(
         viewport->window,
         -1,
@@ -48,7 +48,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-        
+ 
     viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
     viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
     if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL) {
@@ -56,7 +56,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-    
+
     /*
     for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
     {
@@ -87,7 +87,7 @@ void close_viewport(Viewport* viewport) {
 
 
 void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
-    SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
+    SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
     SDL_RenderClear(viewport->renderer);
     
     SDL_Rect road[8];
@@ -150,18 +150,30 @@ void event_loop(Viewport* viewport) {
     SDL_Event event;
     
     int lines = 2*NB_LINES + 4;
-    int side = viewport->height / lines;
+    int side = viewport->height/lines + 1;
     int pos = 0;
+    int scrolling_speed = SCROLLING_SPEED
     
     while (!quit) {
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) quit = true;
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                        viewport->width = event.window.data1;
+                        viewport->height = event.window.data2;
+                        side = viewport->height/lines + 1; 
+                    }
+                    break;
+            }
         }
         
         draw_viewport(viewport, lines, side, pos);
         
-        pos = (pos+1) % side;
+        pos = (pos+scrolling_speed) % side;
         
-        SDL_Delay(5);
+        SDL_Delay(1);
     }
 }
