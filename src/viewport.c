@@ -1,5 +1,5 @@
 #include <SDL2/SDL_image.h>
-
+#include <stdlib.h>
 #include "viewport.h"
 
 #define NB_LINES 3
@@ -161,7 +161,9 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
     
     SDL_Color color = {0, 0, 0, 255};
     SDL_Surface* text_surface = NULL;
-    text_surface = TTF_RenderText_Blended(viewport->font, "Score : ", color);
+    char score[20] = "Score : ";
+    sprintf(score,"Score : %d", viewport->level->score);
+    text_surface = TTF_RenderText_Blended(viewport->font, score, color);
     if (text_surface == NULL) 
     {
         SDL_Log("Error SDL - %s", "cant create surface");
