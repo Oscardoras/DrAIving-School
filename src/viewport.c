@@ -2,7 +2,7 @@
 
 #include "viewport.h"
 
-#define NB_LINES 150
+#define NB_LINES 3
 
 
 Viewport* create_viewport(int width, int height, Level* level) {
