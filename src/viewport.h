@@ -23,6 +23,10 @@ char* TEXTURE_NAMES[] = {
 };
 */
 
+typedef enum{
+    TITLE,
+    GAME
+} ViewportState;
 
 // SDL_Texture* textures[TEXTURE_COUNT];
 typedef struct {
@@ -52,6 +56,7 @@ typedef struct {
         Animation entities[ENTITY_TYPES];
     } animations;
     unsigned int animation_loop;
+    ViewportState state;
 } Viewport;
 
 
@@ -87,6 +92,13 @@ void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
  * @param viewport the viewport to draw.
  */
 void draw_viewport(Viewport* viewport, int lines, int pos, int side);
+
+/**
+ * @brief Draws the viewport's title.
+ * 
+ * @param viewport the viewport to draw.
+ */
+void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side);
 
 /**
  * @brief The display loop.
