@@ -2,13 +2,21 @@
 
 
 bool update_game(Level* level) {
+    HitBox player_box = get_entity_hitbox(level->player);
+    
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
         make_action(level, it->entity, choose_action(level, it->entity));
+        it->entity->location.x += it->entity->location.velocity;
         
-        if (are_entity_box_hitting(get_entity_hitbox(it->entity), get_entity_hitbox(level->player)))
+        if (are_entity_box_hitting(get_entity_hitbox(it->entity), player_box))
             return true;
     }
     
+    level->player->location.x += level->player->location.velocity;
+    if (player_box.min_y < 0 || player_box.max_y > level->width)
+        return true;
+    
+    level->score++;
     return false;
 }
 
