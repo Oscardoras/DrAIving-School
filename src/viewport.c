@@ -56,7 +56,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-    
+    viewport->state = (ViewportState)(GAME);
     /*
     for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
     {
@@ -144,6 +144,11 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
     SDL_RenderPresent(viewport->renderer);
 }
 
+void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side)
+{
+
+}
+
 void event_loop(Viewport* viewport) {
     bool quit = false;
     
@@ -157,10 +162,17 @@ void event_loop(Viewport* viewport) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) quit = true;
         }
-        
-        draw_viewport(viewport, lines, side, pos);
-        
-        pos = (pos+1) % side;
+        switch(viewport->state)
+        {
+            case ((ViewportState)(GAME)):
+                draw_viewport(viewport, lines, side, pos);
+                pos = (pos+1) % side;
+            break;
+            case ((ViewportState)(TITLE)):
+                draw_viewportTitle(viewport, lines, side, pos);
+            break;
+        }
+
         
         SDL_Delay(5);
     }
