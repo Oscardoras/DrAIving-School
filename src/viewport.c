@@ -5,7 +5,7 @@
 #include "game.h"
 #include "level.h"
 #include "viewport.h"
-
+#include "learning.h"
 
 Viewport* create_viewport(int width, int height, Level* level) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -292,8 +292,17 @@ void event_loop(Viewport* viewport) {
                     switch (viewport->state) {
                         case TITLE:
                             if(event.key.keysym.sym == SDLK_SPACE) viewport->state = GAME;
+                            if(event.key.keysym.sym == SDLK_l) 
+                                {
+                                    viewport->state = GAMEIA;
+                                    FILE *file = fopen("learning", "r");
+                                    if(file)
+                                    {
+                                        viewport->level->player->markov = load_matrix(file);
+                                        fclose(file);
+                                    }
+                                }
                             break;
-                        
                         default:
                             switch (event.key.keysym.sym) {
                                 case SDLK_RIGHT:
@@ -313,22 +322,38 @@ void event_loop(Viewport* viewport) {
                             }
                     }
                     break;
-            }
+            
+                }
         }
+            
         
+        if(viewport->state == GAMEIA)
+        {
+            make_action(viewport->level, viewport->level->player,
+                e_greedy(viewport->level->player->markov,
+                    get_entity_perception(viewport->level, viewport->level->player)
+                )
+            );
+            scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
+        }
         switch(viewport->state) {
+            
             case GAME:
                 collision = update_game(viewport->level);
                 draw_road(viewport, lines, side, pos);
                 draw_cars(viewport, lines-4, side);
                 pos = (int) (pos + scrolling_speed) % side;
-            break;
-            case ((ViewportState)(TITLE)):
+                SDL_RenderPresent(viewport->renderer);
+                SDL_Delay(duree_frame);
+                break;
+            case (GAMEIA):
+                collision = update_game(viewport->level);
+                break;
+            case (TITLE):
                 draw_viewportTitle(viewport);
-            break;
+                SDL_RenderPresent(viewport->renderer);
+                SDL_Delay(duree_frame);
+                break;
         }
-        
-        SDL_RenderPresent(viewport->renderer);
-        SDL_Delay(duree_frame);
     }
 }

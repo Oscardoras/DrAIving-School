@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "learning.h"
 #include "matrix.h"
 #include "entity.h"
 #include "viewport.h"
 #include "level.h"
-#include "learning.h"
+
 
 //#define LEARN
 #define LEARN_ITERATION 500
