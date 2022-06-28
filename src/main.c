@@ -26,7 +26,7 @@ int main() {
     player_pos.direction = true;
     player_pos.velocity = 0;
     
-    level->player = new_entity(PLAYER_CAR, player_pos, NULL, 0);
+    level->player = new_entity(PLAYER_CAR, player_pos, NULL);
     
     event_loop(viewport);
     

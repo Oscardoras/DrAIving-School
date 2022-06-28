@@ -3,9 +3,6 @@
 
 #include "level.h"
 
-#define CAR_WIDTH 1.
-#define CAR_LENGTH 2.
-
 
 typedef enum {
     PERCEPTION_LEFT = 0b1,
@@ -26,13 +23,6 @@ typedef enum {
     ACTION_SLOWER
 } Action;
 
-typedef struct {    
-    float min_x;
-    float max_x;
-    float min_y;
-    float max_y;
-} HitBox;
-
 
 /**
  * @brief Updates the game status.
@@ -42,15 +32,14 @@ typedef struct {
  */
 bool update_game(Level* level);
 
-
 /**
- * @brief Chooses the action that an enity will execute.
+ * @brief Gets the perception of an entity.
  * 
  * @param level the level.
  * @param entity the entity.
- * @return the choosen action.
+ * @return the perception.
  */
-Action choose_action(Level* level, Entity* entity);
+Perception get_entity_perception(Level* level, Entity* entity);
 
 /**
  * @brief Makes an entity execute an action.
@@ -61,23 +50,6 @@ Action choose_action(Level* level, Entity* entity);
  * @return if the operation has succeed.
  */
 bool make_action(Level* level, Entity* entity, Action action);
-
-/**
- * @brief Checks if two hit boxes are hitting.
- * 
- * @param b1 the first hit box.
- * @param b2 the second hit box.
- * @return if the two hit boxes are hitting.
- */
-bool are_entity_box_hitting(HitBox b1, HitBox b2);
-
-/**
- * @brief Gets the hit box of an entity.
- * 
- * @param entity the entity.
- * @return the hit box.
- */
-HitBox get_entity_hitbox(Entity* entity);
 
 
 #endif
