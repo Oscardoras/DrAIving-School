@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "matrix.h"
 #include "entity.h"
 #include "viewport.h"
 #include "level.h"
@@ -17,10 +18,18 @@ int main() {
         return EXIT_FAILURE;
     }
     
-    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 0., 4, 6), NULL);
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 0., 3, 6), NULL));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 0., 5, 6), NULL));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 0., 5, 6), NULL));
+    Matrix* matrix = NULL;
+    FILE* file = fopen("config.txt", "r");
+    if(file) {
+        matrix = load_matrix(file);
+        fclose(file);
+    }
+    
+    
+    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 1., 4, 6), NULL);
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 1., 3, 6), matrix));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 1., 5, 6), matrix));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 1., 5, 6), matrix));
     
     event_loop(viewport);
     

@@ -263,14 +263,13 @@ void draw_viewportTitle(Viewport* viewport)
 
 void event_loop(Viewport* viewport) {
     bool quit = false;
-    bool action = true;
     
     SDL_Event event;
     
     int lines = 2*NB_LINES + 4;
     int side = viewport->height/lines + 1;
     int pos = 0;
-    int scrolling_speed = 5*viewport->level->player->location.velocity*side/FPS; //Vitesse du joueur : 5 blocs/seconde
+    float scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS; //Vitesse du joueur : 5 blocs/seconde
     
     while (!quit) {
         while (SDL_PollEvent(&event)) {
@@ -296,19 +295,19 @@ void event_loop(Viewport* viewport) {
                         default:
                             switch (event.key.keysym.sym) {
                                 case SDLK_UP:
-                                    action = make_action(viewport->level, viewport->level->player, ACTION_FASTER);
+                                    make_action(viewport->level, viewport->level->player, ACTION_FASTER);
+                                    scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
                                     break;
                                 case SDLK_DOWN:
-                                    action = make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
+                                    make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
+                                    scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
                                     break;
                                 case SDLK_LEFT:
-                                    action = make_action(viewport->level, viewport->level->player, ACTION_LEFT);
+                                    make_action(viewport->level, viewport->level->player, ACTION_LEFT);
                                     break;
                                 case SDLK_RIGHT:
-                                    action = make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
+                                    make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
                                     break;
-                                scrolling_speed = 5*viewport->level->player->location.velocity*side/FPS;
-                                    
                             }
                     }
                     break;
@@ -317,10 +316,10 @@ void event_loop(Viewport* viewport) {
         
         switch(viewport->state) {
             case GAME:
-                //update_game();
+                update_game(viewport->level);
                 draw_road(viewport, lines, side, pos);
                 draw_cars(viewport, lines-4, side);
-                pos = (pos + scrolling_speed) % side;
+                pos = (int) (pos + scrolling_speed) % side;
             break;
             case ((ViewportState)(TITLE)):
                 draw_viewportTitle(viewport);
