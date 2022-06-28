@@ -5,7 +5,7 @@
 #include "game.h"
 #include "level.h"
 #include "viewport.h"
-
+#include "learning.h"
 
 Viewport* create_viewport(int width, int height, Level* level) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -291,7 +291,6 @@ void event_loop(Viewport* viewport) {
                         case TITLE:
                             if(event.key.keysym.sym == SDLK_SPACE) viewport->state = true;
                             break;
-                        
                         default:
                             switch (event.key.keysym.sym) {
                                 case SDLK_RIGHT:
@@ -311,10 +310,18 @@ void event_loop(Viewport* viewport) {
                             }
                     }
                     break;
-            }
+            
+                }
         }
+            
         
+        if(viewport->state == GAMEIA)
+        {
+            make_action(viewport->level, viewport->level->player, e_greedy(get_entity_perception(viewport->level, viewport->level->player), viewport->level->player->markov));
+            scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
+        }
         switch(viewport->state) {
+            
             case GAME:
                 update_game(viewport->level);
                 draw_road(viewport, lines, side, pos);
@@ -322,8 +329,9 @@ void event_loop(Viewport* viewport) {
                 pos = (int) (pos + scrolling_speed) % side;
             break;
             case ((ViewportState)(TITLE)):
+            case ((ViewportState)(GAMEIA)):
                 draw_viewportTitle(viewport);
-            break;
+            
         }
         
         SDL_RenderPresent(viewport->renderer);

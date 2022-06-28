@@ -24,7 +24,8 @@ typedef struct {
 
 typedef enum {
     TITLE,
-    GAME
+    GAME,
+    GAMEIA
 } ViewportState;
 
 typedef struct {

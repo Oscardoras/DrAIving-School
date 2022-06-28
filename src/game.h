@@ -16,7 +16,7 @@ typedef enum {
 } Perception;
 
 typedef enum {
-    ACTION_NONE,
+    ACTION_NONE = 0,
     ACTION_LEFT,
     ACTION_RIGHT,
     ACTION_FASTER,
