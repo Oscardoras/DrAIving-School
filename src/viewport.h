@@ -13,7 +13,7 @@
 #define BLOCK_TYPES 1
 #define TEXTURE_COUNT 2
 #define NB_LINES 3
-#define FPS 30
+#define FPS 60
 
 
 typedef struct {
