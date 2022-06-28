@@ -105,6 +105,10 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
     SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
     SDL_RenderClear(viewport->renderer);
     
+    float scaleX = 1;
+    float scaleY = 1;
+    scaleX = (float)viewport->width/800.0;
+    scaleY = (float)viewport->height/600.0;
     SDL_Rect road[8];
     for (int i=0; i<8; i++) {
         road[i].x = 0;
@@ -155,8 +159,27 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
         }
     }
     
-    
-    SDL_RenderPresent(viewport->renderer);
+    SDL_Color color = {0, 0, 0, 255};
+    SDL_Surface* text_surface = NULL;
+    text_surface = TTF_RenderText_Blended(viewport->font, "Score : ", color);
+    if (text_surface == NULL) 
+    {
+        SDL_Log("Error SDL - %s", "cant create surface");
+        close_viewport(viewport);
+    }
+
+    SDL_Texture* text_texture = NULL;
+    text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
+    if (text_texture == NULL) {
+        SDL_Log("Error SDL - %s", "cant create texture");
+        close_viewport(viewport);
+    }
+
+    SDL_Rect ttfdest = {10*scaleX, 10*scaleY, 200*scaleX, 40*scaleY};
+    //SDL_QueryTexture(text_texture, NULL, NULL, &pos.w, &pos.h);
+    SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
+    SDL_DestroyTexture(text_texture);           
+    SDL_FreeSurface(text_surface);
 }
 
 void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side)
@@ -250,6 +273,7 @@ void event_loop(Viewport* viewport) {
                 draw_viewportTitle(viewport, lines, side, pos);
             break;
         }
+        SDL_RenderPresent(viewport->renderer);
         SDL_Delay(5);
     }
 }
