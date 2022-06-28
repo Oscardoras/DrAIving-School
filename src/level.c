@@ -11,7 +11,7 @@ Level* new_level(float width, float length) {
         level->length = length;
         level->entities = NULL;
         level->player = NULL;
-        level->time = 0.;
+        level->score = 0;
     }
 
     return level;
