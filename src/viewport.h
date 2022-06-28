@@ -16,6 +16,19 @@ typedef struct {
     unsigned int frames;
 } Animation;
 
+typedef enum {
+    TITLE,
+    GAME
+} ViewportState;
+
+typedef struct {
+	unsigned int count;
+	SDL_Rect rects[10];
+	unsigned int sizex;
+	unsigned int sizey;
+	unsigned int textureid;
+} sprite;
+
 /**
  * @brief A viewport.
  * 
@@ -35,6 +48,7 @@ typedef struct {
         Animation entities[ENTITY_TYPES];
     } animations;
     unsigned int animation_loop;
+    ViewportState state;
 } Viewport;
 
 
@@ -77,6 +91,13 @@ void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
  * @param viewport the viewport to draw.
  */
 void draw_viewport(Viewport* viewport, int lines, int pos, int side);
+
+/**
+ * @brief Draws the viewport's title.
+ * 
+ * @param viewport the viewport to draw.
+ */
+void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side);
 
 /**
  * @brief The display loop.
