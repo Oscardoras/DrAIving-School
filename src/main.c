@@ -17,10 +17,10 @@ int main() {
         return EXIT_FAILURE;
     }
     
-    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 0., 4, 6), NULL, 0);
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 0., 3, 6), NULL, 0));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 0., 5, 6), NULL, 0));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 0., 5, 6), NULL, 0));
+    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 0., 4, 6), NULL);
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 0., 3, 6), NULL));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 0., 5, 6), NULL));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 0., 5, 6), NULL));
     
     event_loop(viewport);
     

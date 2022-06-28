@@ -2,18 +2,27 @@
 
 
 bool update_game(Level* level) {
+    HitBox player_box = get_entity_hitbox(level->player);
+    
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
-        make_action(level, it->entity, choose_action(level, it->entity));
+        make_action(level, it->entity, forward_state(it->entity->markov, get_entity_perception(level, it->entity)));
+        it->entity->location.x += it->entity->location.velocity;
         
-        if (are_entity_box_hitting(get_entity_hitbox(it->entity), get_entity_hitbox(level->player)))
+        if (are_entity_box_hitting(get_entity_hitbox(it->entity), player_box))
             return true;
     }
     
-    return false;
+    level->player->location.x += level->player->location.velocity;
+    if (player_box.min_y < 0 || player_box.max_y > level->width)
+        return true;
+    
+    level->score++;
+    return level->player->location.x >= level->length;
 }
 
-Action choose_action(Level* level, Entity* entity) {
+Perception get_entity_perception(Level* level, Entity* entity) {
     Perception p = 0b0;
+    
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
         HitBox box = get_entity_hitbox(it->entity);
         
@@ -49,7 +58,7 @@ Action choose_action(Level* level, Entity* entity) {
         p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(box, b));
     }
     
-    return forward_state(entity->markov, p);
+    return p;
 }
 
 bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action action) {
@@ -71,21 +80,4 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
     }
     
     return true;
-}
-
-bool are_entity_box_hitting(HitBox b1, HitBox b2) {
-    if (b2.min_x <= b1.min_x && b1.min_x <= b2.max_x && b2.min_y <= b1.min_y && b1.min_y <= b2.max_y) return true;
-    if (b2.min_x <= b1.max_x && b1.max_x <= b2.max_x && b2.min_y <= b1.min_y && b1.min_y <= b2.max_y) return true;
-    if (b2.min_x <= b1.min_x && b1.min_x <= b2.max_x && b2.min_y <= b1.max_y && b1.max_y <= b2.max_y) return true;
-    if (b2.min_x <= b1.max_x && b1.max_x <= b2.max_x && b2.min_y <= b1.max_y && b1.max_y <= b2.max_y) return true;
-    return false;
-}
-
-HitBox get_entity_hitbox(Entity* entity) {
-    HitBox b;
-    b.min_x = entity->location.x - CAR_LENGTH/2;
-    b.max_x = entity->location.x + CAR_LENGTH/2;
-    b.min_y = entity->location.y - CAR_WIDTH/2;
-    b.min_y = entity->location.y + CAR_WIDTH/2;
-    return b;
 }
