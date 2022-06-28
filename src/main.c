@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "viewport.h"
 #include "level.h"
+#include "learning.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -32,15 +33,23 @@ int main() {
     level->player = new_entity(PLAYER_CAR, player_pos, NULL);
     
     #ifndef LEARN
-    event_loop(viewport);
-    
-    close_viewport(viewport);
-    #else
-    for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
     {
-
+        event_loop(viewport);
+        close_viewport(viewport);
     }
-    save_matrix(level->player->markov, "learning");
+    #else
+    {
+        Run currentRun;
+        currentRun.first = NULL;
+        currentRun.last = NULL;
+        for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
+        {
+            learning_play(level, &currentRun, e_greedy);
+        }
+        FILE *file = fopen("learning", "w");
+        save_matrix(level->player->markov, file);
+        fclose(file);
+    }
     #endif
     free_level(level);
 
