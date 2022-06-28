@@ -1,7 +1,11 @@
+#include <stdlib.h>
+#include <time.h>
 #include <SDL2/SDL_image.h>
 
+#include "level.h"
 #include "viewport.h"
 
+#define SCROLLING_SPEED 2
 #define NB_LINES 3
 
 
@@ -26,7 +30,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->tilesets.vehicles = NULL;
     viewport->animation_loop = 0;
     
-    viewport->window = SDL_CreateWindow("projet jeu",
+    viewport->window = SDL_CreateWindow("Jeu",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_RESIZABLE
@@ -37,7 +41,6 @@ Viewport* create_viewport(int width, int height, Level* level) {
         return NULL;
     }
 
-    
     viewport->renderer = SDL_CreateRenderer(
         viewport->window,
         -1,
@@ -48,16 +51,18 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-        
+ 
     viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
-    viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/vehicles.png");
+    viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/cars.png");
     viewport->tilesets.preview = IMG_LoadTexture(viewport->renderer, "sprites/preview_2.png");
     if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL || viewport->tilesets.preview == NULL) {
         SDL_Log("Error IMG");
         close_viewport(viewport);
         return NULL;
     }
+    
     viewport->state = (ViewportState)(TITLE);
+    
     if (TTF_Init() < 0) 
     {
         SDL_Log("Error SDL - %s", SDL_GetError());
@@ -71,19 +76,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-    /*
-    for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
-    {
-        printf("%s", TEXTURE_NAMES[it]);
-        textures[it] = IMG_LoadTexture(renderer,TEXTURE_NAMES[it]);
-        if(!textures[it])
-        {
-            SDL_Log("Erreur creation texture");
-            exit(EXIT_FAILURE);
-        }
-    }
-    */
-    
+        
     return viewport;
 }
 
@@ -101,8 +94,8 @@ void close_viewport(Viewport* viewport) {
 }
 
 
-void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
-    SDL_SetRenderDrawColor(viewport->renderer, 0, 191, 255, 255);
+void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
+    SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
     SDL_RenderClear(viewport->renderer);
     
     float scaleX = 1;
@@ -128,10 +121,10 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
         SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[1], &dest);
         
         dest.y = (lines-2)*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
+        SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[1], &dest, 0, NULL, SDL_FLIP_VERTICAL);
         
         dest.y = (lines-1)*side;
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[7], &dest);
+        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
         
         if (lines == 6) { //Une seule voie par sens
             dest.y = 2*side;
@@ -161,9 +154,10 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
     
     SDL_Color color = {0, 0, 0, 255};
     SDL_Surface* text_surface = NULL;
-    text_surface = TTF_RenderText_Blended(viewport->font, "Score : ", color);
-    if (text_surface == NULL) 
-    {
+    char score[20] = "Score : ";
+    sprintf(score,"Score : %d", viewport->level->score);
+    text_surface = TTF_RenderText_Blended(viewport->font, score, color);
+    if (text_surface == NULL) {
         SDL_Log("Error SDL - %s", "cant create surface");
         close_viewport(viewport);
     }
@@ -182,7 +176,47 @@ void draw_viewport(Viewport* viewport, int lines, int side, int pos) { //Voies a
     SDL_FreeSurface(text_surface);
 }
 
-void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side)
+void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
+    SDL_Rect source; //Quel sprite prendre sur le cars.png
+    SDL_Rect dest; //Où mettre la voiture
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    
+    source.x = 0;
+    source.y = 0;
+    source.w = 32;
+    source.h = 16;
+    
+    dest.x = 0;
+    dest.w = side;
+    dest.h = side/2;
+    float entity_pos = (entity->location.y / viewport->level->width);
+    dest.y = (2. + entity_pos * road_lines) * side;
+    
+    switch(entity->type) {
+        case PLAYER_CAR:
+            dest.x = 0.1 * viewport->width;
+            break;
+        case CAR:
+            source.y = 16;
+            dest.x = 0;
+            if (entity->location.direction) flip = SDL_FLIP_HORIZONTAL;
+            break;
+    }
+    
+    SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
+}
+
+void draw_cars(Viewport* viewport, int road_lines, int side) {
+    draw_car(viewport, viewport->level->player, road_lines, side);
+    
+    struct EntityListCell* cour = viewport->level->entities;
+    while(cour) {
+        draw_car(viewport, cour->entity, road_lines, side);
+        cour = cour->next;
+    }
+}
+
+void draw_viewportTitle(Viewport* viewport)
 {
     SDL_RenderClear(viewport->renderer);
     float scaleX = 1;
@@ -234,45 +268,48 @@ void event_loop(Viewport* viewport) {
     SDL_Event event;
     
     int lines = 2*NB_LINES + 4;
-    int side = viewport->height / lines;
+    int side = viewport->height/lines + 1;
     int pos = 0;
+    int scrolling_speed = SCROLLING_SPEED;
     
     while (!quit) {
         while (SDL_PollEvent(&event)) {
             switch(event.type)
             {
                 case SDL_QUIT: quit = true;
-                break;
+                    break;
+                    
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                         viewport->width = event.window.data1;
-                        viewport->height = event.window.data2;}
-                break;
-                case SDL_KEYDOWN: 
-                    switch(viewport->state)
-                    {   
-                        case(((ViewportState)(TITLE))) : 
-
-                            switch(event.key.keysym.sym) {
-                                case  SDLK_SPACE:
-                                    viewport->state = ((ViewportState)(GAME));
-                                break;
-                            }
-                        break;
+                        viewport->height = event.window.data2;
+                        side = viewport->height/lines + 1;
                     }
-                break;
+                    break;
+                    
+                case SDL_KEYDOWN: 
+                    switch (event.key.keysym.sym) {
+                        case SDLK_SPACE:
+                            if (viewport->state == TITLE) viewport->state = GAME;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
             }
         }
-        switch(viewport->state)
-        {
+        
+        switch(viewport->state) {
             case ((ViewportState)(GAME)):
-                draw_viewport(viewport, lines, side, pos);
-                pos = (pos+1) % side;
+                draw_road(viewport, lines, side, pos);
+                draw_cars(viewport, lines-4, side);
+                pos = (pos+scrolling_speed) % side;
             break;
             case ((ViewportState)(TITLE)):
-                draw_viewportTitle(viewport, lines, side, pos);
+                draw_viewportTitle(viewport);
             break;
         }
+        
         SDL_RenderPresent(viewport->renderer);
         SDL_Delay(5);
     }

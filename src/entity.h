@@ -5,20 +5,18 @@
 
 #include "matrix.h"
 
+#define ENTITY_TYPES 2
 
 typedef struct {
     float x;
     float y;
-    bool direction;
+    bool direction; //true si vers la droite, false sinon
     float velocity;
 } Location;
 
-
-#define ENTITY_TYPES 2
 typedef enum {
     PLAYER_CAR,
-    CAR1,
-    CAR2
+    CAR
 } EntityType;
 
 typedef struct {

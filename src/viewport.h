@@ -62,13 +62,6 @@ typedef struct {
  * @param height the height of the window.
  * @param level the level displayed in the window.
  * @return the created viewport.
- *//**
- * @brief Creates a new viewport and its components.
- * 
- * @param width the width of the window.
- * @param height the height of the window.
- * @param level the level displayed in the window.
- * @return the created viewport.
  */
 Viewport* create_viewport(int width, int height, Level* level);
 
@@ -89,18 +82,42 @@ void close_viewport(Viewport* viewport);
 void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
 
 /**
- * @brief Draws a viewport.
+ * @brief Draws the road.
  * 
  * @param viewport the viewport to draw.
+ * @param lines the number of lines to draw (2 * nb_of_lines_per_direction + 4 (the borders of the road)).
+ * @param side the length of the side of a roadblock.
+ * @param pos the position of the road (used to animate the player movement on the road).
  */
-void draw_viewport(Viewport* viewport, int lines, int pos, int side);
+void draw_road(Viewport* viewport, int lines, int side, int pos);
+
+/**
+ * @brief Draws a car.
+ * 
+ * @param viewport the viewport to draw.
+ * @param entity the car to draw.
+ * @param lines_per_dir the number of lines on the road.
+ * @param side the length of a roadblock.
+ */
+void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side);
+
+/**
+ * @brief Draws all the cars on the level.
+ * 
+ * @param viewport the viewport to draw.
+ * @param lines_per_dir the number of lines on the road.
+ * @param side the length of a roadblock.
+ */
+void draw_cars(Viewport* viewport, int road_lines, int side);
 
 /**
  * @brief Draws the viewport's title.
  * 
  * @param viewport the viewport to draw.
  */
-void draw_viewportTitle(Viewport* viewport, int lines, int pos, int side);
+void draw_viewportTitle(Viewport* viewport);
+
+
 
 /**
  * @brief The display loop.

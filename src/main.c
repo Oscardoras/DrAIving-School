@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "entity.h"
 #include "viewport.h"
 #include "level.h"
 
@@ -18,6 +19,14 @@ int main() {
         free_level(level);
         return EXIT_FAILURE;
     }
+    
+    Location player_pos;
+    player_pos.y = level->width * 3./5.;
+    player_pos.x = 0;
+    player_pos.direction = true;
+    player_pos.velocity = 0;
+    
+    level->player = new_entity(PLAYER_CAR, player_pos, NULL, 0);
     
     event_loop(viewport);
     
