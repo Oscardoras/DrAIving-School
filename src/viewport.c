@@ -103,9 +103,11 @@ void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autor
         road[i].w = road[i].h = 32;
     }
     SDL_Rect dest;
-    
-    for(int x=-pos; x<viewport->width; x += side) {
-        dest.x = x;
+
+    float player_x = viewport->level->player->location.x;
+    float dec_player_x = ((int) player_x) - player_x;
+    for(float x = dec_player_x; x*side<viewport->width; x += 1.) {
+        dest.x = (int) (x*side);
         dest.w = dest.h = side;
         
         dest.y = 0*side; //1ère ligne : mur en briques
