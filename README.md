@@ -14,7 +14,7 @@
 ### Etats
 - 5 carrés devant.
     ddd
-    xxx
+    XXX
     xox
     ---
 ### Actions
