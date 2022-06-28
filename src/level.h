@@ -7,13 +7,14 @@
 
 
 typedef struct {
+    float width;
+    float length;
     struct EntityListCell {
         Entity* entity;
         struct EntityListCell* next;
     } *entities;
-    Player* player;
-    float width;
-    float length;
+    Entity* player;
+    float time;
 } Level;
 
 

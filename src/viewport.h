@@ -16,19 +16,11 @@ typedef struct {
     unsigned int frames;
 } Animation;
 
-/*
-char* TEXTURE_NAMES[] = {
-"sprites/outdoors.png", 
-"sprites/vehicles.png"
-};
-*/
-
-typedef enum{
+typedef enum {
     TITLE,
     GAME
 } ViewportState;
 
-// SDL_Texture* textures[TEXTURE_COUNT];
 typedef struct {
 	unsigned int count;
 	SDL_Rect rects[10];
@@ -62,6 +54,13 @@ typedef struct {
 
 
 /**
+ * @brief Creates a new viewport and its components.
+ * 
+ * @param width the width of the window.
+ * @param height the height of the window.
+ * @param level the level displayed in the window.
+ * @return the created viewport.
+ *//**
  * @brief Creates a new viewport and its components.
  * 
  * @param width the width of the window.
