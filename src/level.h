@@ -24,6 +24,7 @@ typedef struct {
  * 
  * @param width the width of the level.
  * @param length the length of the level.
+ * @param lines_per_dir
  * @return the created level.
  */
 Level* new_level(float width, float length, int lines_per_dir);

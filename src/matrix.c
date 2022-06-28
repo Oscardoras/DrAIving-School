@@ -80,7 +80,7 @@ float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j) {
     return &matrix->data[i*matrix->columns + j];
 }
 
-unsigned int forward_state(Matrix* matrix, unsigned int from) {
+unsigned int compute_state(Matrix* matrix, unsigned int from) {
     float random = rand() / (float) RAND_MAX;
 
     float sum = 0.;

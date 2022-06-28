@@ -56,7 +56,7 @@ float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j);
  * @param from the current state.
  * @return the new state/action.
  */
-unsigned int forward_state(Matrix* matrix, unsigned int from);
+unsigned int compute_state(Matrix* matrix, unsigned int from);
 
 
 #endif
