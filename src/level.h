@@ -14,7 +14,7 @@ typedef struct {
         struct EntityListCell* next;
     } *entities;
     Entity* player;
-    float time;
+    int score;
 } Level;
 
 
