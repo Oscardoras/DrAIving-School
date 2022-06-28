@@ -15,6 +15,7 @@ typedef struct {
     } *entities;
     Entity* player;
     int score;
+    int lines_per_dir;
 } Level;
 
 
@@ -25,7 +26,7 @@ typedef struct {
  * @param length the length of the level.
  * @return the created level.
  */
-Level* new_level(float width, float length);
+Level* new_level(float width, float length, int lines_per_dir);
 
 /**
  * @brief Frees a level.
@@ -42,6 +43,18 @@ void free_level(Level* level);
  * @return if the entity has been added correctly.
  */
 bool add_level_entity(Level* level, Entity* entity);
+
+/**
+ * @brief Gives an entity location based on its x, its velocity, and the line it will be on.
+ * 
+ * @param level the level.
+ * @param x the x of the entity.
+ * @param velocity the velocity of the entity.
+ * @param line the line the vehicle will be on.
+ * @param lines_max the number of lines on the road (both directions).
+ * @return the location filled.
+ */
+Location location_from_line(Level* level, float x, float velocity, int line, int lines_max);
 
 
 #endif

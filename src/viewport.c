@@ -2,12 +2,10 @@
 #include <time.h>
 #include <SDL2/SDL_image.h>
 
+#include "game.h"
 #include "level.h"
 #include "viewport.h"
-
-#define SCROLLING_SPEED 2
-#define NB_LINES 3
-
+#include "learning.h"
 
 Viewport* create_viewport(int width, int height, Level* level) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -98,11 +96,7 @@ void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autor
     SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
     SDL_RenderClear(viewport->renderer);
     
-    float scaleX = 1;
-    float scaleY = 1;
-    scaleX = (float)viewport->width/800.0;
-    scaleY = (float)viewport->height/600.0;
-    SDL_Rect road[8];
+    SDL_Rect road[8]; //Récup des textures sur sprites_road.png
     for (int i=0; i<8; i++) {
         road[i].x = 0;
         road[i].y = i*32;
@@ -114,36 +108,36 @@ void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autor
         dest.x = x;
         dest.w = dest.h = side;
         
-        dest.y = 0*side;
+        dest.y = 0*side; //1ère ligne : mur en briques
         SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[0], &dest);
         
-        dest.y = 1*side;
+        dest.y = 1*side; //2ème ligne : trottoir
         SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[1], &dest);
         
-        dest.y = (lines-2)*side;
+        dest.y = (lines-2)*side; //Avant-dernière ligne : trottoir
         SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[1], &dest, 0, NULL, SDL_FLIP_VERTICAL);
         
-        dest.y = (lines-1)*side;
+        dest.y = (lines-1)*side; //Dernière ligne : toit
         SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
         
-        if (lines == 6) { //Une seule voie par sens
+        if (lines == 6) { //Une seule voie par sens : voie avec ligne jaune sans voie extérieure
             dest.y = 2*side;
             SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[5], &dest);
             dest.y = 3*side; //Les deux sens sont sur les lignes 3 et 4 (sur 6 au total)
             SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
         }
         else {
-            dest.y = 2*side;
+            dest.y = 2*side; //1ère voie : voie sans ligne jaune ni voie extérieure
             SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[2], &dest);
             dest.y = (lines-3)*side;
             SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[2], &dest, 0, NULL, SDL_FLIP_VERTICAL);
             
-            dest.y = (lines/2-1)*side;
+            dest.y = (lines/2-1)*side; //Dernière voie : voie avec ligne jaune et voie extérieure
             SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[4], &dest);
             dest.y = (lines/2)*side;
             SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[4], &dest, 0, NULL, SDL_FLIP_VERTICAL);
             
-            for(int i=3; i<lines/2-1; i++) {
+            for(int i=3; i<lines/2-1; i++) { //Voies entre : voie avec voieS extérieureS sans ligne jaune
                 dest.y = i*side;
                 SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
                 dest.y = (lines-1-i)*side;
@@ -151,6 +145,12 @@ void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autor
             }
         }
     }
+    
+    
+    float scaleX = 1;
+    float scaleY = 1;
+    scaleX = (float)viewport->width/800.0;
+    scaleY = (float)viewport->height/600.0;
     
     SDL_Color color = {0, 0, 0, 255};
     SDL_Surface* text_surface = NULL;
@@ -186,24 +186,23 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
     source.w = 32;
     source.h = 16;
     
-    dest.x = 0;
-    dest.w = side;
-    dest.h = side/2;
+    dest.w = side; //Longueur d'une voiture = longueur d'un bloc de route.
+    dest.x = side; //Position du joueur, à une longueur de voiture du bord gauche de l'écran.
+    dest.h = side / (CAR_LENGTH/CAR_WIDTH);
     float entity_pos = (entity->location.y / viewport->level->width);
     dest.y = (2. + entity_pos * road_lines) * side;
     
     switch(entity->type) {
         case PLAYER_CAR:
-            dest.x = 0.1 * viewport->width;
             break;
         case CAR:
             source.y = 16;
-            dest.x = 0;
+            dest.x += ((entity->location.x - viewport->level->player->location.x) * side)/CAR_LENGTH;
             if (entity->location.direction) flip = SDL_FLIP_HORIZONTAL;
             break;
     }
     
-    SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
+    if (dest.x > -side) SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
 }
 
 void draw_cars(Viewport* viewport, int road_lines, int side) {
@@ -270,7 +269,7 @@ void event_loop(Viewport* viewport) {
     int lines = 2*NB_LINES + 4;
     int side = viewport->height/lines + 1;
     int pos = 0;
-    int scrolling_speed = SCROLLING_SPEED;
+    float scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS; //Vitesse du joueur : 5 blocs/seconde
     
     while (!quit) {
         while (SDL_PollEvent(&event)) {
@@ -288,22 +287,47 @@ void event_loop(Viewport* viewport) {
                     break;
                     
                 case SDL_KEYDOWN: 
-                    switch (event.key.keysym.sym) {
-                        case SDLK_SPACE:
-                            if (viewport->state == TITLE) viewport->state = GAME;
+                    switch (viewport->state) {
+                        case TITLE:
+                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = true;
                             break;
                         default:
-                            break;
+                            switch (event.key.keysym.sym) {
+                                case SDLK_RIGHT:
+                                    make_action(viewport->level, viewport->level->player, ACTION_FASTER);
+                                    scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
+                                    break;
+                                case SDLK_LEFT:
+                                    make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
+                                    scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
+                                    break;
+                                case SDLK_UP:
+                                    make_action(viewport->level, viewport->level->player, ACTION_LEFT);
+                                    break;
+                                case SDLK_DOWN:
+                                    make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
+                                    break;
+                            }
                     }
                     break;
-            }
+            
+                }
         }
+            
         
+        if(viewport->state == GAMEIA)
+        {
+            make_action(viewport->level, viewport->level->player, e_greedy(get_entity_perception(viewport->level, viewport->level->player), viewport->level->player->markov));
+            scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
+        }
         switch(viewport->state) {
-            case ((ViewportState)(GAME)):
+            
+            case GAME:
+            case ((ViewportState)(GAMEIA)):
+                update_game(viewport->level);
                 draw_road(viewport, lines, side, pos);
                 draw_cars(viewport, lines-4, side);
-                pos = (pos+scrolling_speed) % side;
+                pos = (int) (pos + scrolling_speed) % side;
             break;
             case ((ViewportState)(TITLE)):
                 draw_viewportTitle(viewport);
@@ -311,6 +335,6 @@ void event_loop(Viewport* viewport) {
         }
         
         SDL_RenderPresent(viewport->renderer);
-        SDL_Delay(5);
+        SDL_Delay(1000/FPS);
     }
 }
