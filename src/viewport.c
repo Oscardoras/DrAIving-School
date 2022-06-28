@@ -57,7 +57,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         close_viewport(viewport);
         return NULL;
     }
-    viewport->state = (ViewportState)(TITLE);
+    viewport->state = (ViewportState)(GAME);
     /*
     for(unsigned int it = 0; it < TEXTURE_COUNT; ++it)
     {
