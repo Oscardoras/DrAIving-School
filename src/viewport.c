@@ -323,15 +323,15 @@ void event_loop(Viewport* viewport) {
         switch(viewport->state) {
             
             case GAME:
+            case ((ViewportState)(GAMEIA)):
                 update_game(viewport->level);
                 draw_road(viewport, lines, side, pos);
                 draw_cars(viewport, lines-4, side);
                 pos = (int) (pos + scrolling_speed) % side;
             break;
             case ((ViewportState)(TITLE)):
-            case ((ViewportState)(GAMEIA)):
                 draw_viewportTitle(viewport);
-            
+            break;
         }
         
         SDL_RenderPresent(viewport->renderer);
