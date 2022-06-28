@@ -13,16 +13,10 @@ typedef struct {
     float velocity;
 } Location;
 
-typedef enum{
-    ACTION_LEFT,
-    ACTION_RIGHT,
-    ACTION_FASTER,
-    ACTION_SLOWER
-} Action;
-
 
 #define ENTITY_TYPES 2
 typedef enum {
+    PLAYER_CAR,
     CAR1,
     CAR2
 } EntityType;
@@ -51,29 +45,6 @@ Entity* new_entity(EntityType type, Location location, Matrix* markov, unsigned 
  * @param entity the entity.
  */
 void free_entity(Entity* entity);
-
-
-typedef struct {
-    Location location;
-    Matrix* matrix;
-    float time;
-} Player;
-
-/**
- * @brief Creates a new player.
- * 
- * @param location the location in the level.
- * @param matrix the matrix of the player.
- * @return the new player.
- */
-Player* new_player(Location location, Matrix* matrix);
-
-/**
- * @brief Frees a player.
- * 
- * @param player the player.
- */
-void free_player(Player* player);
 
 
 #endif

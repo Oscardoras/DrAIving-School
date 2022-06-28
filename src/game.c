@@ -1,5 +1,7 @@
 #include "game.h"
 
+#define PERCEPTION_DISTANCE 1.
+
 
 void update_game(Level* level) {
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
@@ -18,23 +20,27 @@ void update_game(Level* level) {
 
             break;
             */
-        } 
+        }
     }
 }
 
-bool player_action(Level* level, Action action) {
+Action choose_action(Level* level, Entity* entity) {
+    
+}
+
+bool make_action(Level* level, Entity* entity, Action action) {
     switch (action) {
         case ACTION_LEFT:
-            level->player->location.y -= level->player->location.velocity;
+            entity->location.y -= entity->location.velocity;
         break;
         case ACTION_RIGHT:
-            level->player->location.y += level->player->location.velocity;
+            entity->location.y += entity->location.velocity;
         break;
         case ACTION_FASTER:
-            level->player->location.velocity += 0.1;
+            entity->location.velocity += 0.1;
         break;
         case ACTION_SLOWER:
-            level->player->location.velocity -= 0.1;
+            entity->location.velocity -= 0.1;
         break;
     }
     
