@@ -38,7 +38,11 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
         run->last->action = act;
         run->last->state = pct;
     }
-    // todo : Ajouter reward finale (temps)
+    run->last->next = malloc(sizeof(struct RunListCell));
+    run->last->next->previous = run->last;
+    run->last = run->last->next;
+    run->last->next = NULL;
+    run->last->reward = level->1.0/(float)score;
 }
 
 Action e_greedy(Matrix* Q, Perception perception) {
@@ -88,4 +92,15 @@ void learning_update(Matrix* matrix, Run* run)
         // M defined
         *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
     }
+}
+
+void freeRun(Run* run)
+{
+    Run* cour;
+    for(struct RunListCell* iterator = run->last; iterator != NULL; iterator = cour)
+    {
+        cour = iterator->previous;
+        free(iterator);
+    }
+    free(run);
 }
