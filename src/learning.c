@@ -42,14 +42,13 @@ void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p
         
         quit = update_game(level);
         make_action(level, level->player, a);
-        if(!run->last)
-        {
+        if(!run->last) {
             run->last = malloc(sizeof(struct RunListCell));
             run->first = run->last;
             run->first->next = NULL;
             run->first->previous = NULL;
         }
-        else{
+        else {
             run->last->next = malloc(sizeof(struct RunListCell));
             run->last->next->previous = run->last;
             run->last = run->last->next;
@@ -97,7 +96,7 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
     }
 }
 
-void learning_update(Matrix* matrix, Run* run) {
+void q_learning(Matrix* matrix, Run* run) {
     *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON_LEARNING * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
     for(struct RunListCell* iterator = run->last->previous->previous; iterator != NULL; iterator = iterator->previous) {
         // Defind M
@@ -109,6 +108,67 @@ void learning_update(Matrix* matrix, Run* run) {
 
         // M defined
         *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON_LEARNING * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
+    }
+}
+
+void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
+    int alpha = rand()%2;
+    Matrix* Q_a; //Q_apprentissage
+    Matrix* Q_e; //Q_estimation
+
+    struct RunListCell* next;
+    float quality;
+    float max_quality;
+    Action max_action;
+
+    if (alpha) {
+        Q_a = matrix1;
+        Q_e = matrix2;
+    }
+    else {
+        Q_a = matrix2;
+        Q_e = matrix1;
+    }
+
+    *get_matrix_element(Q_a, run->last->previous->state, run->last->previous->action) +=
+        EPSILON_LEARNING *
+        (
+            run->last->reward -
+            *get_matrix_element(Q_a, run->last->previous->state, run->last->previous->action)
+        );
+
+    for(struct RunListCell* it = run->last->previous->previous; it; it = it->previous) {
+        alpha = rand()%2;
+        if (alpha) {
+        Q_a = matrix1;
+        Q_e = matrix2;
+        }
+        else {
+        Q_a = matrix2;
+        Q_e = matrix1;
+        }
+
+        next = it->next;
+        max_action = 0;
+        max_quality = *get_matrix_element(Q_e, next->state, 0);
+        
+        for (int j = 1; j<Q_e->columns; j++) {
+            quality = *get_matrix_element(Q_e, next->state, j);
+            max_action = (quality>max_quality) ?
+                j :
+                max_action;
+            max_quality = (quality>max_quality) ?
+                quality :
+                max_quality;
+        }
+
+        *get_matrix_element(Q_a, it->state, it->action) +=
+            EPSILON_LEARNING *
+            (
+                next->reward +
+                GAMMA * max_quality -
+                *get_matrix_element(Q_a, it->state, it->action)
+            );
     }
 }
 

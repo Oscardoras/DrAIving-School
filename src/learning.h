@@ -55,7 +55,9 @@ int lenght_run(Run* run);
 
 Action e_greedy(Matrix* q, Perception perception, float eps);
 
-void learning_update(Matrix* q, Run* run);
+void q_learning(Matrix* q, Run* run);
+
+void double_q_learning(Matrix* q1, Matrix* q2, Run* run);
 
 
 #endif

@@ -50,7 +50,7 @@ int main() {
             Matrix* q = load_matrix(file);
             fclose(file);
             
-            learn(LEARN_ITERATION, q, e_greedy, learning_update, level);
+            learn(LEARN_ITERATION, q, e_greedy, q_learning, level);
             
             file = fopen("learning.txt", "w");
             if (file) {
