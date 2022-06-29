@@ -6,7 +6,22 @@
 #define GAMMA 0.5
 
 void learning_play(Level* level, Run* run, Action action) {
+    /**bool collision = true;
+    run = NULL;
+    while(collision)
+    {
+        collision = update_game(level);
+        make_action(level, level->player,
+                action(level->player->markov,
+                    get_entity_perception(level, level->player)
+                )
+            );
+        if(!run)
+        {
 
+        }
+    }*/
+    // todo : Ajouter reward finale (temps)
 }
 
 Action e_greedy(Matrix* Q, Perception perception) {
