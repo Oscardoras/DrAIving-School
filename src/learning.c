@@ -38,7 +38,7 @@ Action e_greedy(Matrix* Q, Perception perception) {
 
 void learning_update(Matrix* matrix, Run* run)
 {
-    *get_matrix_element(matrix, run->last->state, run->last->action) += EPSILON * (/**C'est quoi RN**/ - *get_matrix_element(matrix, run->last->state, run->last->action)); 
+    *get_matrix_element(matrix, run->last->state, run->last->action) += EPSILON * (1 - *get_matrix_element(matrix, run->last->state, run->last->action)); 
     for(struct RunListCell* iterator = run->last-1; iterator != NULL; iterator = iterator->previous)
     {
         // Defind M
