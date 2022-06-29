@@ -99,8 +99,6 @@ void event_loop(Viewport* viewport) {
     int duree_frame = 1000/FPS;
     int lines = 2*NB_LINES + 4;
     int side = viewport->height/lines + 1;
-    int pos = 0;
-    float scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS; //Vitesse du joueur : 5 blocs/seconde
     
     while (!quit && !collision) {
         while (SDL_PollEvent(&event)) {
@@ -135,11 +133,9 @@ void event_loop(Viewport* viewport) {
                             switch (event.key.keysym.sym) {
                                 case SDLK_RIGHT:
                                     make_action(viewport->level, viewport->level->player, ACTION_FASTER);
-                                    scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
                                     break;
                                 case SDLK_LEFT:
                                     make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
-                                    scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
                                     break;
                                 case SDLK_UP:
                                     make_action(viewport->level, viewport->level->player, ACTION_LEFT);
@@ -161,14 +157,12 @@ void event_loop(Viewport* viewport) {
                     get_entity_perception(viewport->level, viewport->level->player)
                 )
             );
-            scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
         }
         switch(viewport->state) {
         case GAME:
             collision = update_game(viewport->level);
-            draw_road(viewport, lines, side, pos);
+            draw_road(viewport, lines, side);
             draw_cars(viewport, lines-4, side);
-            pos = (int) (pos + scrolling_speed) % side;
             SDL_RenderPresent(viewport->renderer);
             SDL_Delay(duree_frame);
             break;

@@ -6,7 +6,10 @@ bool update_game(Level* level) {
     
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
         make_action(level, it->entity, compute_state(it->entity->markov, get_entity_perception(level, it->entity)));
-        it->entity->location.x += it->entity->location.velocity;
+        int dir = (it->entity->location.direction) ?
+            1 :
+            -1;
+        it->entity->location.x += it->entity->location.velocity * dir;
         
         if (are_entity_box_hitting(get_entity_hitbox(it->entity), player_box))
             return true;
@@ -70,12 +73,22 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
             entity->location.y += entity->location.velocity;
         break;
         case ACTION_FASTER:
+            entity->location.velocity = (entity->location.velocity <= 0.23) ?
+                entity->location.velocity + 0.01 :
+                0.24;
+            /*
             if (entity->location.velocity < 1.5)
                 entity->location.velocity += 0.05;
+            */
         break;
         case ACTION_SLOWER:
+            entity->location.velocity = (entity->location.velocity >= 0.02) ?
+                entity->location.velocity - 0.01 :
+                0.01;
+            /*
             if (entity->location.velocity > 1.)
                 entity->location.velocity -= 0.05;
+            */
         break;
         default:
         break;
