@@ -51,12 +51,18 @@ int main() {
         Run currentRun;
         currentRun.first = NULL;
         currentRun.last = NULL;
+        FILE *file = fopen("learning", "r");
+        level->player->markov = load_matrix(file);
+        fclose(file);
         for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
         {
             learning_play(level, &currentRun, e_greedy);
+            learning_update(level->player->markov, &currentRun);
+            freeRun(&currentRun);
         }
-        FILE *file = fopen("learning", "w");
+        file = fopen("learning", "w");
         save_matrix(level->player->markov, file);
+        free_matrix(level->player->markov);
         fclose(file);
     }
     #endif

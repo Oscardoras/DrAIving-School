@@ -6,9 +6,7 @@
 #define GAMMA 0.5
 
 void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
-    bool collision = true;
-    run = NULL;
-    run = malloc(sizeof(Run));
+    bool collision = false;
     run->first = NULL;
     run->last = NULL;
     while(!collision)
@@ -102,5 +100,4 @@ void freeRun(Run* run)
         cour = iterator->previous;
         free(iterator);
     }
-    free(run);
 }
