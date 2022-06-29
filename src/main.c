@@ -10,7 +10,7 @@
 #include "level.h"
  
 
-//#define LEARN
+#define LEARN
 #define LEARN_ITERATION 10000
 #define WIDTH 800
 #define HEIGHT 600
@@ -45,7 +45,7 @@ int main() {
         
         close_viewport(viewport);
     #else
-        file = fopen("learning.txt", "r");
+        file = fopen("base.txt", "r");
         if (file) {
             Matrix* q = load_matrix(file);
             fclose(file);
