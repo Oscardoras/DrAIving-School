@@ -2,9 +2,9 @@
 
 #include "learning.h"
 
-#define EPSILON 0.2
-#define EPSILON_LEARNING 0.01
-#define GAMMA 0.01
+#define EPSILON 0.95
+#define EPSILON_LEARNING 0.0001
+#define GAMMA 0.0001
 
 
 void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
@@ -16,10 +16,9 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
         Perception p = get_entity_perception(level, level->player);
         Action a = action(level->player->q, p);
         
-        //printf("perception : %d\nAction : %d\n", pct, act);
         quit = update_game(level);
         
-        make_action(level, level->player, act);
+        make_action(level, level->player, a);
         
         if (run->last == NULL) {
             run->last = malloc(sizeof(struct RunListCell));
@@ -43,9 +42,9 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     run->last = run->last->next;
     
     if (level->player->location.x >= level->length)
-        run->last->reward = (1.0/(float)level->score);
+        run->last->reward = (-level->player->location.x);
     else
-        run->last->reward = -(1.0/(float)level->score);
+        run->last->reward = (-level->player->location.x);
 }
 
 Action e_greedy(Matrix* q, Perception perception) {

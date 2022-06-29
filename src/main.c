@@ -10,7 +10,7 @@
 #include "level.h"
  
 
-#define LEARN
+//#define LEARN
 #define LEARN_ITERATION 100000
 
 int main() {
@@ -47,7 +47,7 @@ int main() {
     #else
         for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
         {
-            Level* level = new_level(15., 100, matrix);
+            Level* level = new_level(15., 500, matrix);
             if (level == NULL) return EXIT_FAILURE;
             Location location;
             location.velocity = 0.1;
