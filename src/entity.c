@@ -3,13 +3,13 @@
 #include "entity.h"
 
 
-Entity* new_entity(EntityType type, Location location, Matrix* markov) {
+Entity* new_entity(EntityType type, Location location, Matrix* q) {
     Entity* entity = malloc(sizeof(Entity));
     
     if (entity != NULL) {
         entity->type = type;
         entity->location = location;
-        entity->markov = markov;
+        entity->q = q;
     }
     
     return entity;

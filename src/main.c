@@ -21,18 +21,10 @@ int main() {
     if (file) {
         matrix = load_matrix(file);
         fclose(file);
-    }
-    Level* level = new_level(15., 10000., matrix);
+    } else return EXIT_FAILURE;
+    
+    Level* level = new_level(15., 500., matrix);
     if (level == NULL) return EXIT_FAILURE;
-    
-    #ifndef LEARN
-    Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
-    if (viewport == NULL) {
-        free_level(level);
-        return EXIT_FAILURE;
-    }
-    #endif
-    
     
     Location location;
     location.velocity = 0.1;
@@ -40,21 +32,25 @@ int main() {
     location.y = (5. / 6) * level->width;
     level->player = new_entity(PLAYER_CAR, location, NULL);
     
+    
     #ifndef LEARN
-    {
+        Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
+        if (viewport == NULL) {
+            free_level(level);
+            return EXIT_FAILURE;
+        }
+        
         event_loop(viewport);
+        
         close_viewport(viewport);
-    }
     #else
-    {
         Run currentRun;
         currentRun.first = NULL;
         currentRun.last = NULL;
         FILE *file = fopen("learning", "r");
         level->player->markov = load_matrix(file);
         fclose(file);
-        for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
-        {
+        for(unsigned int it = 0; it < LEARN_ITERATION; ++it) {
             printf("Learning iteration %d\n", it);
             learning_play(level, &currentRun, e_greedy);
             learning_update(level->player->markov, &currentRun);
@@ -64,8 +60,8 @@ int main() {
         save_matrix(level->player->markov, file);
         free_matrix(level->player->markov);
         fclose(file);
-    }
     #endif
+    
     free_level(level);
 
     return EXIT_SUCCESS;

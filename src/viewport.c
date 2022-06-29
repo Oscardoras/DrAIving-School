@@ -25,6 +25,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->level = level;
     viewport->window = NULL;
     viewport->renderer = NULL;
+    viewport->tilesets.preview = NULL;
     viewport->tilesets.roads = NULL;
     viewport->tilesets.vehicles = NULL;
     viewport->animation_loop = 0;
@@ -51,9 +52,9 @@ Viewport* create_viewport(int width, int height, Level* level) {
         return NULL;
     }
  
+    viewport->tilesets.preview = IMG_LoadTexture(viewport->renderer, "sprites/preview_2.png");
     viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
     viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/cars.png");
-    viewport->tilesets.preview = IMG_LoadTexture(viewport->renderer, "sprites/preview_2.png");
     if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL || viewport->tilesets.preview == NULL) {
         SDL_Log("Error IMG");
         close_viewport(viewport);
@@ -124,7 +125,7 @@ void event_loop(Viewport* viewport) {
                                     FILE *file = fopen("learning", "r");
                                     if(file)
                                     {
-                                        viewport->level->player->markov = load_matrix(file);
+                                        viewport->level->player->q = load_matrix(file);
                                         fclose(file);
                                     }
                                 }
@@ -153,7 +154,7 @@ void event_loop(Viewport* viewport) {
         
         if(viewport->state == VIEWPORTSTATE_GAMEIA) {
             make_action(viewport->level, viewport->level->player,
-                e_greedy(viewport->level->player->markov,
+                e_greedy(viewport->level->player->q,
                     get_entity_perception(viewport->level, viewport->level->player)
                 )
             );
