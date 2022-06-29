@@ -11,38 +11,38 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     bool quit = false;
     run->first = NULL;
     run->last = NULL;
-    while(!quit)
-    {
-        Perception pct = get_entity_perception(level, level->player);
-        Action act = action(level->player->q,
-                    pct);
+    
+    while(!quit) {
+        Perception p = get_entity_perception(level, level->player);
+        Action a = action(level->player->q, p);
+        
         //printf("perception : %d\nAction : %d\n", pct, act);
         quit = update_game(level);
-        make_action(level, level->player,
-                act
-                );
-        if(!run->last)
-        {
+        
+        make_action(level, level->player, act);
+        
+        if (run->last == NULL) {
             run->last = malloc(sizeof(struct RunListCell));
             run->first = run->last;
             run->first->next = NULL;
             run->first->previous = NULL;
-        }
-        else{
+        } else{
             run->last->next = malloc(sizeof(struct RunListCell));
             run->last->next->previous = run->last;
+            run->last->next->next = NULL;
             run->last = run->last->next;
-            run->last->next = NULL;
         }
         run->last->reward = 0;
-        run->last->action = act;
-        run->last->state = pct;
+        run->last->action = a;
+        run->last->state = p;
     }
+    
     run->last->next = malloc(sizeof(struct RunListCell));
     run->last->next->previous = run->last;
+    run->last->next->next = NULL;
     run->last = run->last->next;
-    run->last->next = NULL;
-    if(level->player->location.x >= level->length)
+    
+    if (level->player->location.x >= level->length)
         run->last->reward = (1.0/(float)level->score);
     else
         run->last->reward = -(1.0/(float)level->score);
