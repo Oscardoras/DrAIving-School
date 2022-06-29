@@ -3,7 +3,45 @@
 #include "learning.h"
 
 #define EPSILON 0.5
+#define GAMMA 0.5
 
+void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
+    bool collision = false;
+    run->first = NULL;
+    run->last = NULL;
+    while(!collision)
+    {
+        Perception pct = get_entity_perception(level, level->player);
+        Action act = action(level->player->markov,
+                    pct);
+        
+        collision = update_game(level);
+        make_action(level, level->player,
+                act
+                );
+        if(!run->last)
+        {
+            run->last = malloc(sizeof(struct RunListCell));
+            run->first = run->last;
+            run->first->next = NULL;
+            run->first->previous = NULL;
+        }
+        else{
+            run->last->next = malloc(sizeof(struct RunListCell));
+            run->last->next->previous = run->last;
+            run->last = run->last->next;
+            run->last->next = NULL;
+        }
+        run->last->reward = 0;
+        run->last->action = act;
+        run->last->state = pct;
+    }
+    run->last->next = malloc(sizeof(struct RunListCell));
+    run->last->next->previous = run->last;
+    run->last = run->last->next;
+    run->last->next = NULL;
+    run->last->reward = 1.0/(float)level->score;
+}
 
 Action e_greedy(Matrix* Q, Perception perception) {
     float r = rand() / (float) RAND_MAX;
@@ -29,5 +67,37 @@ Action e_greedy(Matrix* Q, Perception perception) {
                 return j;
         
         return j-1;
+    }
+}
+
+void learning_update(Matrix* matrix, Run* run)
+{
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
+    for(struct RunListCell* iterator = run->last->previous->previous; iterator != NULL; iterator = iterator->previous)
+    {
+        // Defind M
+        struct RunListCell* next = iterator->next;
+        float highest = *get_matrix_element(matrix, next->state, 0);
+        unsigned int highestid = 0;
+        for(unsigned int j = 1; j < 5; ++j)
+        {
+            if(*get_matrix_element(matrix, next->state, j) > highest)
+            {
+                highestid = j;
+                highest = *get_matrix_element(matrix, next->state, j);
+            }
+        }
+        // M defined
+        *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
+    }
+}
+
+void freeRun(Run* run)
+{
+    Run* cour;
+    for(struct RunListCell* iterator = run->last; iterator != NULL; iterator = cour)
+    {
+        cour = iterator->previous;
+        free(iterator);
     }
 }

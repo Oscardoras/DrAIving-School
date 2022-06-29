@@ -10,9 +10,15 @@
  * @param viewport the viewport to draw.
  * @param lines the number of lines to draw (2 * lines_per_direction + 4 (the borders of the road)).
  * @param side the length of the side of a roadblock.
- * @param pos the position of the road (used to animate the player movement on the road).
  */
-void draw_road(Viewport* viewport, int lines, int side, int pos);
+void draw_road(Viewport* viewport, int lines, int side);
+
+/**
+ * @brief Draws the player's score on screen.
+ * 
+ * @param viewport the viewport to draw.
+ */
+void draw_score(Viewport* viewport);
 
 /**
  * @brief Draws a car.

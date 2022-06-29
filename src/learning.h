@@ -38,5 +38,5 @@ Action e_greedy(Matrix* Q, Perception perception);
 
 void learning_update(Matrix* Q, Run* run);
 
-
+void freeRun(Run* run);
 #endif
