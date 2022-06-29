@@ -2,7 +2,7 @@
 
 #include "learning.h"
 
-#define EPSILON 0.001
+#define EPSILON 0.1
 #define EPSILON_LEARNING 0.001
 #define GAMMA 0.001
 
@@ -89,7 +89,7 @@ void learning_update(Matrix* matrix, Run* run) {
 }
 
 void free_run(Run* run) {
-    for(struct RunListCell* it = run->first; it != NULL; it = it->next) {
+    for(struct RunListCell* it = run->first; it != NULL;) {
         struct RunListCell* tmp = it;
         it = it->next;
         free(tmp);

@@ -161,14 +161,12 @@ void event_loop(Viewport* viewport) {
         }
         switch(viewport->state) {
         case VIEWPORTSTATE_GAME:
+        case VIEWPORTSTATE_GAMEIA:
             collision = update_game(viewport->level);
             draw_road(viewport, lines, side);
             draw_cars(viewport, lines-4, side);
             SDL_RenderPresent(viewport->renderer);
             SDL_Delay(duree_frame);
-            break;
-        case VIEWPORTSTATE_GAMEIA:
-            collision = update_game(viewport->level);
             break;
         case VIEWPORTSTATE_TITLE:
             draw_viewportTitle(viewport);
