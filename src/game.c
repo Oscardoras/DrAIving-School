@@ -59,12 +59,11 @@ Perception get_entity_perception(Level* level, Entity* entity) {
         HitBox box = get_entity_hitbox(it->entity);
         
         HitBox b = get_entity_hitbox(entity);
-        HitBox c = b;
         
         float big_width = (b.max_y - b.min_y);
         float small_width = 0.25*big_width;
         float small_length = (b.max_x - b.min_x);
-        float big_length = 1.5*small_length;
+        float big_length = 5.*small_length;
         
         b.max_y = b.min_y;
         b.min_y -= small_width;
@@ -105,7 +104,7 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
                 entity->location.velocity += 0.01;
         break;
         case ACTION_SLOWER:
-            if (entity->location.velocity > 0.1)
+            if (entity->location.velocity > 0.15)
                 entity->location.velocity -= 0.01;
         break;
         default:
