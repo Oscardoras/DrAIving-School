@@ -131,15 +131,7 @@ void event_loop(Viewport* viewport) {
                 }
         }
         
-        const Uint8* keystates = SDL_GetKeyboardState(NULL);
-        if (keystates[SDL_SCANCODE_UP])
-            make_action(viewport->level, viewport->level->player, ACTION_LEFT);
-        if (keystates[SDL_SCANCODE_DOWN])
-            make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
-        if (keystates[SDL_SCANCODE_RIGHT])
-            make_action(viewport->level, viewport->level->player, ACTION_FASTER);
-        if (keystates[SDL_SCANCODE_LEFT])
-            make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
+
         
         if(viewport->state == VIEWPORTSTATE_GAMEIA) {
             make_action(viewport->level, viewport->level->player,
@@ -147,6 +139,18 @@ void event_loop(Viewport* viewport) {
                     get_entity_perception(viewport->level, viewport->level->player)
                 )
             );
+        }
+        else
+        {
+            const Uint8* keystates = SDL_GetKeyboardState(NULL);
+            if (keystates[SDL_SCANCODE_UP])
+                make_action(viewport->level, viewport->level->player, ACTION_LEFT);
+            if (keystates[SDL_SCANCODE_DOWN])
+                make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
+            if (keystates[SDL_SCANCODE_RIGHT])
+                make_action(viewport->level, viewport->level->player, ACTION_FASTER);
+            if (keystates[SDL_SCANCODE_LEFT])
+                make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
         }
         switch(viewport->state) {
         case VIEWPORTSTATE_GAME:
