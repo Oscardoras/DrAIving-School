@@ -38,8 +38,8 @@ Action e_greedy(Matrix* Q, Perception perception) {
 
 void learning_update(Matrix* matrix, Run* run)
 {
-    *get_matrix_element(matrix, run->last->state, run->last->action) += EPSILON * (1 - *get_matrix_element(matrix, run->last->state, run->last->action)); 
-    for(struct RunListCell* iterator = run->last-1; iterator != NULL; iterator = iterator->previous)
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
+    for(struct RunListCell* iterator = run->last-2; iterator != NULL; iterator = iterator->previous)
     {
         // Defind M
         struct RunListCell* next = iterator->next;
