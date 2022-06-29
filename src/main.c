@@ -10,7 +10,7 @@
 #include "level.h"
  
 
-#define LEARN
+//#define LEARN
 #define LEARN_ITERATION 500
 
 int main() {

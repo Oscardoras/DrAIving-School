@@ -107,7 +107,8 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
     dest.x = side; //Position du joueur, à une longueur de voiture du bord gauche de l'écran.
     dest.h = side / (CAR_LENGTH/CAR_WIDTH);
     float entity_pos = (entity->location.y / viewport->level->width);
-    dest.y = (2. + entity_pos * road_lines) * side;
+    float y = get_entity_hitbox(entity).min_y / viewport->level->width;
+    dest.y = (2. + y * road_lines) * side;
     
     switch(entity->type) {
         case PLAYER_CAR:

@@ -45,7 +45,7 @@ bool update_game(Level* level) {
     }
     
     level->player->location.x += level->player->location.velocity;
-    if (player_box.min_y < 0 || player_box.max_y > level->width-0.8)
+    if (player_box.min_y < 0 || player_box.max_y > level->width)
         return true;
     
     level->score++;
