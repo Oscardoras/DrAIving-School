@@ -25,6 +25,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->level = level;
     viewport->window = NULL;
     viewport->renderer = NULL;
+    viewport->tilesets.preview = NULL;
     viewport->tilesets.roads = NULL;
     viewport->tilesets.vehicles = NULL;
     viewport->animation_loop = 0;
@@ -51,9 +52,9 @@ Viewport* create_viewport(int width, int height, Level* level) {
         return NULL;
     }
  
+    viewport->tilesets.preview = IMG_LoadTexture(viewport->renderer, "sprites/preview_2.png");
     viewport->tilesets.roads = IMG_LoadTexture(viewport->renderer, "sprites/sprites_road.png");
     viewport->tilesets.vehicles = IMG_LoadTexture(viewport->renderer, "sprites/cars.png");
-    viewport->tilesets.preview = IMG_LoadTexture(viewport->renderer, "sprites/preview_2.png");
     if (viewport->tilesets.roads == NULL || viewport->tilesets.vehicles == NULL || viewport->tilesets.preview == NULL) {
         SDL_Log("Error IMG");
         close_viewport(viewport);
@@ -113,61 +114,48 @@ void event_loop(Viewport* viewport) {
                         side = viewport->height/lines + 1;
                     }
                     break;
-                    
+                
                 case SDL_KEYDOWN: 
-                    switch (viewport->state) {
-                        case VIEWPORTSTATE_TITLE:
-                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = VIEWPORTSTATE_GAME;
-                            if(event.key.keysym.sym == SDLK_l) 
-                                {
-                                    viewport->state = VIEWPORTSTATE_GAMEIA;
-                                    FILE *file = fopen("learning", "r");
-                                    if(file)
-                                    {
-                                        viewport->level->player->markov = load_matrix(file);
-                                        fclose(file);
-                                    }
-                                }
-                            break;
-                        default:
-                            switch (event.key.keysym.sym) {
-                                case SDLK_RIGHT:
-                                    make_action(viewport->level, viewport->level->player, ACTION_FASTER);
-                                    break;
-                                case SDLK_LEFT:
-                                    make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
-                                    break;
-                                case SDLK_UP:
-                                    make_action(viewport->level, viewport->level->player, ACTION_LEFT);
-                                    break;
-                                case SDLK_DOWN:
-                                    make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
-                                    break;
+                    if (viewport->state == VIEWPORTSTATE_TITLE) {
+                        if(event.key.keysym.sym == SDLK_SPACE) viewport->state = VIEWPORTSTATE_GAME;
+                        if(event.key.keysym.sym == SDLK_l) {
+                            viewport->state = VIEWPORTSTATE_GAMEIA;
+                            FILE *file = fopen("learning", "r");
+                            if(file)
+                            {
+                                viewport->level->player->q = load_matrix(file);
+                                fclose(file);
                             }
+                        }
                     }
-                    break;
-            
                 }
         }
-            
+        
+        const Uint8* keystates = SDL_GetKeyboardState(NULL);
+        if (keystates[SDL_SCANCODE_UP])
+            make_action(viewport->level, viewport->level->player, ACTION_LEFT);
+        if (keystates[SDL_SCANCODE_DOWN])
+            make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
+        if (keystates[SDL_SCANCODE_RIGHT])
+            make_action(viewport->level, viewport->level->player, ACTION_FASTER);
+        if (keystates[SDL_SCANCODE_LEFT])
+            make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
         
         if(viewport->state == VIEWPORTSTATE_GAMEIA) {
             make_action(viewport->level, viewport->level->player,
-                e_greedy(viewport->level->player->markov,
+                e_greedy(viewport->level->player->q,
                     get_entity_perception(viewport->level, viewport->level->player)
                 )
             );
         }
         switch(viewport->state) {
         case VIEWPORTSTATE_GAME:
+        case VIEWPORTSTATE_GAMEIA:
             collision = update_game(viewport->level);
             draw_road(viewport, lines, side);
             draw_cars(viewport, lines-4, side);
             SDL_RenderPresent(viewport->renderer);
             SDL_Delay(duree_frame);
-            break;
-        case VIEWPORTSTATE_GAMEIA:
-            collision = update_game(viewport->level);
             break;
         case VIEWPORTSTATE_TITLE:
             draw_viewportTitle(viewport);

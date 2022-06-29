@@ -2,8 +2,10 @@
 
 #include "learning.h"
 
-#define EPSILON 0.5
-#define GAMMA 0.5
+#define EPSILON 0.1
+#define EPSILON_LEARNING 0.001
+#define GAMMA 0.001
+
 
 void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     bool quit = false;
@@ -12,7 +14,7 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     while(!quit)
     {
         Perception pct = get_entity_perception(level, level->player);
-        Action act = action(level->player->markov,
+        Action act = action(level->player->q,
                     pct);
         //printf("perception : %d\nAction : %d\n", pct, act);
         quit = update_game(level);
@@ -44,15 +46,15 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     
 }
 
-Action e_greedy(Matrix* Q, Perception perception) {
+Action e_greedy(Matrix* q, Perception perception) {
     float r = rand() / (float) RAND_MAX;
     
     if (r < EPSILON) {
         float p_max = 0.;
         Action action = 0;
         
-        for (unsigned int j = 0; j < Q->columns; j++) {
-            float p = *get_matrix_element(Q, perception, j);
+        for (unsigned int j = 0; j < q->columns; j++) {
+            float p = *get_matrix_element(q, perception, j);
             if (p > p_max) {
                 p_max = p;
                 action = j;
@@ -63,42 +65,33 @@ Action e_greedy(Matrix* Q, Perception perception) {
     } else {
         r = rand() / (float) RAND_MAX;
         unsigned int j;
-        for (j = 0; j < Q->columns; j++)
-            if (j / (float) Q->columns <= r)
+        for (j = 0; j < q->columns; j++)
+            if (j / (float) q->columns <= r)
                 return j;
         
         return j-1;
     }
 }
 
-void learning_update(Matrix* matrix, Run* run)
-{
-    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
-    for(struct RunListCell* iterator = run->last->previous->previous; iterator != NULL; iterator = iterator->previous)
-    {
+void learning_update(Matrix* matrix, Run* run) {
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON_LEARNING * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
+    for(struct RunListCell* iterator = run->last->previous->previous; iterator != NULL; iterator = iterator->previous) {
         // Defind M
         struct RunListCell* next = iterator->next;
         float highest = *get_matrix_element(matrix, next->state, 0);
-        unsigned int highestid = 0;
         for(unsigned int j = 1; j < 5; ++j)
-        {
             if(*get_matrix_element(matrix, next->state, j) > highest)
-            {
-                highestid = j;
                 highest = *get_matrix_element(matrix, next->state, j);
-            }
-        }
+
         // M defined
-        *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
+        *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON_LEARNING * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
     }
 }
 
-void freeRun(Run* run)
-{
-    Run* cour;
-    for(struct RunListCell* iterator = run->last; iterator != NULL; iterator = cour)
-    {
-        cour = iterator->previous;
-        free(iterator);
+void free_run(Run* run) {
+    for(struct RunListCell* it = run->first; it != NULL;) {
+        struct RunListCell* tmp = it;
+        it = it->next;
+        free(tmp);
     }
 }

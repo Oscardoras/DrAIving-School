@@ -21,33 +21,30 @@ int main() {
     if (file) {
         matrix = load_matrix(file);
         fclose(file);
-    }
-    #ifndef LEARN
-    Level* level = new_level(15., 10000., matrix);
+    } else return EXIT_FAILURE;
+    
+    Level* level = new_level(15., 500., matrix);
     if (level == NULL) return EXIT_FAILURE;
     
-   
-    Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
-    if (viewport == NULL) {
-        free_level(level);
-        return EXIT_FAILURE;
-    }
     Location location;
     location.velocity = 0.1;
     location.x = 2.;
     location.y = (5. / 6) * level->width;
     level->player = new_entity(PLAYER_CAR, location, NULL);
-    #endif
     
     
     #ifndef LEARN
-    {
+        Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
+        if (viewport == NULL) {
+            free_level(level);
+            return EXIT_FAILURE;
+        }
+        
         event_loop(viewport);
+        
         close_viewport(viewport);
         free_level(level);
-    }
     #else
-    {
         for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
         {
             Level* level = new_level(15., 100, matrix);
@@ -61,20 +58,20 @@ int main() {
             currentRun.first = NULL;
             currentRun.last = NULL;
             FILE *file = fopen("learning", "r");
-            level->player->markov = load_matrix(file);
+            level->player->q = load_matrix(file);
             fclose(file);
             printf("Learning iteration %d\n", it);
             learning_play(level, &currentRun, e_greedy);
-            learning_update(level->player->markov, &currentRun);
-            freeRun(&currentRun);
+            learning_update(level->player->q, &currentRun);
+            free_run(&currentRun);
             file = fopen("learning", "w");
-            save_matrix(level->player->markov, file);
-            free_matrix(level->player->markov);
+            save_matrix(level->player->q, file);
+            free_matrix(level->player->q);
             fclose(file);
             free_level(level);
         }
-        
-    }
     #endif
+    
+    
     return EXIT_SUCCESS;
 }

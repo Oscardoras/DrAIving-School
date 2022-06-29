@@ -24,7 +24,7 @@ typedef enum {
 typedef struct {
     EntityType type;
     Location location;
-    Matrix* markov;
+    Matrix* q;
 } Entity;
 
 typedef struct {    
@@ -40,10 +40,10 @@ typedef struct {
  * 
  * @param type the type of the entity.
  * @param location the location in the level.
- * @param markov the Markov matrix of the entity.
+ * @param q the Q(s,a) matrix of the entity.
  * @return the new entity.
  */
-Entity* new_entity(EntityType type, Location location, Matrix* markov);
+Entity* new_entity(EntityType type, Location location, Matrix* q);
 
 /**
  * @brief Frees an entity.
