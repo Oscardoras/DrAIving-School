@@ -10,8 +10,8 @@
 #include "level.h"
  
 
-//#define LEARN
-#define LEARN_ITERATION 500
+#define LEARN
+#define LEARN_ITERATION 100
 
 int main() {
     srand(time(NULL));
@@ -58,15 +58,15 @@ int main() {
             currentRun.first = NULL;
             currentRun.last = NULL;
             FILE *file = fopen("learning", "r");
-            level->player->markov = load_matrix(file);
+            level->player->q = load_matrix(file);
             fclose(file);
             printf("Learning iteration %d\n", it);
             learning_play(level, &currentRun, e_greedy);
-            learning_update(level->player->markov, &currentRun);
-            freeRun(&currentRun);
+            learning_update(level->player->q, &currentRun);
+            free_run(&currentRun);
             file = fopen("learning", "w");
-            save_matrix(level->player->markov, file);
-            free_matrix(level->player->markov);
+            save_matrix(level->player->q, file);
+            free_matrix(level->player->q);
             fclose(file);
             free_level(level);
         }

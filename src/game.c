@@ -20,7 +20,7 @@ bool update_game(Level* level) {
             free(tmp);
         } else {
             struct EntityListCell* it = *ptr;
-            make_action(level, it->entity, compute_state(it->entity->markov, get_entity_perception(level, it->entity)));
+            make_action(level, it->entity, compute_state(it->entity->q, get_entity_perception(level, it->entity)));
             it->entity->location.x += it->entity->location.velocity;
             
             if (are_entity_box_hitting(get_entity_hitbox(it->entity), player_box))
