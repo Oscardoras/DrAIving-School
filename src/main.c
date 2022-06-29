@@ -50,7 +50,7 @@ int main() {
     {
         for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
         {
-            Level* level = new_level(15., 10000., matrix);
+            Level* level = new_level(15., 100, matrix);
             if (level == NULL) return EXIT_FAILURE;
             Location location;
             location.velocity = 0.1;
