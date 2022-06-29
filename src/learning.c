@@ -45,7 +45,7 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     if(level->player->location.x >= level->length)
         run->last->reward = (1.0/(float)level->score);
     else
-        run->last->reward = -10000.0;
+        run->last->reward = -(1.0/(float)level->score);
 }
 
 Action e_greedy(Matrix* q, Perception perception) {
