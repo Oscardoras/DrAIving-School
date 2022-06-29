@@ -58,35 +58,34 @@ Perception get_entity_perception(Level* level, Entity* entity) {
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
         HitBox box = get_entity_hitbox(it->entity);
         
-        HitBox b;
-        b.min_x = entity->location.x-CAR_LENGTH/2-0.1;
-        b.max_x = entity->location.x+CAR_LENGTH/2+0.1;
-        b.min_y = entity->location.y-CAR_WIDTH/2;
-        b.max_y = entity->location.y-CAR_WIDTH/2-0.1;
+        HitBox b = get_entity_hitbox(entity);
+        HitBox c = b;
+        
+        float big_width = (b.max_y - b.min_y);
+        float small_width = 0.25*big_width;
+        float small_length = (b.max_x - b.min_x);
+        float big_length = 1.5*small_length;
+        
+        b.max_y = b.min_y;
+        b.min_y -= small_width;
         p = p | (PERCEPTION_LEFT * are_entity_box_hitting(box, b));
         
-        b.min_x = entity->location.x-CAR_LENGTH/2-0.1;
-        b.max_x = entity->location.x+CAR_LENGTH/2+0.1;
-        b.min_y = entity->location.y+CAR_WIDTH/2;
-        b.max_y = entity->location.y+CAR_WIDTH/2+0.1;
+        b.min_y = b.max_y + big_width;
+        b.max_y = b.min_y + small_width;
         p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(box, b));
         
-        b.min_x = entity->location.x+CAR_LENGTH/2+0.1;
-        b.max_x = entity->location.x+CAR_LENGTH*5;
-        b.min_y = entity->location.y-CAR_WIDTH/2;
-        b.max_y = entity->location.y-CAR_WIDTH*1.5;
+        b.min_x = b.max_x;
+        b.max_x += big_length;
+        b.min_y -= 2*big_width;
+        b.max_y = b.min_y + big_width;
         p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(box, b));
         
-        b.min_x = entity->location.x-CAR_LENGTH/2+0.1;
-        b.max_x = entity->location.x+CAR_LENGTH*5;
-        b.min_y = entity->location.y-CAR_WIDTH/2;
-        b.max_y = entity->location.y+CAR_WIDTH/2;
+        b.min_y += big_width;
+        b.max_y += big_width;
         p = p | (PERCEPTION_TOP * are_entity_box_hitting(box, b));
         
-        b.min_x = entity->location.x+CAR_LENGTH/2+0.1;
-        b.max_x = entity->location.x+CAR_LENGTH*5;
-        b.min_y = entity->location.y+CAR_WIDTH/2;
-        b.max_y = entity->location.y+CAR_WIDTH*1.5;
+        b.min_y += big_width;
+        b.max_y += big_width;
         p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(box, b));
     }
     
