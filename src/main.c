@@ -8,14 +8,14 @@
 #include "entity.h"
 #include "viewport.h"
 #include "level.h"
- 
+
 
 //#define LEARN
-#define LEARN_ITERATION 10000
+#define LEARN_ITERATION 1000
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.
-#define LEVEL_LENGTH 500.
+#define LEVEL_LENGTH 100.
 
 
 int main() {
@@ -50,7 +50,7 @@ int main() {
             Matrix* q = load_matrix(file);
             fclose(file);
             
-            learn(LEARN_ITERATION, q, e_greedy, learning_update, level);
+            learn(LEARN_ITERATION, q, e_greedy, q_learning, level);
             
             file = fopen("learning.txt", "w");
             if (file) {

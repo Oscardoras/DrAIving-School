@@ -25,6 +25,7 @@ typedef enum {
     ACTION_FASTER,
     ACTION_SLOWER
 } Action;
+#define ACTIONS 5
 
 
 /**

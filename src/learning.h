@@ -32,7 +32,7 @@ typedef struct {
  * @param learning a pointer to the learning function.
  * @param level a level.
  */
-void learn(unsigned long iterations, Matrix* q, Action action(Matrix* q, Perception p, float eps), void learning(Matrix* q, Run* run), Level* level);
+void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*, float, float), Level* level);
 
 /**
  * @brief Does a play with the learning system.
@@ -42,7 +42,7 @@ void learn(unsigned long iterations, Matrix* q, Action action(Matrix* q, Percept
  * @param action a pointer to the action chooser function.
  * @param eps epsilon.
  */
-void simulate_game(Level* level, Run* run, Action action(Matrix* q, Perception p, float eps), float eps);
+void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, float), float eps);
 
 /**
  * @brief Frees a run.
@@ -54,7 +54,7 @@ void free_run(Run* run);
 
 Action e_greedy(Matrix* q, Perception perception, float eps);
 
-void learning_update(Matrix* q, Run* run);
+void q_learning(Matrix* q, Run* run, float xi, float gamma);
 
 
 #endif
