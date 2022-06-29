@@ -6,8 +6,6 @@
 
 #include "game.h"
 
-#define WIDTH 800
-#define HEIGHT 600
 #define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
 #define TEXTURE_COUNT 2
@@ -21,9 +19,9 @@ typedef struct {
 } Animation;
 
 typedef enum {
-    VIEWPORTSTATE_TITLE,
+    VIEWPORTSTATE_MENU,
     VIEWPORTSTATE_GAME,
-    VIEWPORTSTATE_GAMEIA
+    VIEWPORTSTATE_IA
 } ViewportState;
 
 /**
@@ -41,13 +39,13 @@ typedef struct {
         SDL_Texture* vehicles;
         SDL_Texture* preview;
     } tilesets;
+    TTF_Font* font;
     struct {
         Animation blocks[BLOCK_TYPES];
         Animation entities[ENTITY_TYPES];
     } animations;
     unsigned int animation_loop;
     ViewportState state;
-    TTF_Font* font;
 } Viewport;
 
 

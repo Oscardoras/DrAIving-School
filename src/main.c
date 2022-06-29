@@ -12,6 +12,8 @@
 
 //#define LEARN
 #define LEARN_ITERATION 100000
+#define WIDTH 800
+#define HEIGHT 600
 
 int main() {
     srand(time(NULL));
