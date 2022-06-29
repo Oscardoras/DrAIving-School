@@ -20,7 +20,7 @@ bool update_game(Level* level) {
             free(tmp);
         } else {
             struct EntityListCell* it = *ptr;
-            make_action(level, it->entity, compute_state(it->entity->markov, get_entity_perception(level, it->entity)));
+            make_action(level, it->entity, compute_state(it->entity->q, get_entity_perception(level, it->entity)));
             it->entity->location.x += it->entity->location.velocity;
             
             if (are_entity_box_hitting(get_entity_hitbox(it->entity), player_box))
@@ -96,18 +96,18 @@ Perception get_entity_perception(Level* level, Entity* entity) {
 bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action action) {
     switch (action) {
         case ACTION_LEFT:
-            entity->location.y -= 0.3;
+            entity->location.y -= 0.1;
         break;
         case ACTION_RIGHT:
-            entity->location.y += 0.3;
+            entity->location.y += 0.1;
         break;
         case ACTION_FASTER:
             if (entity->location.velocity < 0.4)
-                entity->location.velocity += 0.05;
+                entity->location.velocity += 0.01;
         break;
         case ACTION_SLOWER:
             if (entity->location.velocity > 0.1)
-                entity->location.velocity -= 0.05;
+                entity->location.velocity -= 0.01;
         break;
         default:
         break;
