@@ -132,7 +132,7 @@ void draw_cars(Viewport* viewport, int road_lines, int side) {
     }
 }
 
-void draw_viewportTitle(Viewport* viewport) {
+void draw_menu(Viewport* viewport) {
     SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
     SDL_RenderClear(viewport->renderer);
     

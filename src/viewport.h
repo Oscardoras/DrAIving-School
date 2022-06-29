@@ -21,9 +21,9 @@ typedef struct {
 } Animation;
 
 typedef enum {
-    VIEWPORTSTATE_TITLE,
+    VIEWPORTSTATE_MENU,
     VIEWPORTSTATE_GAME,
-    VIEWPORTSTATE_GAMEIA
+    VIEWPORTSTATE_IA
 } ViewportState;
 
 /**
