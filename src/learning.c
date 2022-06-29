@@ -2,8 +2,9 @@
 
 #include "learning.h"
 
-#define EPSILON 0.5
-#define GAMMA 0.5
+#define EPSILON 0.001
+#define EPSILON_LEARNING 0.001
+#define GAMMA 0.001
 
 
 void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
@@ -73,7 +74,7 @@ Action e_greedy(Matrix* q, Perception perception) {
 }
 
 void learning_update(Matrix* matrix, Run* run) {
-    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON_LEARNING * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
     for(struct RunListCell* iterator = run->last->previous->previous; iterator != NULL; iterator = iterator->previous) {
         // Defind M
         struct RunListCell* next = iterator->next;
@@ -83,7 +84,7 @@ void learning_update(Matrix* matrix, Run* run) {
                 highest = *get_matrix_element(matrix, next->state, j);
 
         // M defined
-        *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
+        *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON_LEARNING * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
     }
 }
 
