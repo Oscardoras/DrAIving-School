@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdlib.h>
 
 #include "learning.h"
@@ -94,6 +95,28 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
         
         return j-1;
     }
+}
+
+Action preference_learning_base(Matrix* q, Perception p, float temp) {
+    int i;
+    float L[q->columns];
+    float Z = 0;
+    float sum = 0;
+    float alpha = rand() / (float) RAND_MAX;
+    Action action = q->columns;
+
+    for (i=0; i<q->columns; i++) {
+        L[i] = exp(*get_matrix_element(q, p, i) / temp);
+        Z += L[i];
+    }
+
+    for (i=0; action>i; i++) {
+        sum += L[i]/Z;
+        if (alpha <= sum)
+            action = i;
+    }
+
+    return action;
 }
 
 void q_learning(Matrix* matrix, Run* run) {
