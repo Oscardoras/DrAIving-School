@@ -11,7 +11,7 @@
  
 
 //#define LEARN
-#define LEARN_ITERATION 100
+#define LEARN_ITERATION 100000
 
 int main() {
     srand(time(NULL));
