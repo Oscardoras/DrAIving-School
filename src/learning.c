@@ -6,24 +6,19 @@
 #define EPSILON_LEARNING 0.0001
 #define GAMMA 0.0001
 
-int length_run(Run* run) {
-    struct RunListCell* cour = run->first;
-    int length = 0;
-    while(cour) cour = cour->next;
-    return length;
-}
 
 void learn(unsigned long n, Matrix* q, Action action(Matrix* q, Perception p, float eps), void learning(Matrix* q, Run* run), Level* level) {
     float eps = EPSILON;
     for (unsigned long k = 0; k < n; k++) {
         printf("Learning iteration %ld\n", k);
         
+        remove_level_entities(level);
         init_level_player(level, q);
         
         Run run;
         run.first = NULL;
         run.last = NULL;
-        learning_play(level, &run, action, eps);
+        simulate_game(level, &run, action, eps);
         learning(level->player->q, &run);
         
         free_run(&run);
@@ -31,7 +26,7 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix* q, Perception p, fl
     }
 }
 
-void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p, float eps), float eps) {
+void simulate_game(Level* level, Run* run, Action action(Matrix* q, Perception p, float eps), float eps) {
     bool quit = false;
     run->first = NULL;
     run->last = NULL;
@@ -39,34 +34,41 @@ void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p
     while (!quit) {
         Perception p = get_entity_perception(level, level->player);
         Action a = action(level->player->q, p, eps);
-        
-        quit = update_game(level);
         make_action(level, level->player, a);
-        if(!run->last)
-        {
+        quit = update_game(level);
+
+        if (run->last == NULL) {
             run->last = malloc(sizeof(struct RunListCell));
+            run->last->next = NULL;
+            run->last->previous = NULL;
             run->first = run->last;
-            run->first->next = NULL;
-            run->first->previous = NULL;
-        }
-        else{
+        } else {
             run->last->next = malloc(sizeof(struct RunListCell));
             run->last->next->previous = run->last;
+            run->last->next->next = NULL;
             run->last = run->last->next;
-            run->last->next = NULL;
         }
-        run->last->reward = 0;
+        run->last->reward = 0.;
         run->last->action = a;
         run->last->state = p;
     }
+
     run->last->next = malloc(sizeof(struct RunListCell));
     run->last->next->previous = run->last;
+    run->last->next->next = NULL;
     run->last = run->last->next;
-    
     if (level->player->location.x >= level->length)
-        run->last->reward = level->length / (0.15 * level->score);
-    else
-        run->last->reward = -1;
+        run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
+    
+    run->last->reward -= 1.;
+}
+
+void free_run(Run* run) {
+    for(struct RunListCell* it = run->first; it != NULL;) {
+        struct RunListCell* tmp = it;
+        it = it->next;
+        free(tmp);
+    }
 }
 
 Action e_greedy(Matrix* q, Perception perception, float eps) {
@@ -109,13 +111,5 @@ void learning_update(Matrix* matrix, Run* run) {
 
         // M defined
         *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON_LEARNING * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
-    }
-}
-
-void free_run(Run* run) {
-    for(struct RunListCell* it = run->first; it != NULL;) {
-        struct RunListCell* tmp = it;
-        it = it->next;
-        free(tmp);
     }
 }

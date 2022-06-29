@@ -42,7 +42,7 @@ void learn(unsigned long iterations, Matrix* q, Action action(Matrix* q, Percept
  * @param action a pointer to the action chooser function.
  * @param eps epsilon.
  */
-void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p, float eps), float eps);
+void simulate_game(Level* level, Run* run, Action action(Matrix* q, Perception p, float eps), float eps);
 
 /**
  * @brief Frees a run.
@@ -51,7 +51,6 @@ void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p
  */
 void free_run(Run* run);
 
-int lenght_run(Run* run);
 
 Action e_greedy(Matrix* q, Perception perception, float eps);
 

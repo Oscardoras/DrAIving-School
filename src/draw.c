@@ -133,17 +133,14 @@ void draw_cars(Viewport* viewport, int road_lines, int side) {
 }
 
 void draw_menu(Viewport* viewport) {
-    SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(viewport->renderer);
-    
-    SDL_RenderCopy(viewport->renderer, viewport->tilesets.preview, NULL, NULL); 
+    SDL_RenderCopy(viewport->renderer, viewport->tilesets.menu, NULL, NULL); 
 
     float scaleX = viewport->width / 628.;
     float scaleY = viewport->height / 500.;
 
     if (time(NULL) % 2 == 0) {
         SDL_Color color = {0, 0, 0, 255};
-        SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, "Press space", color);
+        SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, "Press Enter", color);
         if (text_surface == NULL) {
             SDL_Log("Error SDL - %s", "cant create surface");
             close_viewport(viewport);

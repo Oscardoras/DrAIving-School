@@ -81,15 +81,14 @@ float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j) {
 }
 
 unsigned int compute_state(Matrix* matrix, unsigned int from) {
-    float random = rand() / (float) RAND_MAX;
+    float r = rand() / (float) RAND_MAX;
 
     float sum = 0.;
     unsigned int j;
     for (j = 0; j < matrix->columns; j++) {
         sum += *get_matrix_element(matrix, from, j);
-        if (random <= sum) {
+        if (r <= sum)
             return j;
-        }
     }
     
     return j-1;

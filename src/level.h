@@ -5,6 +5,8 @@
 
 #include "entity.h"
 
+#define DEFAULT_PLAYER_VELOCITY 0.2
+
 
 typedef struct {
     float width;
@@ -44,6 +46,13 @@ void free_level(Level* level);
  * @return if the entity has been added correctly.
  */
 bool add_level_entity(Level* level, Entity* entity);
+
+/**
+ * @brief Removes all the entities in a level.
+ * 
+ * @param level the level.
+ */
+void remove_level_entities(Level* level);
 
 /**
  * @brief Sets the player in the level.

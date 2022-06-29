@@ -55,61 +55,69 @@ bool update_game(Level* level) {
 Perception get_entity_perception(Level* level, Entity* entity) {
     Perception p = 0b0;
     
+    HitBox box = get_entity_hitbox(entity);
+    float width = box.max_y - box.min_y;
+    float small_width = 0.25 * width;
+    float length = box.max_x - box.min_x;
+    float big_length = 5. * length;
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
-        HitBox box = get_entity_hitbox(it->entity);
+        HitBox it_box = get_entity_hitbox(it->entity);
+        HitBox b;
         
-        HitBox b = get_entity_hitbox(entity);
+        b = box;
+        b.max_y = box.min_y;
+        b.min_y = box.min_y - small_width;
+        p = p | (PERCEPTION_LEFT * are_entity_box_hitting(b, it_box));
         
-        float big_width = (b.max_y - b.min_y);
-        float small_width = 0.25*big_width;
-        float small_length = (b.max_x - b.min_x);
-        float big_length = 5.*small_length;
+        b = box;
+        b.min_y = box.max_y;
+        b.max_y = box.max_y + small_width;
+        p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(b, it_box));
         
-        b.max_y = b.min_y;
-        b.min_y -= small_width;
-        p = p | (PERCEPTION_LEFT * are_entity_box_hitting(box, b));
+        b.min_x = box.max_x;
+        b.max_x = box.max_x + big_length;
+        b.max_y = box.min_y;
+        b.min_y = box.min_y - width;
+        p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(b, it_box));
         
-        b.min_y = b.max_y + big_width;
-        b.max_y = b.min_y + small_width;
-        p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(box, b));
+        b = box;
+        b.min_x = box.max_x;
+        b.max_x = box.max_x + big_length;
+        p = p | (PERCEPTION_TOP * are_entity_box_hitting(b, it_box));
         
-        b.min_x = b.max_x;
-        b.max_x += big_length;
-        b.min_y -= 2*big_width;
-        b.max_y = b.min_y + big_width;
-        p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(box, b));
-        
-        b.min_y += big_width;
-        b.max_y += big_width;
-        p = p | (PERCEPTION_TOP * are_entity_box_hitting(box, b));
-        
-        b.min_y += big_width;
-        b.max_y += big_width;
-        p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(box, b));
+        b.min_x = box.max_x;
+        b.max_x = box.max_x + big_length;
+        b.min_y = box.max_y;
+        b.max_y = box.max_y + width;
+        p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(b, it_box));
     }
-    
+
+    if (entity == level->player && p != 0) {
+        return p; //Pour les breakpoint
+    }
+
     return p;
 }
 
 bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action action) {
     switch (action) {
-        case ACTION_LEFT:
-            entity->location.y -= 0.1;
-        break;
-        case ACTION_RIGHT:
-            entity->location.y += 0.1;
-        break;
-        case ACTION_FASTER:
-            if (entity->location.velocity < 0.4)
-                entity->location.velocity += 0.01;
-        break;
-        case ACTION_SLOWER:
-            if (entity->location.velocity > 0.15)
-                entity->location.velocity -= 0.01;
-        break;
-        default:
-        break;
+    case ACTION_LEFT:
+        entity->location.y -= 0.1;
+        return true;
+    case ACTION_RIGHT:
+        entity->location.y += 0.1;
+        return true;
+    case ACTION_FASTER:
+        if (entity->location.velocity < 2*DEFAULT_PLAYER_VELOCITY) {
+            entity->location.velocity += 0.01;
+            return true;
+        } else return false;
+    case ACTION_SLOWER:
+        if (entity->location.velocity > DEFAULT_PLAYER_VELOCITY) {
+            entity->location.velocity -= 0.01;
+            return true;
+        } else return false;
+    default:
+        return false;
     }
-    
-    return true;
 }

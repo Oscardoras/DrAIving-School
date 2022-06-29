@@ -19,14 +19,10 @@ Level* new_level(float width, float length, Matrix* matrix) {
 }
 
 void free_level(Level* level) {
-    for (struct EntityListCell* it = level->entities; it != NULL;) {
-        struct EntityListCell* tmp = it;
-        it = it->next;
-        free_entity(tmp->entity);
-        free(tmp);
+    if (level != NULL) {
+        remove_level_entities(level);
+        free(level);
     }
-
-    free(level);
 }
 
 bool add_level_entity(Level* level, Entity* entity) {
@@ -41,13 +37,23 @@ bool add_level_entity(Level* level, Entity* entity) {
     } else return false;
 }
 
+void remove_level_entities(Level* level) {
+    for (struct EntityListCell* it = level->entities; it != NULL;) {
+        struct EntityListCell* tmp = it;
+        it = it->next;
+        free_entity(tmp->entity);
+        free(tmp);
+    }
+    level->entities = NULL;
+}
+
 bool init_level_player(Level* level, Matrix* q) {
     if (level->player != NULL)
         free_entity(level->player);
     
     Location location;
-    location.velocity = 0.15;
-    location.x = 2.;
+    location.velocity = DEFAULT_PLAYER_VELOCITY;
+    location.x = 0.;
     location.y = (5. / 6) * level->width;
     level->player = new_entity(PLAYER_CAR, location, q);
     
