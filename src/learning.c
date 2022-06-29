@@ -6,16 +6,16 @@
 #define GAMMA 0.5
 
 void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
-    bool collision = false;
+    bool quit = false;
     run->first = NULL;
     run->last = NULL;
-    while(!collision)
+    while(!quit)
     {
         Perception pct = get_entity_perception(level, level->player);
         Action act = action(level->player->markov,
                     pct);
-        
-        collision = update_game(level);
+        printf("perception : %d\nAction : %d\n", pct, act);
+        quit = update_game(level);
         make_action(level, level->player,
                 act
                 );
@@ -41,6 +41,7 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     run->last = run->last->next;
     run->last->next = NULL;
     run->last->reward = 1.0/(float)level->score;
+    
 }
 
 Action e_greedy(Matrix* Q, Perception perception) {
