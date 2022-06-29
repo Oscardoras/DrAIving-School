@@ -42,7 +42,7 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     run->last->next->previous = run->last;
     run->last = run->last->next;
     run->last->next = NULL;
-    run->last->reward = level->1.0/(float)score;
+    run->last->reward = 1.0/(float)level->score;
 }
 
 Action e_greedy(Matrix* Q, Perception perception) {
