@@ -112,7 +112,7 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
         case CAR:
             source.y = 16;
             dest.x += ((entity->location.x - viewport->level->player->location.x) * side)/CAR_LENGTH;
-            if (entity->location.direction) flip = SDL_FLIP_HORIZONTAL;
+            if (entity->location.velocity > 0) flip = SDL_FLIP_HORIZONTAL;
             break;
     }
     

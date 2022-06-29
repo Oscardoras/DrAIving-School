@@ -5,10 +5,6 @@
 #define EPSILON 0.5
 
 
-void learning_play(Level* level, Run* run, Action action) {
-
-}
-
 Action e_greedy(Matrix* Q, Perception perception) {
     float r = rand() / (float) RAND_MAX;
     

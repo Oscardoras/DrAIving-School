@@ -12,7 +12,6 @@
 typedef struct {
     float x;
     float y;
-    bool direction; //true to the right.
     float velocity;
 } Location;
 

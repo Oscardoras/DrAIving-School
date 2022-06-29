@@ -16,7 +16,13 @@
 int main() {
     srand(time(NULL));
     
-    Level* level = new_level(15., 10000., LINES_PER_DIR);
+    Matrix* matrix = NULL;
+    FILE* file = fopen("config.txt", "r");
+    if (file) {
+        matrix = load_matrix(file);
+        fclose(file);
+    }
+    Level* level = new_level(15., 10000., matrix);
     if (level == NULL) return EXIT_FAILURE;
     
     #ifndef LEARN
@@ -27,19 +33,12 @@ int main() {
     }
     #endif
     
-    Matrix* matrix = NULL;
-    FILE* file = fopen("config.txt", "r");
-    if(file) {
-        matrix = load_matrix(file);
-        fclose(file);
-    }
     
-    
-    
-    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 1.05, 4, 6), NULL);
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 1., 3, 6), matrix));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 1., 5, 6), matrix));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 1., 5, 6), matrix));
+    Location location;
+    location.velocity = 0.1;
+    location.x = 2.;
+    location.y = (5. / 6) * level->width;
+    level->player = new_entity(PLAYER_CAR, location, NULL);
     
     #ifndef LEARN
     {

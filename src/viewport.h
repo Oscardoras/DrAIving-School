@@ -8,11 +8,9 @@
 
 #define WIDTH 800
 #define HEIGHT 600
-#define LINES_PER_DIR 3
 #define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
 #define TEXTURE_COUNT 2
-#define NB_LINES 3
 #define FPS 60
 
 
@@ -23,9 +21,9 @@ typedef struct {
 } Animation;
 
 typedef enum {
-    TITLE,
-    GAME,
-    GAMEIA
+    VIEWPORTSTATE_TITLE,
+    VIEWPORTSTATE_GAME,
+    VIEWPORTSTATE_GAMEIA
 } ViewportState;
 
 /**

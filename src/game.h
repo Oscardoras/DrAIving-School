@@ -3,6 +3,9 @@
 
 #include "level.h"
 
+#define CAR_PER_LINE 3
+#define LINES_PER_DIRECTION 3
+
 
 typedef enum {
     PERCEPTION_LEFT = 0b1,

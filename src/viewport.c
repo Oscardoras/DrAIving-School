@@ -60,7 +60,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
         return NULL;
     }
     
-    viewport->state = (ViewportState)(TITLE);
+    viewport->state = VIEWPORTSTATE_TITLE;
     
     if (TTF_Init() < 0) {
         SDL_Log("Error SDL - %s", SDL_GetError());
@@ -97,7 +97,7 @@ void event_loop(Viewport* viewport) {
     SDL_Event event;
     
     int duree_frame = 1000/FPS;
-    int lines = 2*NB_LINES + 4;
+    int lines = 2*LINES_PER_DIRECTION + 4;
     int side = viewport->height/lines + 1;
     int pos = 0;
     float scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS; //Vitesse du joueur : 5 blocs/seconde
@@ -118,11 +118,11 @@ void event_loop(Viewport* viewport) {
                     
                 case SDL_KEYDOWN: 
                     switch (viewport->state) {
-                        case TITLE:
-                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = GAME;
+                        case VIEWPORTSTATE_TITLE:
+                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = VIEWPORTSTATE_GAME;
                             if(event.key.keysym.sym == SDLK_l) 
                                 {
-                                    viewport->state = GAMEIA;
+                                    viewport->state = VIEWPORTSTATE_GAMEIA;
                                     FILE *file = fopen("learning", "r");
                                     if(file)
                                     {
@@ -155,7 +155,7 @@ void event_loop(Viewport* viewport) {
         }
             
         
-        if(viewport->state == GAMEIA) {
+        if(viewport->state == VIEWPORTSTATE_GAMEIA) {
             make_action(viewport->level, viewport->level->player,
                 e_greedy(viewport->level->player->markov,
                     get_entity_perception(viewport->level, viewport->level->player)
@@ -164,7 +164,7 @@ void event_loop(Viewport* viewport) {
             scrolling_speed = (5.*viewport->level->player->location.velocity*(float) side)/FPS;
         }
         switch(viewport->state) {
-        case GAME:
+        case VIEWPORTSTATE_GAME:
             collision = update_game(viewport->level);
             draw_road(viewport, lines, side, pos);
             draw_cars(viewport, lines-4, side);
@@ -172,10 +172,10 @@ void event_loop(Viewport* viewport) {
             SDL_RenderPresent(viewport->renderer);
             SDL_Delay(duree_frame);
             break;
-        case GAMEIA:
+        case VIEWPORTSTATE_GAMEIA:
             collision = update_game(viewport->level);
             break;
-        case TITLE:
+        case VIEWPORTSTATE_TITLE:
             draw_viewportTitle(viewport);
             SDL_RenderPresent(viewport->renderer);
             SDL_Delay(duree_frame);
