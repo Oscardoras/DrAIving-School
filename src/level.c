@@ -40,3 +40,16 @@ bool add_level_entity(Level* level, Entity* entity) {
         return true;
     } else return false;
 }
+
+bool init_level_player(Level* level, Matrix* q) {
+    if (level->player != NULL)
+        free_entity(level->player);
+    
+    Location location;
+    location.velocity = 0.15;
+    location.x = 2.;
+    location.y = (5. / 6) * level->width;
+    level->player = new_entity(PLAYER_CAR, location, q);
+    
+    return level->player != NULL;
+}

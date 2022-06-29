@@ -45,5 +45,14 @@ void free_level(Level* level);
  */
 bool add_level_entity(Level* level, Entity* entity);
 
+/**
+ * @brief Sets the player in the level.
+ * 
+ * @param level the level.
+ * @param q the Q(s,a) matrix of the player. Can be NULL.
+ * @return if the player has been added correctly set.
+ */
+bool init_level_player(Level* level, Matrix* q);
+
 
 #endif

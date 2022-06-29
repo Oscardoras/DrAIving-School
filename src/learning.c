@@ -2,19 +2,37 @@
 
 #include "learning.h"
 
-#define EPSILON 0.95
+#define EPSILON 0.99
 #define EPSILON_LEARNING 0.0001
 #define GAMMA 0.0001
 
 
-void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
+void learn(unsigned long n, Matrix* q, Action action(Matrix* q, Perception p, float eps), void learning(Matrix* q, Run* run), Level* level) {
+    float eps = EPSILON;
+    for (unsigned long k = 0; k < n; k++) {
+        printf("Learning iteration %ld\n", k);
+        
+        init_level_player(level, q);
+        
+        Run run;
+        run.first = NULL;
+        run.last = NULL;
+        learning_play(level, &run, action, eps);
+        learning(level->player->q, &run);
+        
+        free_run(&run);
+        eps *= EPSILON;
+    }
+}
+
+void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p, float eps), float eps) {
     bool quit = false;
     run->first = NULL;
     run->last = NULL;
     
-    while(!quit) {
+    while (!quit) {
         Perception p = get_entity_perception(level, level->player);
-        Action a = action(level->player->q, p);
+        Action a = action(level->player->q, p, eps);
         
         quit = update_game(level);
         
@@ -42,15 +60,15 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     run->last = run->last->next;
     
     if (level->player->location.x >= level->length)
-        run->last->reward = (-level->player->location.x);
+        run->last->reward = level->length / (0.15 * level->score);
     else
-        run->last->reward = (-level->player->location.x);
+        run->last->reward = -1;
 }
 
-Action e_greedy(Matrix* q, Perception perception) {
+Action e_greedy(Matrix* q, Perception perception, float eps) {
     float r = rand() / (float) RAND_MAX;
     
-    if (r < EPSILON) {
+    if (r > eps) {
         float p_max = 0.;
         Action action = 0;
         
@@ -67,7 +85,7 @@ Action e_greedy(Matrix* q, Perception perception) {
         r = rand() / (float) RAND_MAX;
         unsigned int j;
         for (j = 0; j < q->columns; j++)
-            if (j / (float) q->columns <= r)
+            if (r <= (j+1) / (float) q->columns)
                 return j;
         
         return j-1;

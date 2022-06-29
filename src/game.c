@@ -106,7 +106,7 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
                 entity->location.velocity += 0.01;
         break;
         case ACTION_SLOWER:
-            if (entity->location.velocity > 0.1)
+            if (entity->location.velocity > 0.15)
                 entity->location.velocity -= 0.01;
         break;
         default:
