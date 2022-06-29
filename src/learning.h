@@ -51,6 +51,7 @@ void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p
  */
 void free_run(Run* run);
 
+int lenght_run(Run* run);
 
 Action e_greedy(Matrix* q, Perception perception, float eps);
 

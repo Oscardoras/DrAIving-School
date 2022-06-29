@@ -6,6 +6,12 @@
 #define EPSILON_LEARNING 0.0001
 #define GAMMA 0.0001
 
+int length_run(Run* run) {
+    struct RunListCell* cour = run->first;
+    int length = 0;
+    while(cour) cour = cour->next;
+    return length;
+}
 
 void learn(unsigned long n, Matrix* q, Action action(Matrix* q, Perception p, float eps), void learning(Matrix* q, Run* run), Level* level) {
     float eps = EPSILON;
@@ -35,28 +41,26 @@ void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p
         Action a = action(level->player->q, p, eps);
         
         quit = update_game(level);
-        
         make_action(level, level->player, a);
-        
-        if (run->last == NULL) {
+        if(!run->last)
+        {
             run->last = malloc(sizeof(struct RunListCell));
             run->first = run->last;
             run->first->next = NULL;
             run->first->previous = NULL;
-        } else{
+        }
+        else{
             run->last->next = malloc(sizeof(struct RunListCell));
             run->last->next->previous = run->last;
-            run->last->next->next = NULL;
             run->last = run->last->next;
+            run->last->next = NULL;
         }
         run->last->reward = 0;
         run->last->action = a;
         run->last->state = p;
     }
-    
     run->last->next = malloc(sizeof(struct RunListCell));
     run->last->next->previous = run->last;
-    run->last->next->next = NULL;
     run->last = run->last->next;
     
     if (level->player->location.x >= level->length)
@@ -81,7 +85,8 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
         }
         
         return action;
-    } else {
+    }
+    else {
         r = rand() / (float) RAND_MAX;
         unsigned int j;
         for (j = 0; j < q->columns; j++)

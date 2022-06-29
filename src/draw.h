@@ -40,11 +40,11 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side);
 void draw_cars(Viewport* viewport, int road_lines, int side);
 
 /**
- * @brief Draws the game menu.
+ * @brief Draws the viewport's title.
  * 
  * @param viewport the viewport to draw.
  */
-void draw_menu(Viewport* viewport);
+void draw_viewportTitle(Viewport* viewport);
 
 
 #endif
