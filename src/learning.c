@@ -3,10 +3,25 @@
 #include "learning.h"
 
 #define EPSILON 0.5
-
+#define GAMMA 0.5
 
 void learning_play(Level* level, Run* run, Action action) {
+    /**bool collision = true;
+    run = NULL;
+    while(collision)
+    {
+        collision = update_game(level);
+        make_action(level, level->player,
+                action(level->player->markov,
+                    get_entity_perception(level, level->player)
+                )
+            );
+        if(!run)
+        {
 
+        }
+    }*/
+    // todo : Ajouter reward finale (temps)
 }
 
 Action e_greedy(Matrix* Q, Perception perception) {
@@ -33,5 +48,27 @@ Action e_greedy(Matrix* Q, Perception perception) {
                 return j;
         
         return j-1;
+    }
+}
+
+void learning_update(Matrix* matrix, Run* run)
+{
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) += EPSILON * (run->last->reward - *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)); 
+    for(struct RunListCell* iterator = run->last-2; iterator != NULL; iterator = iterator->previous)
+    {
+        // Defind M
+        struct RunListCell* next = iterator->next;
+        float highest = *get_matrix_element(matrix, next->state, 0);
+        unsigned int highestid = 0;
+        for(unsigned int j = 1; j < 5; ++j)
+        {
+            if(*get_matrix_element(matrix, next->state, j) > highest)
+            {
+                highestid = j;
+                highest = *get_matrix_element(matrix, next->state, j);
+            }
+        }
+        // M defined
+        *get_matrix_element(matrix, iterator->state, iterator->action) += EPSILON * (iterator->reward + GAMMA* highest - *get_matrix_element(matrix, iterator->state, iterator->action)); 
     }
 }
