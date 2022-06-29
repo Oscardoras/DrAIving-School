@@ -93,3 +93,13 @@ unsigned int compute_state(Matrix* matrix, unsigned int from) {
     
     return j-1;
 }
+
+void add_matrix(Matrix* q1, Matrix* q2, Matrix* q3) {
+    for (int i = 0; i<q1->lines; i++) {
+        for (int j = 0; j<q1->lines; j++) {
+            *get_matrix_element(q3, i, j) =
+                *get_matrix_element(q1, i, j) +
+                *get_matrix_element(q2, i, j);
+        }
+    }
+}

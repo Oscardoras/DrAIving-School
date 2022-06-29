@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdlib.h>
 
 #include "learning.h"
@@ -115,5 +116,119 @@ void q_learning(Matrix* q, Run* run, float xi, float gamma) {
         }
 
         *get_matrix_element(q, it->state, it->action) += XI * (it->next->reward + GAMMA*M - *get_matrix_element(q, it->state, it->action));
+    }
+}
+
+Action preference_learning_base(Matrix* q, Perception p, float temp) {
+    int i;
+    float L[q->columns];
+    float Z = 0;
+    float sum = 0;
+    float alpha = rand() / (float) RAND_MAX;
+    Action action = q->columns;
+
+    for (i=0; i<q->columns; i++) {
+        L[i] = exp(*get_matrix_element(q, p, i) / temp);
+        Z += L[i];
+    }
+
+    for (i=0; action>i; i++) {
+        sum += L[i]/Z;
+        if (alpha <= sum)
+            action = i;
+    }
+
+    return action;
+}
+
+void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
+    int alpha = rand()%2;
+    Matrix* Q_a; //Q_apprentissage
+    Matrix* Q_e; //Q_estimation
+
+    struct RunListCell* next;
+    float quality;
+    float max_quality;
+    Action max_action;
+
+    if (alpha) {
+        Q_a = matrix1;
+        Q_e = matrix2;
+    }
+    else {
+        Q_a = matrix2;
+        Q_e = matrix1;
+    }
+
+    *get_matrix_element(Q_a, run->last->previous->state, run->last->previous->action) +=
+        EPSILON_LEARNING *
+        (
+            run->last->reward -
+            *get_matrix_element(Q_a, run->last->previous->state, run->last->previous->action)
+        );
+
+    for(struct RunListCell* it = run->last->previous->previous; it; it = it->previous) {
+        alpha = rand()%2;
+        if (alpha) {
+        Q_a = matrix1;
+        Q_e = matrix2;
+        }
+        else {
+        Q_a = matrix2;
+        Q_e = matrix1;
+        }
+
+        next = it->next;
+        max_action = 0;
+        max_quality = *get_matrix_element(Q_e, next->state, 0);
+        
+        for (int j = 1; j<Q_e->columns; j++) {
+            quality = *get_matrix_element(Q_e, next->state, j);
+            max_action = (quality>max_quality) ?
+                j :
+                max_action;
+            max_quality = (quality>max_quality) ?
+                quality :
+                max_quality;
+        }
+
+        *get_matrix_element(Q_a, it->state, it->action) +=
+            EPSILON_LEARNING *
+            (
+                next->reward +
+                GAMMA * max_quality -
+                *get_matrix_element(Q_a, it->state, it->action)
+            );
+    }
+}
+
+void sarsa(Matrix* matrix, Run* run) {
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) +=
+        EPSILON_LEARNING *
+        (
+            run->last->reward -
+            *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)
+        );
+
+    struct RunListCell* next;
+    for (struct RunListCell* it = run->last->previous->previous; it; it = it->previous) {
+        next = it->next;
+        *get_matrix_element(matrix, it->state, it->action) +=
+            EPSILON_LEARNING * 
+            (
+                it->next->reward +
+                GAMMA * *get_matrix_element(matrix, next->state, next->action) -
+                *get_matrix_element(matrix, it->state, it->action)
+            );
+    }
+
+
+}
+
+void free_run(Run* run) {
+    for(struct RunListCell* it = run->first; it != NULL;) {
+        struct RunListCell* tmp = it;
+        it = it->next;
+        free(tmp);
     }
 }
