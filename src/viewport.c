@@ -27,7 +27,6 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->renderer = NULL;
     viewport->tilesets.roads = NULL;
     viewport->tilesets.vehicles = NULL;
-    viewport->animation_loop = 0;
     
     viewport->window = SDL_CreateWindow("Jeu",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -69,7 +68,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     }
     viewport->font = TTF_OpenFont("./ttf/dogicabold.ttf", 65);
     if (viewport->font == NULL) {
-        SDL_Log("Error SDL - %s", "cant load font");
+        SDL_Log("Error SDL - %s", SDL_GetError());
         close_viewport(viewport);
         return NULL;
     }

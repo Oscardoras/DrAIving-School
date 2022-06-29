@@ -9,18 +9,11 @@
 #define WIDTH 800
 #define HEIGHT 600
 #define LINES_PER_DIR 3
-#define ANIMATION_SIZE_MAX 1
 #define BLOCK_TYPES 1
 #define TEXTURE_COUNT 2
 #define NB_LINES 3
 #define FPS 60
 
-
-typedef struct {
-    SDL_Texture* tileset;
-    SDL_Rect rectangles[ANIMATION_SIZE_MAX];
-    unsigned int frames;
-} Animation;
 
 typedef enum {
     TITLE,
@@ -43,11 +36,6 @@ typedef struct {
         SDL_Texture* vehicles;
         SDL_Texture* preview;
     } tilesets;
-    struct {
-        Animation blocks[BLOCK_TYPES];
-        Animation entities[ENTITY_TYPES];
-    } animations;
-    unsigned int animation_loop;
     ViewportState state;
     TTF_Font* font;
 } Viewport;
@@ -69,15 +57,6 @@ Viewport* create_viewport(int width, int height, Level* level);
  * @param viewport the viewport to free.
  */
 void close_viewport(Viewport* viewport);
-
-/**
- * @brief Copies a texture from an animation to a rectangle.
- * 
- * @param viewport the viewport.
- * @param animation the animation.
- * @param rect the rectangle.
- */
-void copy_texture(Viewport* viewport, Animation* animation, SDL_Rect* rect);
 
 /**
  * @brief The display loop.

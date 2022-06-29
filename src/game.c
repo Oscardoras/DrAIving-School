@@ -68,10 +68,10 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
     switch (action) {
         case ACTION_LEFT:
             entity->location.y -= entity->location.velocity;
-        break;
+            break;
         case ACTION_RIGHT:
             entity->location.y += entity->location.velocity;
-        break;
+            break;
         case ACTION_FASTER:
             entity->location.velocity = (entity->location.velocity <= 0.23) ?
                 entity->location.velocity + 0.01 :
@@ -80,7 +80,7 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
             if (entity->location.velocity < 1.5)
                 entity->location.velocity += 0.05;
             */
-        break;
+            break;
         case ACTION_SLOWER:
             entity->location.velocity = (entity->location.velocity >= 0.02) ?
                 entity->location.velocity - 0.01 :
@@ -89,9 +89,9 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
             if (entity->location.velocity > 1.)
                 entity->location.velocity -= 0.05;
             */
-        break;
+            break;
         default:
-        break;
+            break;
     }
     
     return true;

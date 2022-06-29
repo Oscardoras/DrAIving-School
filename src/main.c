@@ -16,7 +16,7 @@
 int main() {
     srand(time(NULL));
     
-    Level* level = new_level(15., 10000., LINES_PER_DIR);
+    Level* level = new_level(5., 10000., LINES_PER_DIR);
     if (level == NULL) return EXIT_FAILURE;
     
     #ifndef LEARN
