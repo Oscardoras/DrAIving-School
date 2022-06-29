@@ -58,5 +58,14 @@ float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j);
  */
 unsigned int compute_state(Matrix* matrix, unsigned int from);
 
+/**
+ * @brief Add two matrix of the same size, and stores the result in the third one
+ * 
+ * @param q1 one of the matrix to add.
+ * @param q2 one of the matrix to add.
+ * @param q3 the addition of the other matrix.
+ */
+void add_matrix(Matrix* q1, Matrix* q2, Matrix* q3);
+
 
 #endif

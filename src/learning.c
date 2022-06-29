@@ -17,7 +17,7 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix* q, Perception p, fl
     float eps = EPSILON;
     for (unsigned long k = 0; k < n; k++) {
         printf("Learning iteration %ld\n", k);
-        
+
         init_level_player(level, q);
         
         Run run;
@@ -170,6 +170,29 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
                 *get_matrix_element(Q_a, it->state, it->action)
             );
     }
+}
+
+void sarsa(Matrix* matrix, Run* run) {
+    *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) +=
+        EPSILON_LEARNING *
+        (
+            run->last->reward -
+            *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)
+        );
+
+    struct RunListCell* next;
+    for (struct RunListCell* it = run->last->previous->previous; it; it = it->previous) {
+        next = it->next;
+        *get_matrix_element(matrix, it->state, it->action) +=
+            EPSILON_LEARNING * 
+            (
+                it->next->reward +
+                GAMMA * *get_matrix_element(matrix, next->state, next->action) -
+                *get_matrix_element(matrix, it->state, it->action)
+            );
+    }
+
+
 }
 
 void free_run(Run* run) {

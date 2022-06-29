@@ -59,5 +59,7 @@ void q_learning(Matrix* q, Run* run);
 
 void double_q_learning(Matrix* q1, Matrix* q2, Run* run);
 
+void sarsa(Matrix* q, Run* run);
+
 
 #endif

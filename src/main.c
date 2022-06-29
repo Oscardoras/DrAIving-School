@@ -30,8 +30,8 @@ int main() {
     
     Level* level = new_level(LEVEL_WIDTH, LEVEL_LENGTH, matrix);
     if (level == NULL) return EXIT_FAILURE;
-    
-    
+
+
     #ifndef LEARN
         init_level_player(level, NULL);
         
