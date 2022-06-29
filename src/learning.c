@@ -5,22 +5,39 @@
 #define EPSILON 0.5
 #define GAMMA 0.5
 
-void learning_play(Level* level, Run* run, Action action) {
-    /**bool collision = true;
+void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
+    bool collision = true;
     run = NULL;
-    while(collision)
+    run = malloc(sizeof(Run));
+    run->first = NULL;
+    run->last = NULL;
+    while(!collision)
     {
+        Perception pct = get_entity_perception(level, level->player);
+        Action act = action(level->player->markov,
+                    pct);
+        
         collision = update_game(level);
         make_action(level, level->player,
-                action(level->player->markov,
-                    get_entity_perception(level, level->player)
-                )
-            );
-        if(!run)
+                act
+                );
+        if(!run->last)
         {
-
+            run->last = malloc(sizeof(struct RunListCell));
+            run->first = run->last;
+            run->first->next = NULL;
+            run->first->previous = NULL;
         }
-    }*/
+        else{
+            run->last->next = malloc(sizeof(struct RunListCell));
+            run->last->next->previous = run->last;
+            run->last = run->last->next;
+            run->last->next = NULL;
+        }
+        run->last->reward = 0;
+        run->last->action = act;
+        run->last->state = pct;
+    }
     // todo : Ajouter reward finale (temps)
 }
 
