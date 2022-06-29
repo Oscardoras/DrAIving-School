@@ -4,7 +4,7 @@
 #include "draw.h"
 
 
-void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autoroute horizontales
+void draw_road(Viewport* viewport, int lines, int side) { //Voies autoroute horizontales
     SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
     SDL_RenderClear(viewport->renderer);
     
@@ -17,77 +17,80 @@ void draw_road(Viewport* viewport, int lines, int side, int pos) { //Voies autor
     SDL_Rect dest;
 
     float player_x = viewport->level->player->location.x;
-    float dec_player_x = ((int) player_x) - player_x;
-    for(float x = dec_player_x; x*side<viewport->width; x += 1.) {
-        dest.x = (int) (x*side);
-        dest.w = dest.h = side;
+    float dec_player_x = ((int) player_x/2.)*2 - player_x;
+    for(float x = dec_player_x; x*side<viewport->width*2; x += 2.) {
+        for(int i=0; i<2; i++) {
+            dest.x = (int) ((x+i)*side);
+            dest.w = dest.h = side;
         
-        dest.y = 0*side; //1ère ligne : mur en briques
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[0], &dest);
+            dest.y = 0*side; //1ère ligne : mur en briques
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[0], &dest);
         
-        dest.y = 1*side; //2ème ligne : trottoir
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[1], &dest);
+            dest.y = 1*side; //2ème ligne : trottoir
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[1], &dest);
         
-        dest.y = (lines-2)*side; //Avant-dernière ligne : trottoir
-        SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[1], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            dest.y = (lines-2)*side; //Avant-dernière ligne : trottoir
+            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[1], &dest, 0, NULL, SDL_FLIP_VERTICAL);
         
-        dest.y = (lines-1)*side; //Dernière ligne : toit
-        SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
+            dest.y = (lines-1)*side; //Dernière ligne : toit
+            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[6], &dest);
         
-        if (lines == 6) { //Une seule voie par sens : voie avec ligne jaune sans voie extérieure
-            dest.y = 2*side;
-            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[5], &dest);
-            dest.y = 3*side; //Les deux sens sont sur les lignes 3 et 4 (sur 6 au total)
-            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
-        }
-        else {
-            dest.y = 2*side; //1ère voie : voie sans ligne jaune ni voie extérieure
-            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[2], &dest);
-            dest.y = (lines-3)*side;
-            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[2], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            if (lines == 6) { //Une seule voie par sens : voie avec ligne jaune sans voie extérieure
+                dest.y = 2*side;
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[5], &dest);
+                dest.y = 3*side; //Les deux sens sont sur les lignes 3 et 4 (sur 6 au total)
+                SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+            }
+            else {
+                dest.y = 2*side; //1ère voie : voie sans ligne jaune ni voie extérieure
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[2], &dest);
+                dest.y = (lines-3)*side;
+                SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[2], &dest, 0, NULL, SDL_FLIP_VERTICAL);
             
-            dest.y = (lines/2-1)*side; //Dernière voie : voie avec ligne jaune et voie extérieure
-            SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[4], &dest);
-            dest.y = (lines/2)*side;
-            SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[4], &dest, 0, NULL, SDL_FLIP_VERTICAL);
+                dest.y = (lines/2-1)*side; //Dernière voie : voie avec ligne jaune et voie extérieure
+                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[4], &dest);
+                dest.y = (lines/2)*side;
+                SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[4], &dest, 0, NULL, SDL_FLIP_VERTICAL);
             
-            for(int i=3; i<lines/2-1; i++) { //Voies entre : voie avec voieS extérieureS sans ligne jaune
-                dest.y = i*side;
-                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
-                dest.y = (lines-1-i)*side;
-                SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
+                for(int i=3; i<lines/2-1; i++) { //Voies entre : voie avec voieS extérieureS sans ligne jaune
+                    dest.y = i*side;
+                    SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
+                    dest.y = (lines-1-i)*side;
+                    SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[3], &dest);
+                }
             }
         }
     }
-    
-    
+}
+
+void draw_score(Viewport* viewport) {
     float scaleX = 1;
     float scaleY = 1;
     scaleX = (float)viewport->width/800.0;
     scaleY = (float)viewport->height/600.0;
     
-    SDL_Color color = {0, 0, 0, 255};
-    SDL_Surface* text_surface = NULL;
-    char score[20] = "Score : ";
+    char score[20];
     sprintf(score,"Score : %d", viewport->level->score);
-    text_surface = TTF_RenderText_Blended(viewport->font, score, color);
-    if (text_surface == NULL) {
+    
+    SDL_Color color = {0, 0, 0, 255};
+    SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, score, color);
+    
+    if (text_surface) {
+        SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
+        if (text_texture) {
+            SDL_Rect ttfdest = {10*scaleX, 10*scaleY, 200*scaleX, 40*scaleY};
+            SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
+            SDL_DestroyTexture(text_texture);           
+            SDL_FreeSurface(text_surface);
+        }
+        else {
+            SDL_Log("Error SDL - %s", "cant create texture");
+            SDL_FreeSurface(text_surface);
+        }
+    }
+    else {
         SDL_Log("Error SDL - %s", "cant create surface");
-        close_viewport(viewport);
     }
-
-    SDL_Texture* text_texture = NULL;
-    text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
-    if (text_texture == NULL) {
-        SDL_Log("Error SDL - %s", "cant create texture");
-        close_viewport(viewport);
-    }
-
-    SDL_Rect ttfdest = {10*scaleX, 10*scaleY, 200*scaleX, 40*scaleY};
-    //SDL_QueryTexture(text_texture, NULL, NULL, &pos.w, &pos.h);
-    SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
-    SDL_DestroyTexture(text_texture);           
-    SDL_FreeSurface(text_surface);
 }
 
 void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {

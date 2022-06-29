@@ -36,10 +36,10 @@ int main() {
     
     
     
-    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 1.05, 4, 6), NULL);
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 2., 1., 3, 6), matrix));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 1., 5, 6), matrix));
-    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 1., 5, 6), matrix));
+    level->player = new_entity(PLAYER_CAR, location_from_line(level, 0., 0.25, 4, 6), NULL);
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 100., 0.1, 3, 6), matrix));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, 3., 0.1, 5, 6), matrix));
+    add_level_entity(level, new_entity(CAR, location_from_line(level, -1., 0.1, 5, 6), matrix));
     
     #ifndef LEARN
     {
