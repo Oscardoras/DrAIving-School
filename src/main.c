@@ -11,7 +11,8 @@
  
 
 //#define LEARN
-#define LEARN_ITERATION 100000
+#define EPS 0.99
+#define LEARN_ITERATION 1000000
 
 int main() {
     srand(time(NULL));
@@ -23,17 +24,17 @@ int main() {
         fclose(file);
     } else return EXIT_FAILURE;
     
-    Level* level = new_level(15., 500., matrix);
-    if (level == NULL) return EXIT_FAILURE;
-    
+    Level* level = NULL;
+    Entity* player = NULL;
     Location location;
-    location.velocity = 0.1;
-    location.x = 2.;
-    location.y = (5. / 6) * level->width;
-    level->player = new_entity(PLAYER_CAR, location, NULL);
-    
     
     #ifndef LEARN
+        player = new_entity(PLAYER_CAR, location, NULL);
+        level = new_level(15., 500, matrix);
+        player->location.x = 2.;
+        player->location.velocity = 1.5;
+        player->location.y = (5. / 6) * level->width;
+        level->player = player;
         Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
         if (viewport == NULL) {
             free_level(level);
@@ -45,31 +46,47 @@ int main() {
         close_viewport(viewport);
         free_level(level);
     #else
-        for(unsigned int it = 0; it < LEARN_ITERATION; ++it)
-        {
-            Level* level = new_level(15., 500, matrix);
-            if (level == NULL) return EXIT_FAILURE;
-            Location location;
-            location.velocity = 0.1;
-            location.x = 2.;
-            location.y = (5. / 6) * level->width;
-            level->player = new_entity(PLAYER_CAR, location, NULL);
+        player = new_entity(PLAYER_CAR, location, NULL);
+        level = NULL;
+        float eps = EPS;
+        
+        file = fopen("learning.txt", "r");
+        if(file) {
+            player->q = load_matrix(file);
+            fclose(file);
+        }
+        for(unsigned int it = 0; it < LEARN_ITERATION; ++it)    {
+            level = new_level(15., 500, matrix);
+            if (!level) return EXIT_FAILURE;
+            
+            player->location.x = 2.;
+            player->location.velocity = 1.5;
+            player->location.y = (5. / 6) * level->width;
+            level->player = player;
+            
             Run currentRun;
             currentRun.first = NULL;
             currentRun.last = NULL;
-            FILE *file = fopen("learning", "r");
-            level->player->q = load_matrix(file);
-            fclose(file);
+            
+            
             printf("Learning iteration %d\n", it);
-            learning_play(level, &currentRun, e_greedy);
+            learning_play(level, &currentRun, eps);
             learning_update(level->player->q, &currentRun);
             free_run(&currentRun);
-            file = fopen("learning", "w");
-            save_matrix(level->player->q, file);
-            free_matrix(level->player->q);
-            fclose(file);
+            
             free_level(level);
+            
+            if(!(it%10000)) eps *= EPS;
         }
+        file = fopen("learning.txt", "w");
+        if(file) {
+            save_matrix(player->q, file);
+            fclose(file);
+        }
+        
+        free_matrix(player->q);
+        free_entity(player);
+                
     #endif
     
     

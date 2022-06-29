@@ -2,11 +2,17 @@
 
 #include "learning.h"
 
-#define EPSILON 0.95
 #define EPSILON_LEARNING 0.0001
 #define GAMMA 0.0001
 
+int length_run(Run* run) {
+    struct RunListCell* cour = run->first;
+    int length = 0;
+    while(cour) cour = cour->next;
+    return length;
+}
 
+/*
 void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     bool quit = false;
     run->first = NULL;
@@ -41,18 +47,64 @@ void learning_play(Level* level, Run* run, Action action(Matrix*, Perception)) {
     run->last->next->previous = run->last;
     run->last = run->last->next;
     run->last->next = NULL;
+    int length = length_run(run);
     if(level->player->location.x >= level->length)
     {
-        run->last->reward = (-level->player->location.x);
+        run->last->reward = 50/(float) length;
     }
     else
-        run->last->reward = (-level->player->location.x);
+        run->last->reward = -50;
+}
+*/
+
+void learning_play(Level* level, Run* run, float eps) {
+    bool quit = false;
+    run->first = NULL;
+    run->last = NULL;
+    while(!quit)
+    {
+        Perception pct = get_entity_perception(level, level->player);
+        Action act = e_greedy(level->player->q, pct, eps);
+        quit = update_game(level);
+        make_action(level, level->player,
+                act
+                );
+        if(!run->last)
+        {
+            run->last = malloc(sizeof(struct RunListCell));
+            run->first = run->last;
+            run->first->next = NULL;
+            run->first->previous = NULL;
+        }
+        else{
+            run->last->next = malloc(sizeof(struct RunListCell));
+            run->last->next->previous = run->last;
+            run->last = run->last->next;
+            run->last->next = NULL;
+        }
+        run->last->reward = 0;
+        run->last->action = act;
+        run->last->state = pct;
+    }
+    run->last->next = malloc(sizeof(struct RunListCell));
+    run->last->next->previous = run->last;
+    run->last = run->last->next;
+    run->last->next = NULL;
+    int length = length_run(run);
+    if(level->player->location.x >= level->length)
+    {
+        run->last->reward = 50/(float) length;
+    }
+    else
+        run->last->reward = -50;
 }
 
-Action e_greedy(Matrix* q, Perception perception) {
+
+
+Action e_greedy(Matrix* q, Perception perception, float eps) {
     float r = rand() / (float) RAND_MAX;
     
-    if (r < EPSILON) {
+    if (r < eps) {
         float p_max = 0.;
         Action action = 0;
         
@@ -65,14 +117,12 @@ Action e_greedy(Matrix* q, Perception perception) {
         }
         
         return action;
-    } else {
+    }
+    else {
         r = rand() / (float) RAND_MAX;
         unsigned int j;
-        for (j = 0; j < q->columns; j++)
-            if (j / (float) q->columns <= r)
-                return j;
-        
-        return j-1;
+        for (j = 0; ((float) j/q->columns) < r; j++);
+        return j;
     }
 }
 

@@ -120,7 +120,7 @@ void event_loop(Viewport* viewport) {
                         if(event.key.keysym.sym == SDLK_SPACE) viewport->state = VIEWPORTSTATE_GAME;
                         if(event.key.keysym.sym == SDLK_l) {
                             viewport->state = VIEWPORTSTATE_GAMEIA;
-                            FILE *file = fopen("learning", "r");
+                            FILE *file = fopen("learning.txt", "r");
                             if(file)
                             {
                                 viewport->level->player->q = load_matrix(file);
@@ -136,7 +136,8 @@ void event_loop(Viewport* viewport) {
         if(viewport->state == VIEWPORTSTATE_GAMEIA) {
             make_action(viewport->level, viewport->level->player,
                 e_greedy(viewport->level->player->q,
-                    get_entity_perception(viewport->level, viewport->level->player)
+                    get_entity_perception(viewport->level, viewport->level->player),
+                    0.01
                 )
             );
         }

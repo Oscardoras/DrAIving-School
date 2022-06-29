@@ -30,7 +30,7 @@ typedef struct {
  * @param run a pointer to a run.
  * @param action a pointer to the action chooser function.
  */
-void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception perception));
+void learning_play(Level* level, Run* run, float eps);
 
 /**
  * @brief Frees a run.
@@ -39,8 +39,10 @@ void learning_play(Level* level, Run* run, Action action(Matrix* q, Perception p
  */
 void free_run(Run* run);
 
+int lenght_run(Run* run);
 
-Action e_greedy(Matrix* q, Perception perception);
+
+Action e_greedy(Matrix* q, Perception perception, float eps);
 
 
 void learning_update(Matrix* q, Run* run);
