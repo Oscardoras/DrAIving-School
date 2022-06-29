@@ -3,7 +3,7 @@
 
 #include "level.h"
 
-#define CAR_PER_LINE 3
+#define CAR_PER_LINE 1
 #define LINES_PER_DIRECTION 3
 
 

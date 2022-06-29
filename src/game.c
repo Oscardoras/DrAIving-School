@@ -96,18 +96,18 @@ Perception get_entity_perception(Level* level, Entity* entity) {
 bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action action) {
     switch (action) {
         case ACTION_LEFT:
-            entity->location.y -= 0.3;
+            entity->location.y -= 0.1;
         break;
         case ACTION_RIGHT:
-            entity->location.y += 0.3;
+            entity->location.y += 0.1;
         break;
         case ACTION_FASTER:
             if (entity->location.velocity < 0.4)
-                entity->location.velocity += 0.05;
+                entity->location.velocity += 0.01;
         break;
         case ACTION_SLOWER:
             if (entity->location.velocity > 0.1)
-                entity->location.velocity -= 0.05;
+                entity->location.velocity -= 0.01;
         break;
         default:
         break;

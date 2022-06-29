@@ -114,43 +114,32 @@ void event_loop(Viewport* viewport) {
                         side = viewport->height/lines + 1;
                     }
                     break;
-                    
+                
                 case SDL_KEYDOWN: 
-                    switch (viewport->state) {
-                        case VIEWPORTSTATE_TITLE:
-                            if(event.key.keysym.sym == SDLK_SPACE) viewport->state = VIEWPORTSTATE_GAME;
-                            if(event.key.keysym.sym == SDLK_l) 
-                                {
-                                    viewport->state = VIEWPORTSTATE_GAMEIA;
-                                    FILE *file = fopen("learning", "r");
-                                    if(file)
-                                    {
-                                        viewport->level->player->q = load_matrix(file);
-                                        fclose(file);
-                                    }
-                                }
-                            break;
-                        default:
-                            switch (event.key.keysym.sym) {
-                                case SDLK_RIGHT:
-                                    make_action(viewport->level, viewport->level->player, ACTION_FASTER);
-                                    break;
-                                case SDLK_LEFT:
-                                    make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
-                                    break;
-                                case SDLK_UP:
-                                    make_action(viewport->level, viewport->level->player, ACTION_LEFT);
-                                    break;
-                                case SDLK_DOWN:
-                                    make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
-                                    break;
+                    if (viewport->state == VIEWPORTSTATE_TITLE) {
+                        if(event.key.keysym.sym == SDLK_SPACE) viewport->state = VIEWPORTSTATE_GAME;
+                        if(event.key.keysym.sym == SDLK_l) {
+                            viewport->state = VIEWPORTSTATE_GAMEIA;
+                            FILE *file = fopen("learning", "r");
+                            if(file)
+                            {
+                                viewport->level->player->q = load_matrix(file);
+                                fclose(file);
                             }
+                        }
                     }
-                    break;
-            
                 }
         }
-            
+        
+        const Uint8* keystates = SDL_GetKeyboardState(NULL);
+        if (keystates[SDL_SCANCODE_UP])
+            make_action(viewport->level, viewport->level->player, ACTION_LEFT);
+        if (keystates[SDL_SCANCODE_DOWN])
+            make_action(viewport->level, viewport->level->player, ACTION_RIGHT);
+        if (keystates[SDL_SCANCODE_RIGHT])
+            make_action(viewport->level, viewport->level->player, ACTION_FASTER);
+        if (keystates[SDL_SCANCODE_LEFT])
+            make_action(viewport->level, viewport->level->player, ACTION_SLOWER);
         
         if(viewport->state == VIEWPORTSTATE_GAMEIA) {
             make_action(viewport->level, viewport->level->player,
