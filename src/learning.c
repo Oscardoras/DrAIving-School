@@ -20,10 +20,12 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
         learning(level->player->q, &run, xi, gamma);
 
         free_run(&run);
-
-        eps *= EPSILON;
-        xi *= XI;
-        gamma *= GAMMA;
+    
+        if (k%(n/1000) == 0) {
+            eps *= EPSILON;
+            xi *= XI;
+            gamma *= GAMMA;
+        }
     }
 }
 
@@ -34,6 +36,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     
     while (!quit) {
         Perception p = get_entity_perception(level, level->player);
+        //printf("Perception : %d\n", p);
         Action a = action(level->player->q, p, eps);
         make_action(level, level->player, a);
         quit = update_game(level);
@@ -61,7 +64,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     if (level->player->location.x >= level->length)
         run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
-        run->last->reward -= 1.;
+        run->last->reward -= 5.;
 }
 
 void free_run(Run* run) {
@@ -215,6 +218,4 @@ void sarsa(Matrix* matrix, Run* run) {
                 *get_matrix_element(matrix, it->state, it->action)
             );
     }
-
-
 }

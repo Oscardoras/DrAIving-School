@@ -60,6 +60,9 @@ Perception get_entity_perception(Level* level, Entity* entity) {
     float small_width = 0.25 * width;
     float length = box.max_x - box.min_x;
     float big_length = 5. * length;
+    p = p | (PERCEPTION_LEFT * (box.min_y - small_width < 0));
+    p = p | (PERCEPTION_RIGHT * (box.max_y + small_width > level->width));
+    
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
         HitBox it_box = get_entity_hitbox(it->entity);
         HitBox b;
