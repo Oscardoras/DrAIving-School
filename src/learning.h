@@ -100,7 +100,7 @@ void double_q_learning(Matrix* q1, Matrix* q2, Run* run);
  * @param q the matrix of the AI.
  * @param run the run the AI just did.
  */
-void sarsa(Matrix* q, Run* run);
+void sarsa(Matrix* q, Run* run, float xi, float gamma);
 
 
 #endif
