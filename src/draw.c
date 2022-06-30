@@ -132,8 +132,9 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
     dest.w = side; //Longueur d'une voiture = longueur d'un bloc de route.
     dest.x = side; //Position du joueur, a une longueur de voiture du bord gauche de l'ecran.
     dest.h = side / (CAR_LENGTH/CAR_WIDTH);
-    float y = get_entity_hitbox(entity).min_y / viewport->level->width;
-    dest.y = (2. + y * road_lines) * side;
+    float y = get_entity_hitbox(entity).min_y / (viewport->level->width - CAR_WIDTH);
+    float line_per_width = road_lines / viewport->level->width;
+    dest.y = (int) ((2. + y * (road_lines - line_per_width * CAR_WIDTH)) * (float) side);
     
     switch (entity->type) {
     case PLAYER_CAR:
