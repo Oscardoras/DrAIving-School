@@ -11,11 +11,11 @@
 
 
 //#define LEARN
-#define LEARN_ITERATION 10000
+#define LEARN_ITERATION 100000
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.
-#define LEVEL_LENGTH 100.
+#define LEVEL_LENGTH 300.
 
 
 int main() {
@@ -32,19 +32,7 @@ int main() {
     if (level == NULL) return EXIT_FAILURE;
 
 
-    #ifndef LEARN
-        init_level_player(level, NULL);
-        
-        Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
-        if (viewport == NULL) {
-            free_level(level);
-            return EXIT_FAILURE;
-        }
-        
-        event_loop(viewport);
-        
-        close_viewport(viewport);
-    #else
+    #ifdef LEARN
         file = fopen("base.txt", "r");
         if (file) {
             Matrix* q = load_matrix(file);
@@ -59,6 +47,17 @@ int main() {
             } else return EXIT_FAILURE;
         } else return EXIT_FAILURE;
     #endif
+    
+    init_level_player(level, NULL);
+    
+    Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
+    if (viewport == NULL) {
+        free_level(level);
+        return EXIT_FAILURE;
+    }
+    
+    event_loop(viewport);
+    close_viewport(viewport);
     
     free_level(level);
     

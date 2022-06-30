@@ -5,7 +5,7 @@
 
 #include "matrix.h"
 
-#define CAR_WIDTH 1.2
+#define CAR_WIDTH 1.5
 #define CAR_LENGTH 2.
 
 

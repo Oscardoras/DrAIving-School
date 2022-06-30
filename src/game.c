@@ -1,15 +1,15 @@
 #include <stdlib.h>
 
 #include "game.h"
+#include "learning.h"
 
 
 bool update_game(Level* level) {
     HitBox player_box = get_entity_hitbox(level->player);
     
     int tab[LINES_PER_DIRECTION*2];
-    for (int n = 0; n < LINES_PER_DIRECTION*2; n++) {
+    for (int n = 0; n < LINES_PER_DIRECTION*2; n++)
         tab[n] = 0;
-    }
     
     struct EntityListCell** ptr = &level->entities;
     while (*ptr != NULL) {
@@ -20,7 +20,7 @@ bool update_game(Level* level) {
             free(tmp);
         } else {
             struct EntityListCell* it = *ptr;
-            make_action(level, it->entity, compute_state(it->entity->q, get_entity_perception(level, it->entity)));
+            make_action(level, it->entity, e_greedy(it->entity->q, get_entity_perception(level, it->entity), 0.));
             it->entity->location.x += it->entity->location.velocity;
             
             if (are_entity_box_hitting(get_entity_hitbox(it->entity), player_box))
@@ -38,7 +38,7 @@ bool update_game(Level* level) {
             Location location;
             location.x = level->player->location.x + CAR_LENGTH*(10 + 10 * (rand() / (float) RAND_MAX));
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
-            location.velocity = n < LINES_PER_DIRECTION ? -DEFAULT_PLAYER_VELOCITY : DEFAULT_PLAYER_VELOCITY;
+            location.velocity = n < LINES_PER_DIRECTION ? -DEFAULT_CAR_VELOCITY : DEFAULT_CAR_VELOCITY;
         
             add_level_entity(level, new_entity(CAR, location, level->matrix));
         }
@@ -54,84 +54,81 @@ bool update_game(Level* level) {
     return level->player->location.x >= level->length;
 }
 
-HitBox* get_entity_perception_hitbox(Entity* entity) {
-    HitBox* tab = malloc(6*sizeof(HitBox));
+void get_entity_perception_hitbox(Entity* entity, HitBox boxes[8]) {
+    boxes[0] = get_entity_hitbox(entity);
+    boxes[1] = boxes[2] = boxes[3] = boxes[4] = boxes[5] = boxes[0];
     
-    tab[0] = get_entity_hitbox(entity);
-    tab[1] = tab[2] = tab[3] = tab[4] = tab[5] = tab[0];
-    
-    float width = tab[0].max_y - tab[0].min_y;
-    float small_width = 0.5 * width;
-    float length = tab[0].max_x - tab[0].min_x;
-    float big_length = 5. * length;
-    
+    float width = boxes[0].max_y - boxes[0].min_y;
+    float small_width = 0.25 * width;
+    float medium_width = 0.5 * width;
+    float length = boxes[0].max_x - boxes[0].min_x;
+    float big_length = 3. * length;
     
     
-    tab[1].max_y = tab[0].min_y;
-    tab[1].min_y = tab[0].min_y - small_width;
+    boxes[1].max_y = boxes[0].min_y;
+    boxes[1].min_y = boxes[0].min_y - small_width;
     
+    boxes[2].min_y = boxes[0].max_y;
+    boxes[2].max_y = boxes[0].max_y + small_width;
     
-    tab[2].min_y = tab[0].max_y;
-    tab[2].max_y = tab[0].max_y + small_width;
+    boxes[3].min_x = boxes[0].max_x;
+    boxes[3].max_x = boxes[0].max_x + big_length;
+    boxes[3].max_y = boxes[0].min_y;
+    boxes[3].min_y = boxes[0].min_y - medium_width;
     
-    tab[3].min_x = tab[0].max_x;
-    tab[3].max_x = tab[0].max_x + big_length;
-    tab[3].max_y = tab[0].min_y;
-    tab[3].min_y = tab[0].min_y - width;
+    boxes[4].min_x = boxes[0].max_x;
+    boxes[4].max_x = boxes[0].max_x + big_length;
+    boxes[4].min_y = boxes[0].min_y;
+    boxes[4].max_y = boxes[0].max_y;
     
-    tab[4].min_x = tab[0].max_x;
-    tab[4].max_x = tab[0].max_x + big_length;
+    boxes[5].min_x = boxes[0].max_x;
+    boxes[5].max_x = boxes[0].max_x + big_length;
+    boxes[5].min_y = boxes[0].max_y;
+    boxes[5].max_y = boxes[0].max_y + medium_width;
     
-    tab[5].min_x = tab[0].max_x;
-    tab[5].max_x = tab[0].max_x + big_length;
-    tab[5].min_y = tab[0].max_y;
-    tab[5].max_y = tab[0].max_y + width;
-
-    return tab;
+    boxes[6].min_x = boxes[0].max_x;
+    boxes[6].max_x = boxes[0].max_x + big_length;
+    boxes[6].max_y = boxes[0].min_y - medium_width;
+    boxes[6].min_y = boxes[0].min_y -  medium_width - width;
+    
+    boxes[7].min_x = boxes[0].max_x;
+    boxes[7].max_x = boxes[0].max_x + big_length;
+    boxes[7].min_y = boxes[0].max_y + medium_width;
+    boxes[7].max_y = boxes[0].max_y + medium_width + width;
 }
 
 Perception get_entity_perception(Level* level, Entity* entity) {
     Perception p = 0b0;
     
-    HitBox box = get_entity_hitbox(entity);
-    float width = box.max_y - box.min_y;
-    float small_width = 0.5 * width;
-    float length = box.max_x - box.min_x;
-    float big_length = 5. * length;
+    HitBox boxes[8];
+    get_entity_perception_hitbox(entity, boxes);
     
-    p = p | (PERCEPTION_LEFT * (box.min_y - small_width < 0));
-    p = p | (PERCEPTION_RIGHT * (box.max_y + small_width > level->width));
+    HitBox top;
+    HitBox bot;
+    bot.min_x = top.min_x = 0.;
+    bot.max_x = top.max_x = level->length;
+    top.min_y = -CAR_WIDTH;
+    top.max_y = 0.;
+    bot.min_y = level->width;
+    bot.max_y = level->width + CAR_WIDTH;
+    
+    p = p | (PERCEPTION_LEFT * are_entity_box_hitting(boxes[1], top));
+    p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(boxes[2], bot));
+    p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(boxes[3], top));
+    p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(boxes[5], bot));
+    p = p | (PERCEPTION_FAR_LEFT * are_entity_box_hitting(boxes[6], top));
+    p = p | (PERCEPTION_FAR_RIGHT * are_entity_box_hitting(boxes[7], bot));
     
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) if (it->entity != entity) {
         HitBox it_box = get_entity_hitbox(it->entity);
-        HitBox b;
         
-        b = box;
-        b.max_y = box.min_y;
-        b.min_y = box.min_y - small_width;
-        p = p | (PERCEPTION_LEFT * are_entity_box_hitting(b, it_box));
-        
-        b = box;
-        b.min_y = box.max_y;
-        b.max_y = box.max_y + small_width;
-        p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(b, it_box));
-        
-        b.min_x = box.max_x;
-        b.max_x = box.max_x + big_length;
-        b.max_y = box.min_y;
-        b.min_y = box.min_y - width;
-        p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(b, it_box));
-        
-        b = box;
-        b.min_x = box.max_x;
-        b.max_x = box.max_x + big_length;
-        p = p | (PERCEPTION_TOP * are_entity_box_hitting(b, it_box));
-        
-        b.min_x = box.max_x;
-        b.max_x = box.max_x + big_length;
-        b.min_y = box.max_y;
-        b.max_y = box.max_y + width;
-        p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(b, it_box));
+        p = p | (PERCEPTION_LEFT * are_entity_box_hitting(boxes[1], it_box));
+        p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(boxes[2], it_box));
+        p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(boxes[3], it_box));
+        p = p | (PERCEPTION_TOP * are_entity_box_hitting(boxes[4], it_box));
+        p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(boxes[5], it_box));
+        p = p | (PERCEPTION_FAR_LEFT * are_entity_box_hitting(boxes[6], it_box));
+        p = p | (PERCEPTION_FAR_RIGHT * are_entity_box_hitting(boxes[7], it_box));
     }
 
     return p;

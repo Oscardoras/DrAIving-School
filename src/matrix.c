@@ -80,20 +80,6 @@ float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j) {
     return &matrix->data[i*matrix->columns + j];
 }
 
-unsigned int compute_state(Matrix* matrix, unsigned int from) {
-    float r = rand() / (float) RAND_MAX;
-
-    float sum = 0.;
-    unsigned int j;
-    for (j = 0; j < matrix->columns; j++) {
-        sum += *get_matrix_element(matrix, from, j);
-        if (r <= sum)
-            return j;
-    }
-    
-    return j-1;
-}
-
 void add_matrix(Matrix* q1, Matrix* q2, Matrix* q3) {
     for (int i = 0; i<q1->lines; i++) {
         for (int j = 0; j<q1->lines; j++) {
