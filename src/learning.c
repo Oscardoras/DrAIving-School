@@ -21,7 +21,7 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
 
         free_run(&run);
     
-        if (k%(n/1000) == 0) {
+        if (k % (n / 100) == 0) {
             eps *= EPSILON;
             xi *= XI;
             gamma *= GAMMA;
@@ -36,7 +36,6 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     
     while (!quit) {
         Perception p = get_entity_perception(level, level->player);
-        //printf("Perception : %d\n", p);
         Action a = action(level->player->q, p, eps);
         make_action(level, level->player, a);
         quit = update_game(level);
@@ -64,7 +63,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     if (level->player->location.x >= level->length)
         run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
-        run->last->reward -= 5.;
+        run->last->reward = -1;
 }
 
 void free_run(Run* run) {
@@ -79,7 +78,7 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
     float r = rand() / (float) RAND_MAX;
     
     if (r > eps) {
-        float p_max = 0.;
+        float p_max = *get_matrix_element(q, perception, 0);
         Action action = 0;
         
         for (unsigned int j = 0; j < q->columns; j++) {
@@ -91,15 +90,8 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
         }
         
         return action;
-    } else {
-        r = rand() / (float) RAND_MAX;
-        unsigned int j;
-        for (j = 0; j < q->columns; j++)
-            if (r <= (j+1) / (float) q->columns)
-                return j;
-        
-        return j-1;
-    }
+    } else
+        return rand() % q->columns;
 }
 
 void q_learning(Matrix* q, Run* run, float xi, float gamma) {
