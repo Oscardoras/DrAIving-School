@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-06-30 jeu. 23:58 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apprentissage par renforcement</title>
+<meta name="author" content="Mathieu E, Oscar B, Paul C" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Apprentissage par renforcement</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org0323cd6">1. Git</a></li>
+<li><a href="#org0b10932">2. DrAIving School (nom non-contractuel)</a>
+<ul>
+<li><a href="#org78c7b3c">2.1. Principe</a></li>
+<li><a href="#orgb84e8d7">2.2. IA</a>
+<ul>
+<li><a href="#org6a7c802">2.2.1. Perceptions</a></li>
+<li><a href="#org8dd9bcd">2.2.2. Score</a></li>
+<li><a href="#org16197f1">2.2.3. Paramètres/Méthodes</a></li>
+</ul>
+</li>
+<li><a href="#org7c6c349">2.3. Résultats</a>
+<ul>
+<li><a href="#orge1e95aa">2.3.1. IA intéressantes</a></li>
+<li><a href="#org3eb2722">2.3.2. Limites des perceptions</a></li>
+<li><a href="#org3ecc8df">2.3.3. Limites du jeu</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0323cd6" class="outline-2">
+<h2 id="org0323cd6"><span class="section-number-2">1.</span> Git</h2>
+<div class="outline-text-2" id="text-1">
+<p title="Le git du projet">
+<a href="https://gitlab.isima.fr/osbuon/projet-jeu" title="Le git du projet">https://gitlab.isima.fr/osbuon/projet-jeu</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0b10932" class="outline-2">
+<h2 id="org0b10932"><span class="section-number-2">2.</span> DrAIving School (nom non-contractuel)</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org78c7b3c" class="outline-3">
+<h3 id="org78c7b3c"><span class="section-number-3">2.1.</span> Principe</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Le but du jeu est de rouler vers l'arrivée le plus vite possible sans faire d'accident.
+Il y a une autoroute à 3 voies par sens clairsemée de voitures qui roulent plus ou moins vite selon la voie.
+La voiture du joueur peut accélérer, freiner, et tourner à gauche ou à droite. Il est important de noter que la voiture du joueur est plus rapide que toute autre voiture, même à vitesse minimale.
+</p>
+
+<p>
+INSERER IMAGE JEU
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgb84e8d7" class="outline-3">
+<h3 id="orgb84e8d7"><span class="section-number-3">2.2.</span> IA</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Pour entraîner l'IA, nous avons essayé différents paramètres et méthodes, différentes perceptions et différentes récompenses et pénalités :
+</p>
+</div>
+
+
+
+<div id="outline-container-org6a7c802" class="outline-4">
+<h4 id="org6a7c802"><span class="section-number-4">2.2.1.</span> Perceptions</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+Nous avons doté l'IA d'une perception du monde très locale pour éviter une surcharge d'états différents à gérer.
+Elle peut donc détecter les obstacles autour d'elle dans des zones de taille différentes.
+</p>
+
+<p>
+INSERER IMAGE PERCEPTIONS/HITBOX
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org8dd9bcd" class="outline-4">
+<h4 id="org8dd9bcd"><span class="section-number-4">2.2.2.</span> Score</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Pour les pénalités : en cas d'accident, l'IA perd XXX points, peu importe si elle a cogné le trottoir ou une autre voiture.
+</p>
+
+<p>
+En revanche, elle gagne ensuite des points lorsqu'elle atteint la fin du niveau. Ces points sont plus ou moins élevés en fonction du temps de la course, pour encourager l'IA à accélérer quand possible.
+L'intérêt de ceci est que l'IA devra alors contrôler son accélération et jauger quand il est judicieux de vouloir se dépécher.
+</p>
+
+<p>
+INSERER IMAGE SCORE
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org16197f1" class="outline-4">
+<h4 id="org16197f1"><span class="section-number-4">2.2.3.</span> Paramètres/Méthodes</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+La quasi-totalité des choix d'actions ont été fait par Є-Greedy.
+</p>
+
+<p>
+Nous avons pris Є = 0.99, et l'avons multiplié par ce nombre 1000 de manière équitable pendant l'apprentissage. Є est alors de l'ordre de 10<sup>-5</sup> à la fin.
+</p>
+
+<p>
+Pour Ɣ, nous ne savions pas exactement comment il fonctionnait avant qu'un professeur ne nous l'explique, nous le prenions alors de manière aléatoire, puis finalement, nous l'avons laissé à 0.99 au vu des conseils donnés.
+</p>
+
+<p>
+De même pour ς, que nous avons finalement laissé à 0.01.
+</p>
+
+
+<p>
+Pour l'apprentissage, beaucoup ont été réalisés par Q-Learning et quelques autres par SARSA.
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org7c6c349" class="outline-3">
+<h3 id="org7c6c349"><span class="section-number-3">2.3.</span> Résultats</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-orge1e95aa" class="outline-4">
+<h4 id="orge1e95aa"><span class="section-number-4">2.3.1.</span> IA intéressantes</h4>
+<div class="outline-text-4" id="text-2-3-1">
+</div>
+<ol class="org-ol">
+<li><a id="org4d82072"></a>Premières IA<br />
+<div class="outline-text-5" id="text-2-3-1-1">
+<p>
+Les premiers essais montraient un apprentissage, mais pas dans la direction que nous voulions&#x2026;
+Il en résulte une IA suicidaire qui minimise alors son temps de survie et qui s'en vanterait presque.
+</p>
+
+<p>
+TEST PREMIERES IA
+</p>
+</div>
+</li>
+
+<li><a id="org389626f"></a>Premières IA performantes<br />
+<div class="outline-text-5" id="text-2-3-1-2">
+<p>
+Après beaucoup de changements de paramètres, d'entraînements différents, de modifications de codes, nous avons réussi à avoir quelques IA avec un comportement remarquable comparé aux autres.
+</p>
+
+<p>
+TEST PREMIERES IA PERFORMANTES
+</p>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org3eb2722" class="outline-4">
+<h4 id="org3eb2722"><span class="section-number-4">2.3.2.</span> Limites des perceptions</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+Le problème d'avoir des perceptions locales sont qu'elles sont locales (oui) : si l'IA est face à un bouchon, elle ne peut savoir s'il y a de la place libre sur les côtés, et ne pensera même pas à y aller.
+De plus, des perceptions aussi larges que les notres peuvent provoquer des confusions chez l'IA qui peut voir un bouchon même quand 2 voitures sont assez espacées pour que l'IA passe entre.
+</p>
+
+
+<p>
+INSERER IMAGE BOUCHON/FAUX BOUCHON
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ecc8df" class="outline-4">
+<h4 id="org3ecc8df"><span class="section-number-4">2.3.3.</span> Limites du jeu</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+Le premier problème est lié aux perceptions locales de l'IA : si par faute du hasard, il y a un bouchon car les voitures sont toutes alignées, l'IA ne pourra rien faire car son monde est bloqué.
+Une idée venue un peu tard était de faire des groupements de voitures générées aléatoirement avec comme règle que l'IA peut toujours passer entre. Le problème restait cependant les perceptions locales de l'IA qui ne détectait pas le passage.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Mathieu E, Oscar B, Paul C</p>
+<p class="date">Created: 2022-06-30 jeu. 23:58</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
