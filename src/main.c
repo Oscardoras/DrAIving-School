@@ -15,7 +15,7 @@
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.
-#define LEVEL_LENGTH 500.
+#define LEVEL_LENGTH 100.
 
 
 int main() {

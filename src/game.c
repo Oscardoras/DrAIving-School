@@ -44,9 +44,6 @@ bool update_game(Level* level) {
         }
     }
     
-    Perception p = get_entity_perception(level, level->player);
-    printf("Perception %u\n", p);
-    
     level->player->location.x += level->player->location.velocity;
     if (player_box.min_y < 0 || player_box.max_y > level->width)
         return true;
