@@ -20,9 +20,8 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
         run.first = NULL;
         run.last = NULL;
         simulate_game(level, &run, action, eps);
+        printf("Learning iteration %ld, reward %f, epsilon %f\n", k, run.last->reward, eps);
         learning(level->player->q, &run, xi, gamma);
-        
-        printf("Learning iteration %ld, reward %f, epsilon %f, score %i\n", k, run.last->reward, eps, level->score);
 
         free_run(&run);
     
@@ -109,16 +108,16 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
 }
 
 void q_learning(Matrix* q, Run* run, float xi, float gamma) {
-    *get_matrix_element(q, run->last->previous->state, run->last->previous->action) += XI * (run->last->reward - *get_matrix_element(q, run->last->previous->state, run->last->previous->action)); 
+    *get_matrix_element(q, run->last->previous->state, run->last->previous->action) += xi * (run->last->reward - *get_matrix_element(q, run->last->previous->state, run->last->previous->action)); 
     for (struct RunListCell* it = run->last->previous->previous; it != NULL; it = it->previous) {
         float M = *get_matrix_element(q, it->next->state, 0);
-        for (unsigned int j = 1; j < ACTIONS; ++j) {
-            float v = *get_matrix_element(q, it->next->state, j);
+        for (unsigned int a = 1; a < ACTIONS; a++) {
+            float v = *get_matrix_element(q, it->next->state, a);
             if (v > M)
                 M = v;
         }
 
-        *get_matrix_element(q, it->state, it->action) += XI * (it->next->reward + GAMMA*M - *get_matrix_element(q, it->state, it->action));
+        *get_matrix_element(q, it->state, it->action) += xi * (it->next->reward + gamma*M - *get_matrix_element(q, it->state, it->action));
     }
 }
 
@@ -224,6 +223,4 @@ void sarsa(Matrix* matrix, Run* run) {
                 *get_matrix_element(matrix, it->state, it->action)
             );
     }
-
-
 }
