@@ -36,6 +36,8 @@ typedef enum {
  */
 bool update_game(Level* level);
 
+HitBox* get_entity_perception_hitbox(Entity* entity);
+
 /**
  * @brief Gets the perception of an entity.
  * 
