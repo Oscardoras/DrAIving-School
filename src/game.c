@@ -40,7 +40,7 @@ bool update_game(Level* level) {
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
             location.velocity = n < LINES_PER_DIRECTION ? -0.1 : 0.1;
         
-            add_level_entity(level, new_entity(CAR, location, level->matrix));
+            //add_level_entity(level, new_entity(CAR, location, level->matrix));
         }
     }
     

@@ -11,7 +11,7 @@
 
 
 #define LEARN
-#define LEARN_ITERATION 100000
+#define LEARN_ITERATION 10000
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.

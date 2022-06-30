@@ -56,6 +56,7 @@ bool init_level_player(Level* level, Matrix* q) {
     location.x = 0.;
     location.y = (5. / 6) * level->width;
     level->player = new_entity(PLAYER_CAR, location, q);
+    level->score = 0;
     
     return level->player != NULL;
 }

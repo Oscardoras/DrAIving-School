@@ -3,10 +3,6 @@
 
 #include "learning.h"
 
-#define EPSILON 0.9999
-#define XI 0.1
-#define GAMMA 0.1
-
 
 void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*, float, float), Level* level) {
     float eps = EPSILON;
@@ -92,8 +88,7 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
         }
         
         return action;
-    }
-    else {
+    } else {
         r = rand() / (float) RAND_MAX;
         unsigned int j;
         for (j = 0; j < q->columns; j++)
