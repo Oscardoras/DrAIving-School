@@ -15,7 +15,7 @@
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.
-#define LEVEL_LENGTH 100.
+#define LEVEL_LENGTH 1000.
 
 
 int main() {
@@ -50,7 +50,7 @@ int main() {
             Matrix* q = load_matrix(file);
             fclose(file);
             
-            learn(LEARN_ITERATION, q, e_greedy, q_learning, level);
+            learn(LEARN_ITERATION, q, e_greedy, sarsa, level);
             
             file = fopen("learning.txt", "w");
             if (file) {

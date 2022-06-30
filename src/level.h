@@ -5,6 +5,7 @@
 
 #include "entity.h"
 
+#define DEFAULT_CAR_VELOCITY 0.12
 #define DEFAULT_PLAYER_VELOCITY 0.2
 
 
