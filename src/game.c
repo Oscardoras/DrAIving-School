@@ -38,11 +38,14 @@ bool update_game(Level* level) {
             Location location;
             location.x = level->player->location.x + CAR_LENGTH*(10 + 10 * (rand() / (float) RAND_MAX));
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
-            location.velocity = n < LINES_PER_DIRECTION ? -0.1 : 0.1;
+            location.velocity = n < LINES_PER_DIRECTION ? -DEFAULT_PLAYER_VELOCITY : DEFAULT_PLAYER_VELOCITY;
         
             add_level_entity(level, new_entity(CAR, location, level->matrix));
         }
     }
+    
+    Perception p = get_entity_perception(level, level->player);
+    printf("Perception %u\n", p);
     
     level->player->location.x += level->player->location.velocity;
     if (player_box.min_y < 0 || player_box.max_y > level->width)
@@ -96,10 +99,11 @@ Perception get_entity_perception(Level* level, Entity* entity) {
     float small_width = 0.25 * width;
     float length = box.max_x - box.min_x;
     float big_length = 5. * length;
+    
     p = p | (PERCEPTION_LEFT * (box.min_y - small_width < 0));
     p = p | (PERCEPTION_RIGHT * (box.max_y + small_width > level->width));
     
-    for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) {
+    for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) if (it->entity != entity) {
         HitBox it_box = get_entity_hitbox(it->entity);
         HitBox b;
         
@@ -129,10 +133,6 @@ Perception get_entity_perception(Level* level, Entity* entity) {
         b.min_y = box.max_y;
         b.max_y = box.max_y + width;
         p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(b, it_box));
-    }
-
-    if (entity == level->player && p != 0) {
-        return p; //Pour les breakpoint
     }
 
     return p;

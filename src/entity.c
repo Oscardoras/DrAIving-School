@@ -34,5 +34,11 @@ bool are_entity_box_hitting(HitBox b1, HitBox b2) {
     if (b2.min_x <= b1.max_x && b1.max_x <= b2.max_x && b2.min_y <= b1.min_y && b1.min_y <= b2.max_y) return true;
     if (b2.min_x <= b1.min_x && b1.min_x <= b2.max_x && b2.min_y <= b1.max_y && b1.max_y <= b2.max_y) return true;
     if (b2.min_x <= b1.max_x && b1.max_x <= b2.max_x && b2.min_y <= b1.max_y && b1.max_y <= b2.max_y) return true;
+    
+    if (b1.min_x <= b2.min_x && b2.min_x <= b1.max_x && b1.min_y <= b2.min_y && b2.min_y <= b1.max_y) return true;
+    if (b1.min_x <= b2.max_x && b2.max_x <= b1.max_x && b1.min_y <= b2.min_y && b2.min_y <= b1.max_y) return true;
+    if (b1.min_x <= b2.min_x && b2.min_x <= b1.max_x && b1.min_y <= b2.max_y && b2.max_y <= b1.max_y) return true;
+    if (b1.min_x <= b2.max_x && b2.max_x <= b1.max_x && b1.min_y <= b2.max_y && b2.max_y <= b1.max_y) return true;
+    
     return false;
 }
