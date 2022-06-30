@@ -69,8 +69,8 @@ void draw_score(Viewport* viewport) {
     scaleX = (float)viewport->width/800.0;
     scaleY = (float)viewport->height/600.0;
     
-    char score[20];
-    sprintf(score,"Score : %d", viewport->level->score);
+    char score[40];
+    sprintf(score,"Temps : %d          Fin : %d", viewport->level->score, (int) (viewport->level->length - viewport->level->player->location.x));
     
     SDL_Color color = {0, 0, 0, 255};
     SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, score, color);
@@ -78,7 +78,7 @@ void draw_score(Viewport* viewport) {
     if (text_surface) {
         SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
         if (text_texture) {
-            SDL_Rect ttfdest = {10*scaleX, 10*scaleY, 200*scaleX, 40*scaleY};
+            SDL_Rect ttfdest = {10*scaleX, 10*scaleY, 450*scaleX, 45*scaleY};
             SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
             SDL_DestroyTexture(text_texture);           
             SDL_FreeSurface(text_surface);

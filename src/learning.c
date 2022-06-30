@@ -4,8 +4,8 @@
 #include "learning.h"
 
 #define EPSILON 0.99
-#define XI 0.1
-#define GAMMA 0.1
+#define XI 0.01
+#define GAMMA 0.01
 
 
 void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*, float, float), Level* level) {
@@ -40,8 +40,8 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     
     while (!quit) {
         Perception p = get_entity_perception(level, level->player);
-        //printf("Perception : %d\n", p);
         Action a = action(level->player->q, p, eps);
+        //printf("Perception : %d, Action : %d\n", p, a);
         make_action(level, level->player, a);
         quit = update_game(level);
 
@@ -68,7 +68,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     if (level->player->location.x >= level->length)
         run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
-        run->last->reward -= 5.;
+        run->last->reward = -10. * (1. - level->player->location.x / level->width);
 }
 
 void free_run(Run* run) {
@@ -83,10 +83,10 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
     float r = rand() / (float) RAND_MAX;
     
     if (r > eps) {
-        float p_max = 0.;
+        float p_max = *get_matrix_element(q, perception, 0);
         Action action = 0;
         
-        for (unsigned int j = 0; j < q->columns; j++) {
+        for (unsigned int j = 1; j < q->columns; j++) {
             float p = *get_matrix_element(q, perception, j);
             if (p > p_max) {
                 p_max = p;
@@ -204,7 +204,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
     }
 }
 
-void sarsa(Matrix* matrix, Run* run) {
+void sarsa(Matrix* matrix, Run* run, float xi, float gamma) {
     *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) +=
         XI *
         (

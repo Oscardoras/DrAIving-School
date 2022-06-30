@@ -138,7 +138,7 @@ void event_loop(Viewport* viewport) {
         
         if (viewport->state == VIEWPORTSTATE_IA) {
             Perception p = get_entity_perception(viewport->level, viewport->level->player);
-            Action a = e_greedy(viewport->level->player->q, p, 0.);
+            Action a = e_greedy(viewport->level->player->q, p, 0.01);
             make_action(viewport->level, viewport->level->player, a);
             printf("Perception : %u, Action : %u\n", p, a);
         } else {
@@ -160,6 +160,7 @@ void event_loop(Viewport* viewport) {
 
             draw_road(viewport, lines, side);
             draw_cars(viewport, lines-4, side);
+            draw_score(viewport);
             break;
         case VIEWPORTSTATE_MENU:
             draw_menu(viewport);
