@@ -52,6 +52,42 @@ bool update_game(Level* level) {
     return level->player->location.x >= level->length;
 }
 
+HitBox* get_entity_perception_hitbox(Entity* entity) {
+    HitBox* tab = malloc(6*sizeof(HitBox));
+    
+    tab[0] = get_entity_hitbox(entity);
+    tab[1] = tab[2] = tab[3] = tab[4] = tab[5] = tab[0];
+    
+    float width = tab[0].max_y - tab[0].min_y;
+    float small_width = 0.25 * width;
+    float length = tab[0].max_x - tab[0].min_x;
+    float big_length = 5. * length;
+    
+    
+    
+    tab[1].max_y = tab[0].min_y;
+    tab[1].min_y = tab[0].min_y - small_width;
+    
+    
+    tab[2].min_y = tab[0].max_y;
+    tab[2].max_y = tab[0].max_y + small_width;
+    
+    tab[3].min_x = tab[0].max_x;
+    tab[3].max_x = tab[0].max_x + big_length;
+    tab[3].max_y = tab[0].min_y;
+    tab[3].min_y = tab[0].min_y - width;
+    
+    tab[4].min_x = tab[0].max_x;
+    tab[4].max_x = tab[0].max_x + big_length;
+    
+    tab[5].min_x = tab[0].max_x;
+    tab[5].max_x = tab[0].max_x + big_length;
+    tab[5].min_y = tab[0].max_y;
+    tab[5].max_y = tab[0].max_y + width;
+
+    return tab;
+}
+
 Perception get_entity_perception(Level* level, Entity* entity) {
     Perception p = 0b0;
     
