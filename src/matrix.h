@@ -50,13 +50,13 @@ void free_matrix(Matrix* matrix);
 float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j);
 
 /**
- * @brief Add two matrix of the same size, and stores the result in the third one
+ * @brief Makes the addition between two matrices.
  * 
- * @param q1 one of the matrix to add.
- * @param q2 one of the matrix to add.
- * @param q3 the addition of the other matrix.
+ * @param q1 the first matrix to add.
+ * @param q2 the second matrix to add.
+ * @param r the addition of the other matrices.
  */
-void add_matrix(Matrix* q1, Matrix* q2, Matrix* q3);
+void add_matrix(Matrix* q1, Matrix* q2, Matrix* r);
 
 
 #endif

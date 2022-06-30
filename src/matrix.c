@@ -80,12 +80,8 @@ float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j) {
     return &matrix->data[i*matrix->columns + j];
 }
 
-void add_matrix(Matrix* q1, Matrix* q2, Matrix* q3) {
-    for (int i = 0; i<q1->lines; i++) {
-        for (int j = 0; j<q1->lines; j++) {
-            *get_matrix_element(q3, i, j) =
-                *get_matrix_element(q1, i, j) +
-                *get_matrix_element(q2, i, j);
-        }
-    }
+void add_matrix(Matrix* q1, Matrix* q2, Matrix* r) {
+    for (unsigned int i = 0; i < q1->lines; i++)
+        for (unsigned int j = 0; j < q1->columns; j++)
+            *get_matrix_element(r, i, j) = *get_matrix_element(q1, i, j) + *get_matrix_element(q2, i, j);
 }

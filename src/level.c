@@ -48,7 +48,7 @@ void remove_level_entities(Level* level) {
     level->entities = NULL;
 }
 
-bool init_level_player(Level* level, Matrix* q) {
+Entity* init_level_player(Level* level, Matrix* q) {
     if (level->player != NULL)
         free_entity(level->player);
     
@@ -59,5 +59,5 @@ bool init_level_player(Level* level, Matrix* q) {
     level->player = new_entity(PLAYER_CAR, location, q);
     level->score = 0;
     
-    return level->player != NULL;
+    return level->player;
 }

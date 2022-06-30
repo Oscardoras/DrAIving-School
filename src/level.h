@@ -5,8 +5,6 @@
 
 #include "entity.h"
 
-#define DEFAULT_CAR_VELOCITY 0.12
-
 
 typedef struct {
     float width;
@@ -59,9 +57,9 @@ void remove_level_entities(Level* level);
  * 
  * @param level the level.
  * @param q the Q(s,a) matrix of the player. Can be NULL.
- * @return if the player has been added correctly set.
+ * @return the player.
  */
-bool init_level_player(Level* level, Matrix* q);
+Entity* init_level_player(Level* level, Matrix* q);
 
 
 #endif

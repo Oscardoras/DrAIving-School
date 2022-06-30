@@ -18,8 +18,7 @@ bool update_game(Level* level) {
             *ptr = (*ptr)->next;
             free_entity(tmp->entity);
             free(tmp);
-        } 
-        else {
+        } else {
             struct EntityListCell* it = *ptr;
             make_action(level, it->entity, e_greedy(it->entity->q, get_entity_perception(level, it->entity), 0.));
             it->entity->location.x += it->entity->location.velocity;
@@ -37,7 +36,7 @@ bool update_game(Level* level) {
     for (int n = 0; n < LINES_PER_DIRECTION*2; n++) {
         if (tab[n] < CAR_PER_LINE) {
             Location location;
-            location.x = level->player->location.x + CAR_LENGTH*(10 + 5*rand() / (float) RAND_MAX);
+            location.x = level->player->location.x + CAR_LENGTH*(15 + 5*rand() / (float) RAND_MAX);
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
             
             switch (n) {
@@ -60,6 +59,7 @@ bool update_game(Level* level) {
                 location.velocity = CAR3_VELOCITY;
                 break;
             default:
+                location.velocity = 0;
                 break;
             }
         
@@ -189,7 +189,7 @@ void car_cluster(Level* level, int line) {
     Location cars_locations[3];
     for(int i=0; i<3; i++) {
         cars_locations[i].y = ((3.*line + i + 0.5) / (LINES_PER_DIRECTION*2)) * level->width;
-        cars_locations[i].velocity = (!line) ? -DEFAULT_CAR_VELOCITY : DEFAULT_CAR_VELOCITY;
+        cars_locations[i].velocity = (!line) ? -CAR2_VELOCITY : CAR2_VELOCITY;
     }
     
     int car_mid = rand()%3;

@@ -13,7 +13,9 @@
 typedef enum {
     VIEWPORTSTATE_MENU,
     VIEWPORTSTATE_GAME,
-    VIEWPORTSTATE_IA
+    VIEWPORTSTATE_IA,
+    VIEWPORTSTATE_VICTORY,
+    VIEWPORTSTATE_DEFEAT
 } ViewportState;
 
 /**
@@ -33,6 +35,7 @@ typedef struct {
     } tilesets;
     TTF_Font* font;
     ViewportState state;
+    bool display_hitboxes;
 } Viewport;
 
 

@@ -4,16 +4,12 @@
 #include <time.h>
 
 #include "learning.h"
-#include "matrix.h"
-#include "entity.h"
 #include "viewport.h"
-#include "level.h"
-
 
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.
-#define LEVEL_LENGTH 1000.
+#define LEVEL_LENGTH 200.
 
 
 int main() {
@@ -58,6 +54,7 @@ int main() {
     #endif
     
     
+    if (level->player->q != NULL) free_matrix(level->player->q);
     free_matrix(matrix);
     free_level(level);
     

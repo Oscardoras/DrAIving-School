@@ -70,6 +70,7 @@ void free_run(Run* run) {
     }
 }
 
+
 Action e_greedy(Matrix* q, Perception perception, float eps) {
     float r = rand() / (float) RAND_MAX;
     
@@ -105,19 +106,18 @@ void q_learning(Matrix* q, Run* run) {
 }
 
 Action preference_learning_base(Matrix* q, Perception p, float temp) {
-    int i;
     float L[q->columns];
     float Z = 0;
     float sum = 0;
     float alpha = rand() / (float) RAND_MAX;
     Action action = q->columns;
 
-    for (i=0; i<q->columns; i++) {
+    for (unsigned int i = 0 ; i < q->columns; i++) {
         L[i] = exp(*get_matrix_element(q, p, i) / temp);
         Z += L[i];
     }
 
-    for (i=0; action>i; i++) {
+    for (unsigned int i = 0; action > i; i++) {
         sum += L[i]/Z;
         if (alpha <= sum)
             action = i;
@@ -167,7 +167,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
         max_action = 0;
         max_quality = *get_matrix_element(Q_e, next->state, 0);
         
-        for (int j = 1; j<Q_e->columns; j++) {
+        for (unsigned int j = 1; j < Q_e->columns; j++) {
             quality = *get_matrix_element(Q_e, next->state, j);
             max_action = (quality>max_quality) ?
                 j :
