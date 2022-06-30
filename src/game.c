@@ -39,7 +39,7 @@ bool update_game(Level* level) {
             Location location;
             location.x = level->player->location.x + CAR_LENGTH*(10 + 10 * (rand() / (float) RAND_MAX));
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
-            location.velocity = n < LINES_PER_DIRECTION ? -DEFAULT_PLAYER_VELOCITY : DEFAULT_PLAYER_VELOCITY;
+            location.velocity = n < LINES_PER_DIRECTION ? -DEFAULT_PLAYER_VELOCITY/2 : DEFAULT_PLAYER_VELOCITY/2;
         
             add_level_entity(level, new_entity(CAR, location, level->matrix));
         }
@@ -61,6 +61,7 @@ bool update_game(Level* level) {
     return level->player->location.x >= level->length;
 }
 
+/*
 HitBox* get_entity_perception_hitbox(Entity* entity) {
     HitBox* tab = malloc(6*sizeof(HitBox));
     
@@ -96,61 +97,39 @@ HitBox* get_entity_perception_hitbox(Entity* entity) {
 
     return tab;
 }
+*/
 
 Perception get_entity_perception(Level* level, Entity* entity) {
     Perception p = 0b0;
-    
-    HitBox box = get_entity_hitbox(entity);
-    float width = box.max_y - box.min_y;
-    float small_width = 0.5 * width;
-    float length = box.max_x - box.min_x;
-    float big_length = 5. * length;
-    
-    p = p | (PERCEPTION_LEFT * (box.min_y - small_width < 0));
-    p = p | (PERCEPTION_RIGHT * (box.max_y + small_width > level->width));
-    
-    for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) if (it->entity != entity) {
-        HitBox it_box = get_entity_hitbox(it->entity);
-        HitBox b;
+    HitBox b = get_entity_hitbox(entity);
+    int p_aux = 1;
+    bool hit = false;
+    for(int i=0; i<2*LINES_PER_DIRECTION; i++) {
+        p += (p_aux * are_entity_box_hitting(b, get_entity_hitbox(&(level->percepts[i*WIDTH_PERCEPTS]))));
+        p_aux *= 2;
         
-        b = box;
-        b.max_y = box.min_y;
-        b.min_y = box.min_y - small_width;
-        p = p | (PERCEPTION_LEFT * are_entity_box_hitting(b, it_box));
-        
-        b = box;
-        b.min_y = box.max_y;
-        b.max_y = box.max_y + small_width;
-        p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(b, it_box));
-        
-        b.min_x = box.max_x;
-        b.max_x = box.max_x + big_length;
-        b.max_y = box.min_y;
-        b.min_y = box.min_y - width;
-        p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(b, it_box));
-        
-        b = box;
-        b.min_x = box.max_x;
-        b.max_x = box.max_x + big_length;
-        p = p | (PERCEPTION_TOP * are_entity_box_hitting(b, it_box));
-        
-        b.min_x = box.max_x;
-        b.max_x = box.max_x + big_length;
-        b.min_y = box.max_y;
-        b.max_y = box.max_y + width;
-        p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(b, it_box));
+        hit = false;
+        struct EntityListCell* cour = level->entities;
+        while (!hit && cour) {
+            if (are_entity_box_hitting(get_entity_hitbox(cour->entity), get_entity_hitbox(&(level->percepts[i*WIDTH_PERCEPTS + 1])))) {
+                hit = true;
+                cour = NULL;
+            }
+            else cour = cour->next;
+        }
+        p += (p_aux * hit);
+        p_aux *= 2;
     }
-
     return p;
 }
 
 bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action action) {
     switch (action) {
     case ACTION_LEFT:
-        entity->location.y -= 0.1;
+        entity->location.y -= 0.15;
         return true;
     case ACTION_RIGHT:
-        entity->location.y += 0.1;
+        entity->location.y += 0.15;
         return true;
     case ACTION_FASTER:
         if (entity->location.velocity + 0.01 <= 2*DEFAULT_PLAYER_VELOCITY) {

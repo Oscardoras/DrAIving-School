@@ -23,10 +23,10 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
 
         free_run(&run);
     
-        if (k % (n / 100) == 0) {
+        if (k % (n / 500) == 0) {
             eps *= EPSILON;
-            xi *= XI;
-            gamma *= GAMMA;
+            //xi *= XI;
+            //gamma *= GAMMA;
         }
     }
 }
@@ -64,10 +64,10 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     run->last->next->next = NULL;
     run->last = run->last->next;
     if (level->player->location.x >= level->length)
-        run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
+        run->last->reward = 10. + level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
-        run->last->reward = -1;
-        //run->last->reward = -10. * (1. - level->player->location.x / level->width);
+        //run->last->reward = -1;
+        run->last->reward = -0.1 * (1. - level->player->location.x / level->length);
 }
 
 void free_run(Run* run) {
@@ -115,20 +115,22 @@ void q_learning(Matrix* q, Run* run, float xi, float gamma) {
 Action preference_learning_base(Matrix* q, Perception p, float temp) {
     int i;
     float L[q->columns];
-    float Z = 0;
-    float sum = 0;
-    float alpha = rand() / (float) RAND_MAX;
-    Action action = q->columns;
+    float Z = 0.;
+    float sum = 0.;
+    float alpha = (float) rand() / RAND_MAX;
+    Action action = 0;
 
     for (i=0; i<q->columns; i++) {
         L[i] = exp(*get_matrix_element(q, p, i) / temp);
         Z += L[i];
     }
 
-    for (i=0; action>i; i++) {
+    for (i=0; i<q->columns; i++) {
         sum += L[i]/Z;
-        if (alpha <= sum)
+        if (alpha <= sum) {
             action = i;
+            i = q->columns;
+        }
     }
 
     return action;
@@ -197,7 +199,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
 
 void sarsa(Matrix* matrix, Run* run, float xi, float gamma) {
     *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) +=
-        XI *
+        xi *
         (
             run->last->reward -
             *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)
@@ -207,7 +209,7 @@ void sarsa(Matrix* matrix, Run* run, float xi, float gamma) {
     for (struct RunListCell* it = run->last->previous->previous; it; it = it->previous) {
         next = it->next;
         *get_matrix_element(matrix, it->state, it->action) +=
-            XI * 
+            xi * 
             (
                 it->next->reward +
                 GAMMA * *get_matrix_element(matrix, next->state, next->action) -

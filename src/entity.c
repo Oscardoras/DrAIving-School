@@ -24,7 +24,11 @@ HitBox get_entity_hitbox(Entity* entity) {
     HitBox b;
     b.min_x = entity->location.x - CAR_LENGTH/2;
     b.max_x = entity->location.x + CAR_LENGTH/2;
-    if (entity->type == PERCEPT) {
+    if (entity->type >= PERCEPT1) {
+        if (entity->type == PERCEPT2) {
+            b.min_x = entity->location.x - 3*CAR_LENGTH/2;
+            b.max_x = entity->location.x + 4*CAR_LENGTH/2;
+        }
         b.min_y = entity->location.y - CAR_LENGTH/2;
         b.max_y = entity->location.y + CAR_LENGTH/2;
     }

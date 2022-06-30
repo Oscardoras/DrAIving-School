@@ -25,9 +25,9 @@ void init_percepts(Level* level) {
     float px = level->player->location.x;
     for(int i=0; i<WIDTH_PERCEPTS; i++) {
         for(int j=0; j<2*LINES_PER_DIRECTION; j++) {
-            level->percepts[j*WIDTH_PERCEPTS + i].type = PERCEPT;
-            level->percepts[j*WIDTH_PERCEPTS + i].location.x = px + (float) i*CAR_LENGTH;
-            level->percepts[j*WIDTH_PERCEPTS + i].location.y = ((float) j+0.4)*level->width/(2.*LINES_PER_DIRECTION);
+            level->percepts[j*WIDTH_PERCEPTS + i].type = (i == 1) ? PERCEPT2 : PERCEPT1;
+            level->percepts[j*WIDTH_PERCEPTS + i].location.x = px + (float) i * CAR_LENGTH;
+            level->percepts[j*WIDTH_PERCEPTS + i].location.y = ((float) j+0.3)*level->width/(2.*LINES_PER_DIRECTION);
             level->percepts[j*WIDTH_PERCEPTS + i].location.velocity = 0;
             level->percepts[j*WIDTH_PERCEPTS + i].q = NULL;
         }
@@ -72,7 +72,7 @@ bool init_level_player(Level* level, Matrix* q) {
     Location location;
     location.velocity = DEFAULT_PLAYER_VELOCITY;
     location.x = 0.;
-    location.y = (5. / 6) * level->width;
+    location.y = 0.5 * level->width;
     level->player = new_entity(PLAYER_CAR, location, q);
     level->score = 0;
     

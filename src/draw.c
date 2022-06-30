@@ -121,40 +121,23 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
             break;
     }
     
-    if ((dest.x > -side) && (entity->type != PERCEPT)) SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
+    if ((dest.x > -side) && (entity->type < PERCEPT1)) SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
     
     
     float px = entity->location.x;
     float py = entity->location.y;
     SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
-    if (entity->type == PLAYER_CAR) {
-        HitBox* tab = get_entity_perception_hitbox(entity);
-    
-        for (HitBox* b=tab; b<tab+6; b++) {
-            b->min_x += CAR_LENGTH/2;
-            b->max_x += CAR_LENGTH/2;
-            b->min_y += CAR_WIDTH/2;
-            b->max_y += CAR_WIDTH/2;
-
-            SDL_RenderDrawLine(viewport->renderer, dest.x + (b->min_x - px)*side/2, dest.y + (b->min_y - py)*side/2, dest.x + (b->max_x - px)*side/2, dest.y + (b->min_y - py)*side/2);
-            SDL_RenderDrawLine(viewport->renderer, dest.x + (b->min_x - px)*side/2, dest.y + (b->max_y - py)*side/2, dest.x + (b->max_x - px)*side/2, dest.y + (b->max_y - py)*side/2);
-            SDL_RenderDrawLine(viewport->renderer, dest.x + (b->min_x - px)*side/2, dest.y + (b->min_y - py)*side/2, dest.x + (b->min_x - px)*side/2, dest.y + (b->max_y - py)*side/2);
-            SDL_RenderDrawLine(viewport->renderer, dest.x + (b->max_x - px)*side/2, dest.y + (b->min_y - py)*side/2, dest.x + (b->max_x - px)*side/2, dest.y + (b->max_y - py)*side/2);
-        }
-    }
-    else {
         HitBox b = get_entity_hitbox(entity);
         
         b.min_x += CAR_LENGTH/2;
         b.max_x += CAR_LENGTH/2;
-        b.min_y += (entity->type != PERCEPT) ? CAR_WIDTH/2 : CAR_LENGTH/2;
-        b.max_y += (entity->type != PERCEPT) ? CAR_WIDTH/2 : CAR_LENGTH/2;
+        b.min_y += (entity->type < PERCEPT1) ? CAR_WIDTH/2 : CAR_LENGTH/2;
+        b.max_y += (entity->type < PERCEPT2) ? CAR_WIDTH/2 : CAR_LENGTH/2;
 
         SDL_RenderDrawLine(viewport->renderer, dest.x + (b.min_x - px)*side/2, dest.y + (b.min_y - py)*side/2, dest.x + (b.max_x - px)*side/2, dest.y + (b.min_y - py)*side/2);
         SDL_RenderDrawLine(viewport->renderer, dest.x + (b.min_x - px)*side/2, dest.y + (b.max_y - py)*side/2, dest.x + (b.max_x - px)*side/2, dest.y + (b.max_y - py)*side/2);
         SDL_RenderDrawLine(viewport->renderer, dest.x + (b.min_x - px)*side/2, dest.y + (b.min_y - py)*side/2, dest.x + (b.min_x - px)*side/2, dest.y + (b.max_y - py)*side/2);
         SDL_RenderDrawLine(viewport->renderer, dest.x + (b.max_x - px)*side/2, dest.y + (b.min_y - py)*side/2, dest.x + (b.max_x - px)*side/2, dest.y + (b.max_y - py)*side/2);
-    }
 }
 
 void draw_cars(Viewport* viewport, int road_lines, int side) {

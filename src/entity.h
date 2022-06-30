@@ -5,7 +5,7 @@
 
 #include "matrix.h"
 
-#define CAR_WIDTH 1.2
+#define CAR_WIDTH 1.4
 #define CAR_LENGTH 2.
 
 
@@ -18,7 +18,8 @@ typedef struct {
 typedef enum {
     PLAYER_CAR,
     CAR,
-    PERCEPT
+    PERCEPT1,
+    PERCEPT2
 } EntityType;
 #define ENTITY_TYPES 2
 

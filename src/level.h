@@ -6,7 +6,7 @@
 #include "entity.h"
 
 #define DEFAULT_PLAYER_VELOCITY 0.2
-#define WIDTH_PERCEPTS 4
+#define WIDTH_PERCEPTS 2
 
 
 typedef struct {
