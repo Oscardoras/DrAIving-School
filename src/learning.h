@@ -3,6 +3,10 @@
 
 #include "game.h"
 
+#define EPSILON 0.999
+#define XI 0.99
+#define GAMMA 0.99
+
 
 struct RunListCell {
     Perception state;
