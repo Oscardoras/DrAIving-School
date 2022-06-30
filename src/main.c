@@ -34,6 +34,7 @@ int main() {
 
     #ifndef LEARN
         init_level_player(level, NULL);
+        init_percepts(level);
         
         Viewport* viewport = create_viewport(WIDTH, HEIGHT, level);
         if (viewport == NULL) {

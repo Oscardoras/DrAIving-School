@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "level.h"
 #include "learning.h"
 
 
@@ -11,6 +12,7 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
     for (unsigned long k = 0; k < n; k++) {
         remove_level_entities(level);
         init_level_player(level, q);
+        init_percepts(level);
         
         Run run;
         run.first = NULL;

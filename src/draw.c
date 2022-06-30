@@ -106,6 +106,7 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
     
     dest.w = side; //Longueur d'une voiture = longueur d'un bloc de route.
     dest.x = side; //Position du joueur, à une longueur de voiture du bord gauche de l'écran.
+    
     dest.h = side / (CAR_LENGTH/CAR_WIDTH);
     float y = get_entity_hitbox(entity).min_y / viewport->level->width;
     dest.y = (2. + y * road_lines) * side;
@@ -113,14 +114,14 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
     switch(entity->type) {
         case PLAYER_CAR:
             break;
-        case CAR:
+        default:
             source.y = 16;
             dest.x += ((entity->location.x - viewport->level->player->location.x) * side)/CAR_LENGTH;
             if (entity->location.velocity > 0) flip = SDL_FLIP_HORIZONTAL;
             break;
     }
     
-    if (dest.x > -side) SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
+    if ((dest.x > -side) && (entity->type != PERCEPT)) SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.vehicles, &source, &dest, 0, NULL, flip);
     
     
     float px = entity->location.x;
@@ -146,8 +147,8 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
         
         b.min_x += CAR_LENGTH/2;
         b.max_x += CAR_LENGTH/2;
-        b.min_y += CAR_WIDTH/2;
-        b.max_y += CAR_WIDTH/2;
+        b.min_y += (entity->type != PERCEPT) ? CAR_WIDTH/2 : CAR_LENGTH/2;
+        b.max_y += (entity->type != PERCEPT) ? CAR_WIDTH/2 : CAR_LENGTH/2;
 
         SDL_RenderDrawLine(viewport->renderer, dest.x + (b.min_x - px)*side/2, dest.y + (b.min_y - py)*side/2, dest.x + (b.max_x - px)*side/2, dest.y + (b.min_y - py)*side/2);
         SDL_RenderDrawLine(viewport->renderer, dest.x + (b.min_x - px)*side/2, dest.y + (b.max_y - py)*side/2, dest.x + (b.max_x - px)*side/2, dest.y + (b.max_y - py)*side/2);
@@ -161,6 +162,12 @@ void draw_cars(Viewport* viewport, int road_lines, int side) {
     while(cour) {
         draw_car(viewport, cour->entity, road_lines, side);
         cour = cour->next;
+    }
+    
+    for(int i=0; i<WIDTH_PERCEPTS; i++) {
+        for(int j=0; j<2*LINES_PER_DIRECTION; j++) {
+            draw_car(viewport, &(viewport->level->percepts[j*WIDTH_PERCEPTS + i]), road_lines, side);
+        }
     }
     
     draw_car(viewport, viewport->level->player, road_lines, side);

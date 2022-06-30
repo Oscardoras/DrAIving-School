@@ -17,7 +17,8 @@ typedef struct {
 
 typedef enum {
     PLAYER_CAR,
-    CAR
+    CAR,
+    PERCEPT
 } EntityType;
 #define ENTITY_TYPES 2
 

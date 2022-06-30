@@ -6,6 +6,7 @@
 #include "entity.h"
 
 #define DEFAULT_PLAYER_VELOCITY 0.2
+#define WIDTH_PERCEPTS 4
 
 
 typedef struct {
@@ -15,6 +16,7 @@ typedef struct {
         Entity* entity;
         struct EntityListCell* next;
     } *entities;
+    Entity* percepts;
     Matrix* matrix;
     Entity* player;
     int score;
@@ -63,5 +65,5 @@ void remove_level_entities(Level* level);
  */
 bool init_level_player(Level* level, Matrix* q);
 
-
+void init_percepts(Level* level);
 #endif

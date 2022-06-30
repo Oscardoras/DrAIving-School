@@ -18,7 +18,8 @@ bool update_game(Level* level) {
             *ptr = (*ptr)->next;
             free_entity(tmp->entity);
             free(tmp);
-        } else {
+        } 
+        else {
             struct EntityListCell* it = *ptr;
             make_action(level, it->entity, compute_state(it->entity->q, get_entity_perception(level, it->entity)));
             it->entity->location.x += it->entity->location.velocity;
@@ -45,6 +46,12 @@ bool update_game(Level* level) {
     }
     
     //printf("Perception : %u\n", get_entity_perception(level, level->player));
+    
+    for(int i=0; i<WIDTH_PERCEPTS; i++) {
+        for(int j=0; j<2*LINES_PER_DIRECTION; j++) {
+            level->percepts[j*WIDTH_PERCEPTS + i].location.x += level->player->location.velocity;
+        }
+    }
     
     level->player->location.x += level->player->location.velocity;
     if (player_box.min_y < 0 || player_box.max_y > level->width)
