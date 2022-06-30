@@ -4,8 +4,8 @@
 #include "learning.h"
 
 #define EPSILON 0.99
-#define XI 0.0001
-#define GAMMA 0.0001
+#define XI 0.1
+#define GAMMA 0.1
 
 
 void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*, float, float), Level* level) {
@@ -22,13 +22,15 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
         simulate_game(level, &run, action, eps);
         learning(level->player->q, &run, xi, gamma);
         
-        printf("Learning iteration %ld, reward %f, epsilon %f\n", k, run.last->reward, eps);
+        printf("Learning iteration %ld, reward %f, epsilon %f, score %i\n", k, run.last->reward, eps, level->score);
 
         free_run(&run);
-
-        eps *= EPSILON;
-        xi *= XI;
-        gamma *= GAMMA;
+    
+        if (k%(n/1000) == 0) {
+            eps *= EPSILON;
+            xi *= XI;
+            gamma *= GAMMA;
+        }
     }
 }
 
@@ -39,6 +41,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     
     while (!quit) {
         Perception p = get_entity_perception(level, level->player);
+        //printf("Perception : %d\n", p);
         Action a = action(level->player->q, p, eps);
         make_action(level, level->player, a);
         quit = update_game(level);
@@ -66,7 +69,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     if (level->player->location.x >= level->length)
         run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
-        run->last->reward -= 1.;
+        run->last->reward -= 5.;
 }
 
 void free_run(Run* run) {
@@ -161,7 +164,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
     }
 
     *get_matrix_element(Q_a, run->last->previous->state, run->last->previous->action) +=
-        EPSILON_LEARNING *
+        XI *
         (
             run->last->reward -
             *get_matrix_element(Q_a, run->last->previous->state, run->last->previous->action)
@@ -193,7 +196,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
         }
 
         *get_matrix_element(Q_a, it->state, it->action) +=
-            EPSILON_LEARNING *
+            XI *
             (
                 next->reward +
                 GAMMA * max_quality -
@@ -204,7 +207,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
 
 void sarsa(Matrix* matrix, Run* run) {
     *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) +=
-        EPSILON_LEARNING *
+        XI *
         (
             run->last->reward -
             *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action)
@@ -214,7 +217,7 @@ void sarsa(Matrix* matrix, Run* run) {
     for (struct RunListCell* it = run->last->previous->previous; it; it = it->previous) {
         next = it->next;
         *get_matrix_element(matrix, it->state, it->action) +=
-            EPSILON_LEARNING * 
+            XI * 
             (
                 it->next->reward +
                 GAMMA * *get_matrix_element(matrix, next->state, next->action) -
@@ -223,12 +226,4 @@ void sarsa(Matrix* matrix, Run* run) {
     }
 
 
-}
-
-void free_run(Run* run) {
-    for(struct RunListCell* it = run->first; it != NULL;) {
-        struct RunListCell* tmp = it;
-        it = it->next;
-        free(tmp);
-    }
 }

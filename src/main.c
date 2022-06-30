@@ -10,8 +10,8 @@
 #include "level.h"
 
 
-//#define LEARN
-#define LEARN_ITERATION 1000
+#define LEARN
+#define LEARN_ITERATION 10000
 #define WIDTH 800
 #define HEIGHT 600
 #define LEVEL_WIDTH 15.
