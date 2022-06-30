@@ -44,6 +44,8 @@ bool update_game(Level* level) {
         }
     }
     
+    //printf("Perception : %u\n", get_entity_perception(level, level->player));
+    
     level->player->location.x += level->player->location.velocity;
     if (player_box.min_y < 0 || player_box.max_y > level->width)
         return true;
@@ -59,7 +61,7 @@ HitBox* get_entity_perception_hitbox(Entity* entity) {
     tab[1] = tab[2] = tab[3] = tab[4] = tab[5] = tab[0];
     
     float width = tab[0].max_y - tab[0].min_y;
-    float small_width = 0.25 * width;
+    float small_width = 0.5 * width;
     float length = tab[0].max_x - tab[0].min_x;
     float big_length = 5. * length;
     
@@ -93,7 +95,7 @@ Perception get_entity_perception(Level* level, Entity* entity) {
     
     HitBox box = get_entity_hitbox(entity);
     float width = box.max_y - box.min_y;
-    float small_width = 0.25 * width;
+    float small_width = 0.5 * width;
     float length = box.max_x - box.min_x;
     float big_length = 5. * length;
     
@@ -144,12 +146,12 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
         entity->location.y += 0.1;
         return true;
     case ACTION_FASTER:
-        if (entity->location.velocity < 2*DEFAULT_PLAYER_VELOCITY) {
+        if (entity->location.velocity + 0.01 <= 2*DEFAULT_PLAYER_VELOCITY) {
             entity->location.velocity += 0.01;
             return true;
         } else return false;
     case ACTION_SLOWER:
-        if (entity->location.velocity > DEFAULT_PLAYER_VELOCITY) {
+        if (entity->location.velocity -0.01 >= DEFAULT_PLAYER_VELOCITY) {
             entity->location.velocity -= 0.01;
             return true;
         } else return false;
