@@ -36,7 +36,7 @@ int main() {
             Matrix* q = load_matrix(file);
             fclose(file);
             
-            learn(LEARN_ITERATION, q, e_greedy, q_learning, level);
+            learn(LEARN_ITERATION, q, e_greedy, sarsa, level);
             
             file = fopen("learning.txt", "w");
             if (file) {

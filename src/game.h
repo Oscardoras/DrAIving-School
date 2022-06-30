@@ -62,5 +62,6 @@ Perception get_entity_perception(Level* level, Entity* entity);
  */
 bool make_action(Level* level, Entity* entity, Action action);
 
+void car_cluster(Level* level, int line);
 
 #endif

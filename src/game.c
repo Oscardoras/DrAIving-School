@@ -18,7 +18,8 @@ bool update_game(Level* level) {
             *ptr = (*ptr)->next;
             free_entity(tmp->entity);
             free(tmp);
-        } else {
+        } 
+        else {
             struct EntityListCell* it = *ptr;
             make_action(level, it->entity, e_greedy(it->entity->q, get_entity_perception(level, it->entity), 0.));
             it->entity->location.x += it->entity->location.velocity;
@@ -67,7 +68,12 @@ bool update_game(Level* level) {
     }
     
     //printf("Perception : %u\n", get_entity_perception(level, level->player));
-    
+    /*
+    if(level->score%100 == 0) {
+        car_cluster(level, 1);
+        car_cluster(level, 0);
+    }
+    */
     level->player->location.x += level->player->location.velocity;
     if (player_box.min_y < 0 || player_box.max_y > level->width)
         return true;
@@ -177,4 +183,44 @@ bool make_action(__attribute__((unused)) Level* level, Entity* entity, Action ac
     default:
         return false;
     }
+}
+
+void car_cluster(Level* level, int line) {
+    Location cars_locations[3];
+    for(int i=0; i<3; i++) {
+        cars_locations[i].y = ((3.*line + i + 0.5) / (LINES_PER_DIRECTION*2)) * level->width;
+        cars_locations[i].velocity = (!line) ? -DEFAULT_CAR_VELOCITY : DEFAULT_CAR_VELOCITY;
+    }
+    
+    int car_mid = rand()%3;
+    int car_gauche,
+        car_gauche_2,
+        car_droite_2,
+        car_pos;
+    switch (car_mid) {
+        case 0:
+            car_gauche_2 = rand()%2;
+            car_droite_2 = 1-car_gauche_2;
+            cars_locations[1].x = level->player->location.x + 13*CAR_LENGTH;
+            cars_locations[0].x = cars_locations[1].x + (car_gauche_2+1.) * 1.2 * CAR_LENGTH;
+            cars_locations[2].x = cars_locations[1].x + (car_droite_2+1.) * 1.2 * CAR_LENGTH;
+            break;
+        case 1:
+            car_gauche = rand()%2 * 2;
+            car_pos = rand()%3 - 1;
+            cars_locations[1].x = level->player->location.x + 14.2*CAR_LENGTH;
+            cars_locations[car_gauche].x = cars_locations[1].x + (float) car_pos * 1.2 * CAR_LENGTH;
+            cars_locations[2 - car_gauche].x = cars_locations[1].x;
+            cars_locations[2 - car_gauche].y = 20.;
+            break;
+        case 2:
+            car_gauche_2 = rand()%2;
+            car_droite_2 = 1-car_gauche_2;
+            cars_locations[1].x = level->player->location.x + 15.4*CAR_LENGTH;
+            cars_locations[0].x = cars_locations[1].x - (car_gauche_2+1.) * 1.2 * CAR_LENGTH;
+            cars_locations[2].x = cars_locations[1].x - (car_droite_2+1.) * 1.2 * CAR_LENGTH;
+            break;
+    }
+    
+    for(int i=0; i<3; i++) add_level_entity(level, new_entity(CAR, cars_locations[i], level->matrix));
 }

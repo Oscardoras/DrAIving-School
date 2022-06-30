@@ -5,6 +5,8 @@
 
 #include "entity.h"
 
+#define DEFAULT_CAR_VELOCITY 0.12
+
 
 typedef struct {
     float width;
