@@ -36,9 +36,31 @@ bool update_game(Level* level) {
     for (int n = 0; n < LINES_PER_DIRECTION*2; n++) {
         if (tab[n] < CAR_PER_LINE) {
             Location location;
-            location.x = level->player->location.x + CAR_LENGTH*(10 + 10 * (rand() / (float) RAND_MAX));
+            location.x = level->player->location.x + CAR_LENGTH*(10 + 5*rand() / (float) RAND_MAX);
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
-            location.velocity = n < LINES_PER_DIRECTION ? -DEFAULT_CAR_VELOCITY : DEFAULT_CAR_VELOCITY;
+            
+            switch (n) {
+            case 0:
+                location.velocity = -CAR3_VELOCITY;
+                break;
+            case 1:
+                location.velocity = -CAR2_VELOCITY;
+                break;
+            case 2:
+                location.velocity = -CAR1_VELOCITY;
+                break;
+            case 3:
+                location.velocity = CAR1_VELOCITY;
+                break;
+            case 4:
+                location.velocity = CAR2_VELOCITY;
+                break;
+            case 5:
+                location.velocity = CAR3_VELOCITY;
+                break;
+            default:
+                break;
+            }
         
             add_level_entity(level, new_entity(CAR, location, level->matrix));
         }
@@ -89,12 +111,12 @@ void get_entity_perception_hitbox(Entity* entity, HitBox boxes[8]) {
     boxes[6].min_x = boxes[0].max_x;
     boxes[6].max_x = boxes[0].max_x + big_length;
     boxes[6].max_y = boxes[0].min_y - medium_width;
-    boxes[6].min_y = boxes[0].min_y -  medium_width - width;
+    boxes[6].min_y = boxes[0].min_y -  medium_width - medium_width;
     
     boxes[7].min_x = boxes[0].max_x;
     boxes[7].max_x = boxes[0].max_x + big_length;
     boxes[7].min_y = boxes[0].max_y + medium_width;
-    boxes[7].max_y = boxes[0].max_y + medium_width + width;
+    boxes[7].max_y = boxes[0].max_y + medium_width + medium_width;
 }
 
 Perception get_entity_perception(Level* level, Entity* entity) {

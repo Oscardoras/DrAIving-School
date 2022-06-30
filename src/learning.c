@@ -6,8 +6,6 @@
 
 void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*), Level* level) {
     float eps = EPSILON;
-    float xi = XI;
-    float gamma = GAMMA;
     for (unsigned long k = 0; k < n; k++) {
         remove_level_entities(level);
         init_level_player(level, q);
@@ -59,10 +57,9 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     run->last->next->next = NULL;
     run->last = run->last->next;
     if (level->player->location.x >= level->length)
-        run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
+        run->last->reward = REWARD_MULTIPLIER * level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
         run->last->reward = -1.;
-        //run->last->reward = -10. * (1. - level->player->location.x / level->width);
 }
 
 void free_run(Run* run) {
@@ -190,7 +187,7 @@ void double_q_learning(Matrix* matrix1, Matrix* matrix2, Run* run) {
     }
 }
 
-void sarsa(Matrix* matrix, Run* run, float xi, float gamma) {
+void sarsa(Matrix* matrix, Run* run) {
     *get_matrix_element(matrix, run->last->previous->state, run->last->previous->action) +=
         XI *
         (

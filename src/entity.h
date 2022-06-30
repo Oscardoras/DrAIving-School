@@ -7,6 +7,10 @@
 
 #define CAR_WIDTH 1.5
 #define CAR_LENGTH 2.
+#define DEFAULT_PLAYER_VELOCITY 0.2
+#define CAR1_VELOCITY 0.16
+#define CAR2_VELOCITY 0.13
+#define CAR3_VELOCITY 0.10
 
 
 typedef struct {

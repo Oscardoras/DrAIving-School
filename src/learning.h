@@ -3,9 +3,11 @@
 
 #include "game.h"
 
-#define EPSILON 0.9999
+//#define LEARN_ITERATION 10000
+#define EPSILON 0.999
 #define XI 0.01
 #define GAMMA 0.95
+#define REWARD_MULTIPLIER 100
 
 
 struct RunListCell {
@@ -100,7 +102,7 @@ void double_q_learning(Matrix* q1, Matrix* q2, Run* run);
  * @param q the matrix of the AI.
  * @param run the run the AI just did.
  */
-void sarsa(Matrix* q, Run* run, float xi, float gamma);
+void sarsa(Matrix* q, Run* run);
 
 
 #endif

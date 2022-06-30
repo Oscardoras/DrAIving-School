@@ -21,6 +21,7 @@ Level* new_level(float width, float length, Matrix* matrix) {
 void free_level(Level* level) {
     if (level != NULL) {
         remove_level_entities(level);
+        free_entity(level->player);
         free(level);
     }
 }
@@ -54,7 +55,7 @@ bool init_level_player(Level* level, Matrix* q) {
     Location location;
     location.velocity = DEFAULT_PLAYER_VELOCITY;
     location.x = 0.;
-    location.y = (5. / 6) * level->width;
+    location.y = (4.5 / 6) * level->width;
     level->player = new_entity(PLAYER_CAR, location, q);
     level->score = 0;
     
