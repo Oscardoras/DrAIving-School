@@ -3,9 +3,9 @@
 
 #include "game.h"
 
-#define EPSILON 0.99
-#define XI 0.5
-#define GAMMA 0.5
+#define EPSILON 0.9999
+#define XI 0.01
+#define GAMMA 0.95
 
 
 struct RunListCell {
@@ -36,7 +36,7 @@ typedef struct {
  * @param learning a pointer to the learning function.
  * @param level a level.
  */
-void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*, float, float), Level* level);
+void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*), Level* level);
 
 /**
  * @brief Does a play with the learning system.
@@ -73,7 +73,7 @@ int lenght_run(Run* run);
  */
 Action e_greedy(Matrix* q, Perception perception, float eps);
 
-void q_learning(Matrix* q, Run* run, float xi, float gamma);
+void q_learning(Matrix* q, Run* run);
 
 /**
  * @brief Choose which action to do with the preference learning-base algorithm

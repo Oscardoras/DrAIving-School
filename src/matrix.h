@@ -50,15 +50,6 @@ void free_matrix(Matrix* matrix);
 float* get_matrix_element(Matrix* matrix, unsigned int i, unsigned int j);
 
 /**
- * @brief Computes the new state.
- * 
- * @param matrix a pointer to the matrix.
- * @param from the current state.
- * @return the new state/action.
- */
-unsigned int compute_state(Matrix* matrix, unsigned int from);
-
-/**
  * @brief Add two matrix of the same size, and stores the result in the third one
  * 
  * @param q1 one of the matrix to add.

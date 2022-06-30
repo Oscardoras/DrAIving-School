@@ -4,7 +4,7 @@
 #include "learning.h"
 
 
-void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*, float, float), Level* level) {
+void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float), void learning(Matrix*, Run*), Level* level) {
     float eps = EPSILON;
     float xi = XI;
     float gamma = GAMMA;
@@ -17,15 +17,12 @@ void learn(unsigned long n, Matrix* q, Action action(Matrix*, Perception, float)
         run.last = NULL;
         simulate_game(level, &run, action, eps);
         printf("Learning iteration %ld, reward %f, epsilon %f\n", k, run.last->reward, eps);
-        learning(level->player->q, &run, xi, gamma);
+        learning(level->player->q, &run);
 
         free_run(&run);
     
-        if (k % (n / 100) == 0) {
-            eps *= EPSILON;
-            xi *= XI;
-            gamma *= GAMMA;
-        }
+        //eps = EPSILON  * 2 / (float) (k + 1);
+        eps *= EPSILON;
     }
 }
 
@@ -64,7 +61,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     if (level->player->location.x >= level->length)
         run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
-        run->last->reward = -1;
+        run->last->reward = -1.;
         //run->last->reward = -10. * (1. - level->player->location.x / level->width);
 }
 
@@ -96,8 +93,8 @@ Action e_greedy(Matrix* q, Perception perception, float eps) {
         return rand() % q->columns;
 }
 
-void q_learning(Matrix* q, Run* run, float xi, float gamma) {
-    *get_matrix_element(q, run->last->previous->state, run->last->previous->action) += xi * (run->last->reward - *get_matrix_element(q, run->last->previous->state, run->last->previous->action)); 
+void q_learning(Matrix* q, Run* run) {
+    *get_matrix_element(q, run->last->previous->state, run->last->previous->action) += XI * (run->last->reward - *get_matrix_element(q, run->last->previous->state, run->last->previous->action)); 
     for (struct RunListCell* it = run->last->previous->previous; it != NULL; it = it->previous) {
         float M = *get_matrix_element(q, it->next->state, 0);
         for (unsigned int a = 1; a < ACTIONS; a++) {
@@ -106,7 +103,7 @@ void q_learning(Matrix* q, Run* run, float xi, float gamma) {
                 M = v;
         }
 
-        *get_matrix_element(q, it->state, it->action) += xi * (it->next->reward + gamma*M - *get_matrix_element(q, it->state, it->action));
+        *get_matrix_element(q, it->state, it->action) += XI * (it->next->reward + GAMMA*M - *get_matrix_element(q, it->state, it->action));
     }
 }
 

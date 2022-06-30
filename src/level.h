@@ -7,6 +7,7 @@
 
 #define DEFAULT_CAR_VELOCITY 0.12
 #define DEFAULT_PLAYER_VELOCITY 0.2
+#define DEFAULT_CAR_VELOCITY 0.15
 
 
 typedef struct {
