@@ -33,7 +33,7 @@ bool update_game(Level* level) {
             ptr = &(*ptr)->next;
         }
     }
-    /*
+    
     for (int n = 0; n < LINES_PER_DIRECTION*2; n++) {
         if (tab[n] < CAR_PER_LINE) {
             Location location;
@@ -44,12 +44,14 @@ bool update_game(Level* level) {
             add_level_entity(level, new_entity(CAR, location, level->matrix));
         }
     }
-    */
+    
     //printf("Perception : %u\n", get_entity_perception(level, level->player));
+    /*
     if(level->score%100 == 0) {
         car_cluster(level, 1);
         car_cluster(level, 0);
     }
+    */
     level->player->location.x += level->player->location.velocity;
     if (player_box.min_y < 0 || player_box.max_y > level->width)
         return true;
