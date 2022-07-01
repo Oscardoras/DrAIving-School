@@ -4,10 +4,9 @@
 #include "game.h"
 
 //#define LEARN 100000
-#define EPSILON 0.9999
+#define EPSILON 0.99995
 #define XI 0.01
-#define GAMMA 0.95
-#define REWARD_MULTIPLIER 100
+#define GAMMA 0.99
 
 
 struct RunListCell {

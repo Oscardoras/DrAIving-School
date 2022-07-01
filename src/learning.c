@@ -57,7 +57,7 @@ void simulate_game(Level* level, Run* run, Action action(Matrix*, Perception, fl
     run->last->next->next = NULL;
     run->last = run->last->next;
     if (level->player->location.x >= level->length)
-        run->last->reward = REWARD_MULTIPLIER * level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
+        run->last->reward = level->length / (DEFAULT_PLAYER_VELOCITY * level->score);
     else
         run->last->reward = -1.;
 }

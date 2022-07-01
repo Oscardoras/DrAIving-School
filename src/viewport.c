@@ -21,6 +21,7 @@ Viewport* create_viewport(int width, int height, Level* level) {
     viewport->tilesets.menu = NULL;
     viewport->tilesets.roads = NULL;
     viewport->tilesets.vehicles = NULL;
+    viewport->font = NULL;
     viewport->state = VIEWPORTSTATE_MENU;
     viewport->display_hitboxes = false;
 

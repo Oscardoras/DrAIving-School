@@ -14,13 +14,6 @@
 void draw_road(Viewport* viewport, int lines, int side);
 
 /**
- * @brief Draws the player's score on screen.
- * 
- * @param viewport the viewport to draw.
- */
-void draw_score(Viewport* viewport);
-
-/**
  * @brief Draws a car.
  * 
  * @param viewport the viewport to draw.
@@ -40,7 +33,14 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side);
 void draw_cars(Viewport* viewport, int road_lines, int side);
 
 /**
- * @brief Draws the viewport's title.
+ * @brief Draws player's score on screen.
+ * 
+ * @param viewport the viewport to draw.
+ */
+void draw_score(Viewport* viewport);
+
+/**
+ * @brief Draws game menu.
  * 
  * @param viewport the viewport to draw.
  */

@@ -36,7 +36,7 @@ bool update_game(Level* level) {
     for (int n = 0; n < LINES_PER_DIRECTION*2; n++) {
         if (tab[n] < CAR_PER_LINE) {
             Location location;
-            location.x = level->player->location.x + CAR_LENGTH*(15 + 5*rand() / (float) RAND_MAX);
+            location.x = level->player->location.x + CAR_LENGTH*(20 + 10*rand() / (float) RAND_MAX);
             location.y = ((n + 0.3) / (LINES_PER_DIRECTION*2)) * level->width;
             
             switch (n) {
@@ -93,10 +93,14 @@ void get_entity_perception_hitbox(Entity* entity, HitBox boxes[PERCEPTIONS]) {
     
     
     boxes[1] = boxes[0];
+    boxes[1].min_x = boxes[0].min_x - 0.1;
+    boxes[1].max_x = boxes[0].max_x + 0.1;
     boxes[1].max_y = boxes[0].min_y;
     boxes[1].min_y = boxes[0].min_y - small_width;
     
     boxes[2] = boxes[0];
+    boxes[2].min_x = boxes[0].min_x - 0.1;
+    boxes[2].max_x = boxes[0].max_x + 0.1;
     boxes[2].min_y = boxes[0].max_y;
     boxes[2].max_y = boxes[0].max_y + small_width;
     
@@ -173,6 +177,8 @@ Perception get_entity_perception(Level* level, Entity* entity) {
         p = p | (PERCEPTION_TOP_TOP_LEFT * are_entity_box_hitting(boxes[8], it_box));
         p = p | (PERCEPTION_TOP_TOP_RIGHT * are_entity_box_hitting(boxes[9], it_box));
     }
+    
+    p = p | (PERCEPTION_MISDIRECTION * (boxes[0].min_y < level->width/2));
 
     return p;
 }

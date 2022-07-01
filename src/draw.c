@@ -65,61 +65,6 @@ void draw_road(Viewport* viewport, int lines, int side) { //Voies autoroute hori
     }
 }
 
-void draw_score(Viewport* viewport) {
-    SDL_Color color = {0, 0, 0, 255};
-
-    {
-        char score[256];
-        sprintf(score, "Temps : %d          Fin : %d", viewport->level->score / FPS, (int) (viewport->level->length - viewport->level->player->location.x));
-
-        SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, score, color);
-        if (text_surface) {
-            SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
-            if (text_texture) {
-                SDL_Rect ttfdest = {10, 10, 500, 30};
-                SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
-                SDL_DestroyTexture(text_texture);
-                SDL_FreeSurface(text_surface);
-            } else {
-                SDL_Log("Error SDL - %s", SDL_GetError());
-                SDL_FreeSurface(text_surface);
-            }
-        } else {
-            SDL_Log("Error TTF - %s", TTF_GetError());
-        }
-    }
-
-    if (viewport->state == VIEWPORTSTATE_VICTORY || viewport->state == VIEWPORTSTATE_DEFEAT) {
-        char msg[256];
-        switch (viewport->state) {
-        case VIEWPORTSTATE_VICTORY:
-            strcpy(msg, "GG EZ");
-            break;
-        case VIEWPORTSTATE_DEFEAT:
-            strcpy(msg, "Press F to pay respect");
-            break;
-        default:
-            break;
-        }
-
-        SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, msg, color);
-        if (text_surface) {
-            SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
-            if (text_texture) {
-                SDL_Rect ttfdest = {viewport->width / 2 - 250, viewport->height / 2 - 50, 500, 100};
-                SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
-                SDL_DestroyTexture(text_texture);
-                SDL_FreeSurface(text_surface);
-            } else {
-                SDL_Log("Error SDL - %s", SDL_GetError());
-                SDL_FreeSurface(text_surface);
-            }
-        } else {
-            SDL_Log("Error TTF - %s", TTF_GetError());
-        }
-    }
-}
-
 void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
     SDL_Rect source; //Quel sprite prendre sur le cars.png
     SDL_Rect dest; //Où mettre la voiture
@@ -192,31 +137,84 @@ void draw_cars(Viewport* viewport, int road_lines, int side) {
     draw_car(viewport, viewport->level->player, road_lines, side);
 }
 
+void draw_score(Viewport* viewport) {
+    SDL_Color color = {0, 0, 0, 255};
+
+    {
+        char score[256];
+        sprintf(score, "Temps : %d          Fin : %d", viewport->level->score / FPS, (int) (viewport->level->length - viewport->level->player->location.x));
+
+        SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, score, color);
+        if (text_surface) {
+            SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
+            if (text_texture) {
+                SDL_Rect ttfdest = {10, 10, 500, 30};
+                SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
+                SDL_DestroyTexture(text_texture);
+                SDL_FreeSurface(text_surface);
+            } else {
+                SDL_Log("Error SDL - %s", SDL_GetError());
+                SDL_FreeSurface(text_surface);
+            }
+        } else {
+            SDL_Log("Error TTF - %s", TTF_GetError());
+        }
+    }
+
+    if (viewport->state == VIEWPORTSTATE_VICTORY || viewport->state == VIEWPORTSTATE_DEFEAT) {
+        char msg[256];
+        switch (viewport->state) {
+        case VIEWPORTSTATE_VICTORY:
+            strcpy(msg, "Race Won");
+            break;
+        case VIEWPORTSTATE_DEFEAT:
+            strcpy(msg, "Game Over");
+            break;
+        default:
+            break;
+        }
+
+        SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, msg, color);
+        if (text_surface) {
+            SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
+            if (text_texture) {
+                SDL_Rect ttfdest = {viewport->width / 2 - 250, viewport->height / 2 - 50, 500, 100};
+                SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
+                SDL_DestroyTexture(text_texture);
+                SDL_FreeSurface(text_surface);
+            } else {
+                SDL_Log("Error SDL - %s", SDL_GetError());
+                SDL_FreeSurface(text_surface);
+            }
+        } else {
+            SDL_Log("Error TTF - %s", TTF_GetError());
+        }
+    }
+}
+
 void draw_menu(Viewport* viewport) {
-    SDL_RenderCopy(viewport->renderer, viewport->tilesets.menu, NULL, NULL); 
+    SDL_SetRenderDrawColor(viewport->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(viewport->renderer);
+    
+    SDL_RenderCopy(viewport->renderer, viewport->tilesets.menu, NULL, NULL);
 
-    float scaleX = viewport->width / 628.;
-    float scaleY = viewport->height / 500.;
-
-    if (time(NULL) % 2 == 0) {
-        SDL_Color color = {0, 0, 0, 255};
+    SDL_Color color = {0, 0, 0, 255};
+    
+    if (time(NULL)%2 == 0) {
         SDL_Surface* text_surface = TTF_RenderText_Blended(viewport->font, "Press Enter", color);
-        if (text_surface == NULL) {
-            SDL_Log("Error SDL - %s", "cant create surface");
-            close_viewport(viewport);
+        if (text_surface) {
+            SDL_Texture* text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
+            if (text_texture) {
+                SDL_Rect ttfdest = {viewport->width * 1/8, viewport->height * 3/4, viewport->width/3, viewport->height/8};
+                SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
+                SDL_DestroyTexture(text_texture);
+                SDL_FreeSurface(text_surface);
+            } else {
+                SDL_Log("Error SDL - %s", SDL_GetError());
+                SDL_FreeSurface(text_surface);
+            }
+        } else {
+            SDL_Log("Error TTF - %s", TTF_GetError());
         }
-
-        SDL_Texture* text_texture = NULL;
-        text_texture = SDL_CreateTextureFromSurface(viewport->renderer, text_surface);
-        if (text_texture == NULL) {
-            SDL_Log("Error SDL - %s", "cant create texture");
-            close_viewport(viewport);
-        }
-
-        SDL_Rect ttfdest = {110*scaleX, 330*scaleY, 200*scaleX, 80*scaleY};
-        //SDL_QueryTexture(text_texture, NULL, NULL, &pos.w, &pos.h);
-        SDL_RenderCopy(viewport->renderer, text_texture, NULL, &ttfdest);
-        SDL_DestroyTexture(text_texture);           
-        SDL_FreeSurface(text_surface);
     }
 }
