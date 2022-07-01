@@ -8,6 +8,7 @@
 
 
 typedef enum {
+    PERCEPTION_NONE = 0b0,
     PERCEPTION_LEFT = 0b1,
     PERCEPTION_RIGHT = 0b10,
     PERCEPTION_TOP_LEFT = 0b100,

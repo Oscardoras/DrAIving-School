@@ -55,7 +55,7 @@ Entity* init_level_player(Level* level, Matrix* q) {
     Location location;
     location.velocity = DEFAULT_PLAYER_VELOCITY;
     location.x = 0.;
-    location.y = (4.5 / 6) * level->width;
+    location.y = 0.75 * level->width;
     level->player = new_entity(PLAYER_CAR, location, q);
     level->score = 0;
     
