@@ -82,20 +82,21 @@ bool update_game(Level* level) {
     return level->player->location.x >= level->length;
 }
 
-void get_entity_perception_hitbox(Entity* entity, HitBox boxes[8]) {
+void get_entity_perception_hitbox(Entity* entity, HitBox boxes[PERCEPTIONS]) {
     boxes[0] = get_entity_hitbox(entity);
-    boxes[1] = boxes[2] = boxes[3] = boxes[4] = boxes[5] = boxes[0];
     
     float width = boxes[0].max_y - boxes[0].min_y;
-    float small_width = 0.25 * width;
+    float small_width = 0.125 * width;
     float medium_width = 0.5 * width;
     float length = boxes[0].max_x - boxes[0].min_x;
     float big_length = 3. * length;
     
     
+    boxes[1] = boxes[0];
     boxes[1].max_y = boxes[0].min_y;
     boxes[1].min_y = boxes[0].min_y - small_width;
     
+    boxes[2] = boxes[0];
     boxes[2].min_y = boxes[0].max_y;
     boxes[2].max_y = boxes[0].max_y + small_width;
     
@@ -123,12 +124,22 @@ void get_entity_perception_hitbox(Entity* entity, HitBox boxes[8]) {
     boxes[7].max_x = boxes[0].max_x + big_length;
     boxes[7].min_y = boxes[0].max_y + medium_width;
     boxes[7].max_y = boxes[0].max_y + medium_width + medium_width;
+    
+    boxes[8].min_x = boxes[0].max_x + big_length;
+    boxes[8].max_x = boxes[0].max_x + 2*big_length;
+    boxes[8].min_y = boxes[0].min_y - width;
+    boxes[8].max_y = boxes[0].min_y;
+    
+    boxes[9].min_x = boxes[0].max_x + big_length;
+    boxes[9].max_x = boxes[0].max_x + 2*big_length;
+    boxes[9].min_y = boxes[0].max_y;
+    boxes[9].max_y = boxes[0].max_y + width;
 }
 
 Perception get_entity_perception(Level* level, Entity* entity) {
     Perception p = 0b0;
     
-    HitBox boxes[8];
+    HitBox boxes[PERCEPTIONS];
     get_entity_perception_hitbox(entity, boxes);
     
     HitBox top;
@@ -144,8 +155,10 @@ Perception get_entity_perception(Level* level, Entity* entity) {
     p = p | (PERCEPTION_RIGHT * are_entity_box_hitting(boxes[2], bot));
     p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(boxes[3], top));
     p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(boxes[5], bot));
-    p = p | (PERCEPTION_FAR_LEFT * are_entity_box_hitting(boxes[6], top));
-    p = p | (PERCEPTION_FAR_RIGHT * are_entity_box_hitting(boxes[7], bot));
+    p = p | (PERCEPTION_TOP_LEFT_LEFT * are_entity_box_hitting(boxes[6], top));
+    p = p | (PERCEPTION_TOP_RIGHT_RIGHT * are_entity_box_hitting(boxes[7], bot));
+    p = p | (PERCEPTION_TOP_TOP_LEFT * are_entity_box_hitting(boxes[8], top));
+    p = p | (PERCEPTION_TOP_TOP_RIGHT * are_entity_box_hitting(boxes[9], bot));
     
     for (struct EntityListCell* it = level->entities; it != NULL; it = it->next) if (it->entity != entity) {
         HitBox it_box = get_entity_hitbox(it->entity);
@@ -155,8 +168,10 @@ Perception get_entity_perception(Level* level, Entity* entity) {
         p = p | (PERCEPTION_TOP_LEFT * are_entity_box_hitting(boxes[3], it_box));
         p = p | (PERCEPTION_TOP * are_entity_box_hitting(boxes[4], it_box));
         p = p | (PERCEPTION_TOP_RIGHT * are_entity_box_hitting(boxes[5], it_box));
-        p = p | (PERCEPTION_FAR_LEFT * are_entity_box_hitting(boxes[6], it_box));
-        p = p | (PERCEPTION_FAR_RIGHT * are_entity_box_hitting(boxes[7], it_box));
+        p = p | (PERCEPTION_TOP_LEFT_LEFT * are_entity_box_hitting(boxes[6], it_box));
+        p = p | (PERCEPTION_TOP_RIGHT_RIGHT * are_entity_box_hitting(boxes[7], it_box));
+        p = p | (PERCEPTION_TOP_TOP_LEFT * are_entity_box_hitting(boxes[8], it_box));
+        p = p | (PERCEPTION_TOP_TOP_RIGHT * are_entity_box_hitting(boxes[9], it_box));
     }
 
     return p;

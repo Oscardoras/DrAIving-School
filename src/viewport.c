@@ -40,7 +40,8 @@ Viewport* create_viewport(int width, int height, Level* level) {
         return NULL;
     }
     
-    viewport->window = SDL_CreateWindow("Jeu",
+    viewport->window = SDL_CreateWindow(
+        "DrAIving School",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_RESIZABLE

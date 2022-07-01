@@ -154,10 +154,10 @@ void draw_car(Viewport* viewport, Entity* entity, int road_lines, int side) {
         float py = entity->location.y;
         SDL_SetRenderDrawColor(viewport->renderer, 255, 255, 255, 255);
         if (entity->type == PLAYER_CAR) {
-            HitBox boxes[8];
+            HitBox boxes[PERCEPTIONS];
             get_entity_perception_hitbox(entity, boxes);
         
-            for (HitBox* b=boxes; b<boxes+8; b++) {
+            for (HitBox* b=boxes; b<boxes+PERCEPTIONS; b++) {
                 b->min_x += CAR_LENGTH/2;
                 b->max_x += CAR_LENGTH/2;
                 b->min_y += CAR_WIDTH/2;
