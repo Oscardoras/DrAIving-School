@@ -18,11 +18,11 @@ void draw_road(Viewport* viewport, int lines, int side) { //Voies autoroute hori
     SDL_Rect dest;
 
     float player_x = viewport->level->player->location.x;
-    float dec_player_x = ((int) player_x/2.)*2 - player_x;
+    float dec_player_x = ((int) (player_x/2.)*2) - player_x;
     
     for (float x = dec_player_x; x*side < viewport->width*2; x += 2.) {
         for (int i = 0; i < 2; i++) {
-            dest.x = (int) (x+i) * side;
+            dest.x = (int) ((x+i) * side);
             dest.w = dest.h = side;
         
             dest.y = 0*side; //1ere ligne : mur en briques
@@ -42,7 +42,8 @@ void draw_road(Viewport* viewport, int lines, int side) { //Voies autoroute hori
                 SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[5], &dest);
                 dest.y = 3*side; //Les deux sens sont sur les lignes 3 et 4 (sur 6 au total)
                 SDL_RenderCopyEx(viewport->renderer, viewport->tilesets.roads, &road[5], &dest, 0, NULL, SDL_FLIP_VERTICAL);
-            } else {
+            }
+            else {
                 dest.y = 2*side; //1ere voie : voie sans ligne jaune ni voie exterieure
                 SDL_RenderCopy(viewport->renderer, viewport->tilesets.roads, &road[2], &dest);
                 dest.y = (lines-3)*side;
@@ -92,10 +93,10 @@ void draw_score(Viewport* viewport) {
         char msg[256];
         switch (viewport->state) {
         case VIEWPORTSTATE_VICTORY:
-            strcpy(msg, "Victoire");
+            strcpy(msg, "GG EZ");
             break;
         case VIEWPORTSTATE_DEFEAT:
-            strcpy(msg, "Defaite");
+            strcpy(msg, "Press F to pay respect");
             break;
         default:
             break;
