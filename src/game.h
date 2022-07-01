@@ -13,9 +13,12 @@ typedef enum {
     PERCEPTION_TOP_LEFT = 0b100,
     PERCEPTION_TOP = 0b1000,
     PERCEPTION_TOP_RIGHT = 0b10000,
-    PERCEPTION_FAR_LEFT = 0b100000,
-    PERCEPTION_FAR_RIGHT = 0b1000000
+    PERCEPTION_TOP_LEFT_LEFT = 0b100000,
+    PERCEPTION_TOP_RIGHT_RIGHT = 0b1000000,
+    PERCEPTION_TOP_TOP_LEFT = 0b10000000,
+    PERCEPTION_TOP_TOP_RIGHT = 0b100000000
 } Perception;
+#define PERCEPTIONS 10
 
 typedef enum {
     ACTION_NONE = 0,
@@ -41,7 +44,7 @@ bool update_game(Level* level);
  * @param entity the entity.
  * @param boxes the array to fill.
  */
-void get_entity_perception_hitbox(Entity* entity, HitBox boxes[6]);
+void get_entity_perception_hitbox(Entity* entity, HitBox boxes[PERCEPTIONS]);
 
 /**
  * @brief Gets the perception of an entity.

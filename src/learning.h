@@ -3,8 +3,8 @@
 
 #include "game.h"
 
-//#define LEARN_ITERATION 10000
-#define EPSILON 0.999
+//#define LEARN 100000
+#define EPSILON 0.9999
 #define XI 0.01
 #define GAMMA 0.95
 #define REWARD_MULTIPLIER 100
