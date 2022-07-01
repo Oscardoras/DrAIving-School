@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-07-01 ven. 13:17 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apprentissage par renforcement</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Mathieu E, Oscar B, Paul C" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Apprentissage par renforcement</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6239ed7">1. Git</a></li>
+<li><a href="#org787ba95">2. DrAIving School</a>
+<ul>
+<li><a href="#orgd216b5e">2.1. Principe</a></li>
+<li><a href="#org243a786">2.2. IA</a>
+<ul>
+<li><a href="#org8c92927">2.2.1. Perceptions</a></li>
+<li><a href="#orgbafc44b">2.2.2. Score</a></li>
+<li><a href="#org0b0ccb7">2.2.3. Paramètres/Méthodes</a></li>
+</ul>
+</li>
+<li><a href="#orgbeb11ef">2.3. Résultats</a>
+<ul>
+<li><a href="#orgc65ccee">2.3.1. IA intéressantes</a></li>
+<li><a href="#org5ad7f5e">2.3.2. Limites des perceptions</a></li>
+<li><a href="#org2a0d125">2.3.3. Limites du jeu</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6239ed7" class="outline-2">
+<h2 id="org6239ed7"><span class="section-number-2">1</span> Git</h2>
+<div class="outline-text-2" id="text-1">
+<p title="Le git du projet">
+<a href="https://gitlab.isima.fr/osbuon/projet-jeu" title="Le git du projet">https://gitlab.isima.fr/osbuon/projet-jeu</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org787ba95" class="outline-2">
+<h2 id="org787ba95"><span class="section-number-2">2</span> DrAIving School</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgd216b5e" class="outline-3">
+<h3 id="orgd216b5e"><span class="section-number-3">2.1</span> Principe</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Le but du jeu est de rouler vers l'arrivée le plus vite possible sans faire d'accident.
+Il y a une autoroute à 3 voies par sens, clairsemée de voitures qui roulent plus ou moins vite selon la voie.
+La voiture du joueur peut accélérer, freiner, et tourner à gauche ou à droite. Il est important de noter que la voiture du joueur est plus rapide que toute autre voiture, même à vitesse minimale.
+</p>
+
+<p>
+<img src="./img/title.png" alt="title.png" />
+<br>
+<br>
+<img src="./img/game.png" alt="game.png" />
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org243a786" class="outline-3">
+<h3 id="org243a786"><span class="section-number-3">2.2</span> IA</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Pour entraîner l'IA, nous avons essayé différents paramètres, différentes perceptions et différentes récompenses et pénalités :
+</p>
+</div>
+
+
+
+<div id="outline-container-org8c92927" class="outline-4">
+<h4 id="org8c92927"><span class="section-number-4">2.2.1</span> Perceptions</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+Nous avons doté l'IA d'une perception du monde très locale pour éviter une surcharge d'états différents à gérer.
+Elle peut donc détecter les obstacles autour d'elle dans des zones de taille différentes.
+</p>
+
+<p>
+<img src="./img/percepts0.png" alt="percepts0.png" />
+<br>
+<br>
+<img src="./img/percepts1.png" alt="percepts1.png" />
+<br>
+<br>
+<img src="./img/percepts2.png" alt="percepts2.png" />
+<br>
+<br>
+<img src="./img/percepts_test.png" alt="percepts_test.png" />
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgbafc44b" class="outline-4">
+<h4 id="orgbafc44b"><span class="section-number-4">2.2.2</span> Score</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Pour les pénalités : en cas d'accident, l'IA a une certaine pénalité, peu importe si elle a cogné le trottoir ou une autre voiture.
+</p>
+
+<p>
+En revanche, elle a une récompense lorsqu'elle atteint la fin du niveau. Cette récompense est plus élevée quand la course est terminée rapidement, pour encourager l'IA à accélérer quand possible.
+L'intérêt de ceci est que l'IA devra alors contrôler son accélération et jauger quand il est judicieux de se dépêcher.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org0b0ccb7" class="outline-4">
+<h4 id="org0b0ccb7"><span class="section-number-4">2.2.3</span> Paramètres/Méthodes</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+Les choix d'actions ont été fait par E-Greedy.
+</p>
+
+<p>
+Nous avons pris E proche de 1, et on l'a fait décroître par suite géométrique, par pallier ou non en fonction du E initial (0.99 ou 0.999).
+</p>
+
+<p>
+Pour Y, nous ne savions pas exactement comment il fonctionnait avant qu'un professeur ne nous l'explique, nous le prenions alors de manière aléatoire, puis finalement, nous l'avons laissé à 0.99 au vu des conseils donnés.
+</p>
+
+<p>
+De même pour S, que nous avons finalement laissé à 0.01.
+</p>
+
+
+<p>
+Pour l'apprentissage, beaucoup ont été réalisés par Q-Learning et quelques autres par SARSA.
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgbeb11ef" class="outline-3">
+<h3 id="orgbeb11ef"><span class="section-number-3">2.3</span> Résultats</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-orgc65ccee" class="outline-4">
+<h4 id="orgc65ccee"><span class="section-number-4">2.3.1</span> IA intéressantes</h4>
+<div class="outline-text-4" id="text-2-3-1">
+</div>
+<ol class="org-ol">
+<li><a id="org2d9619c"></a>Premières IA<br />
+<div class="outline-text-5" id="text-2-3-1-1">
+<p>
+Les premiers essais montraient un apprentissage, mais pas dans la direction que nous voulions.
+Il en résulte une IA suicidaire qui minimise alors son temps de survie.
+</p>
+
+
+</div>
+</li>
+
+<li><a id="orgddfc14e"></a>Premières IA performantes<br />
+<div class="outline-text-5" id="text-2-3-1-2">
+<p>
+Après beaucoup de changements de paramètres, d'entraînements différents, de modifications de codes, nous avons réussi à avoir quelques IA avec un comportement remarquable si comparé aux autres.
+</p>
+
+
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org5ad7f5e" class="outline-4">
+<h4 id="org5ad7f5e"><span class="section-number-4">2.3.2</span> Limites des perceptions</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+Le problème d'avoir des perceptions locales sont qu'elles sont locales : si l'IA est face à un bouchon, elle ne peut savoir s'il y a de la place libre sur les côtés, et ne pensera même pas à y aller.
+De plus, des perceptions aussi larges que les notres peuvent provoquer des confusions chez l'IA qui peut voir un bouchon même quand 2 voitures sont assez espacées pour que l'IA passe entre.
+</p>
+
+
+<p>
+<img src="./img/faux_bouchon.png" alt="faux_bouchon.png" />
+<br>
+<br>
+<img src="./img/bouchon.png" alt="bouchon.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2a0d125" class="outline-4">
+<h4 id="org2a0d125"><span class="section-number-4">2.3.3</span> Limites du jeu</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+Le premier problème est lié aux perceptions locales de l'IA : si par faute du hasard, il y a un bouchon car les voitures sont toutes alignées, l'IA ne pourra rien faire car son monde est bloqué.
+Une idée venue un peu tard était de faire des groupements de voitures générées aléatoirement avec comme règle que l'IA peut toujours passer entre. Le problème restait cependant les perceptions locales de l'IA qui ne détectait pas le passage.
+</p>
+
+
+<div class="figure">
+<p><img src="./img/clusters.png" alt="clusters.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Mathieu E, Oscar B, Paul C</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
