@@ -69,7 +69,7 @@ bool update_game(Level* level) {
     
     //printf("Perception : %u\n", get_entity_perception(level, level->player));
     /*
-    if(level->score%100 == 0) {
+    if(level->score%125 == 0) {
         car_cluster(level, 1);
         car_cluster(level, 0);
     }

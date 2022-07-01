@@ -141,11 +141,21 @@ void event_loop(Viewport* viewport) {
                             break;
                         }
                         break;
+                    case VIEWPORTSTATE_VICTORY:
+                    case VIEWPORTSTATE_DEFEAT:
                     case VIEWPORTSTATE_GAME:
                     case VIEWPORTSTATE_IA:
                         switch (event.key.keysym.sym) {
                         case SDLK_b:
                             viewport->display_hitboxes = !viewport->display_hitboxes;
+                            break;
+                        case SDLK_r:
+                            remove_level_entities(viewport->level);
+                            init_level_player(viewport->level, viewport->level->player->q);
+                            if (viewport->level->player->q == NULL)
+                                viewport->state = VIEWPORTSTATE_GAME;
+                            else
+                                viewport->state = VIEWPORTSTATE_IA;
                             break;
                         }
                         break;
